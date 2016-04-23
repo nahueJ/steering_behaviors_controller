@@ -12,13 +12,18 @@
 //
 //------------------------------------------------------------------------
 
+#include "../steering_behavior.h"
 
 class Controller
 {
 	private:
 
+		steering_behavior* behaviors[];
+	
 	public:
-		Controller();
+	
+		Controller(	int 	id,				//identificador del robot
+					int 	behaviors);		//comportamientos que se van a activar
 
 		~Controller();
 

@@ -15,11 +15,15 @@
 int main(int argc, char const *argv[])
 {
 	int robots;
-	int behaviors[robots]; //representar en binario
-	controller* ctrls[robots];
-
+	
 	//obtener la cantidad de robots
 	robots = 4; //=algo con rostopic list o enviarlo por los arg con el nro de robot o con que intervalo de robots
+
+	//comportamientos que quiero activar para cada robot
+	int behaviors[robots]; //representar en binario
+
+	//controlador para cada robot
+	controller* ctrls[robots];
 
 	//definir los comportamientos para los robots
 	for (int i = 0; i < robots; ++i)
