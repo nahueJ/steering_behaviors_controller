@@ -46,7 +46,7 @@ int main(int argc, char const *argv[])
 		}
 
 		ros::spinOnce();
-		loop_rate.sleep(); ///sleep por el resto del ciclo
+		loop_rate.sleep(); //sleep por el resto del ciclo
 	}
 
 	return 0;

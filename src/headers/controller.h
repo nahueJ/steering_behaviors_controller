@@ -13,21 +13,26 @@
 //------------------------------------------------------------------------
 
 #include "../steering_behavior.h"
+#include "geometry_msgs/Twist.h"
 
 class Controller
 {
 	private:
 
-		steering_behavior* behaviors[];
+		int numBehaviors;
+		steering_behavior* behaviors[numBehaviors];
+		int robotId;
+		float linear;
+		float angular;
 	
 	public:
 	
-		Controller(	int 	id,				//identificador del robot
-					int 	behaviors);		//comportamientos que se van a activar
+		Controller(	int 	id,		//identificador del robot
+					int 	b);		//b(ehaviors) comportamientos que se van a activar
 
 		~Controller();
 
-		void	Update();
+		void	update();
 
 };
 
