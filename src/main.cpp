@@ -23,7 +23,7 @@ int main(int argc, char const *argv[])
 	int behaviors[robots]; //representar en binario
 
 	//controlador para cada robot
-	controller* ctrls[robots];
+	controller *ctrls[robots];
 
 	//definir los comportamientos para los robots
 	for (int i = 0; i < robots; ++i)
