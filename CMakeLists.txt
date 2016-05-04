@@ -99,9 +99,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES steering_behaviors_controller
-#  CATKIN_DEPENDS roscpp std_msgs
+  CATKIN_DEPENDS roscpp std_msgs
 #  DEPENDS system_lib
 )
 
@@ -185,3 +185,9 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+include_directories(include ${catkin_INCLUDE_DIRS})
+
+add_executable(steering_behaviors_controller src/main.cpp src/Controller.cpp )
+target_link_libraries(steering_behaviors_controller ${catkin_LIBRARIES})
+add_dependencies(steering_behaviors_controller steering_behaviors_controller_generate_messages_cpp)

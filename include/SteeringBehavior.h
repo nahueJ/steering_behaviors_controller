@@ -19,9 +19,9 @@ public:
 	 * @param unasigned int id
 	 * @param float weight
 	 */
-	void SteeringBehavior(void unasigned int id, void float weight);
+	SteeringBehavior(unsigned int id, float weight);
 	
-	void ~SteeringBehavior();
+	~SteeringBehavior();
 	
 	void update();
 	
@@ -31,7 +31,7 @@ public:
 	 * modify weight value
 	 * @param float w
 	 */
-	void setWeight(void float w);
+	void setWeight(float w);
 	
 	/**
 	 * return weight variable value
@@ -40,7 +40,7 @@ public:
 private: 
 	float weight;
 	unsigned int robotId;
-	twist desiredTwist;
+	geometry_msgs::Twist desiredTwist;
 };
 
 #endif //_STEERINGBEHAVIOR_H
