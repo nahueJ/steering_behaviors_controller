@@ -27,14 +27,19 @@ int getNumberOfRobots();
 
 int main(int argc, char **argv)
 {
+	//variable de prueba
+	int prueba = 0;
+
 	//Inicializa el nodo de ros
 
 	ros::init(argc, argv, "controllersHandler");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(10);
 
-//TESTING PUBLISH
 
+	if (prueba==1)
+	{
+	//TESTING PUBLISH
 
 	ros::Publisher test = n.advertise<geometry_msgs::Twist>("/robot_0/cmd_vel",1000);
 
@@ -42,56 +47,65 @@ int main(int argc, char **argv)
 
 	twistTest.linear.x=1.0;
 
-	int robots;
-
-	robots = getNumberOfRobots();
-
-/*	TODO
-
-	//comportamientos que quiero activar para cada robot
-	int behaviors[robots]; //representar en binario
-
-	//leer de un archivo de configuracion los comportamientos para cada robot
-	//por el momento los controladores instancian los mismos comportamientos para todos
-	//definir los comportamientos para los robots
-	for (int i = 0; i < robots; ++i)
-	{
-		behaviors[i] = fgets (...); //para evaluar en binario, se podria tomar de los argv
+		while(ros::ok())
+		{
+			test.publish(twistTest);		
+			ros::spinOnce();
+			loop_rate.sleep(); //sleep por el resto del ciclo
+		}
 	}
-*/
-
-/*	TODO
-	//instanciar Factory
-*/
-
-	//controlador para cada robot
-	//Controller* ctrls[robots];
-	Controller* ctrl;
-	//instanciar los controladores
-	/*for (int i = 0; i < robots; ++i)
+	else
 	{
-		//intanciar el control para cada robot.
-		cout << "Instanciando " << i << "° controlador"  << endl;
-		ctrls[i] = new Controller(i);
+		int robots;
 
-		//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
-	}*/
-	ctrl = new Controller(0);
+		robots = getNumberOfRobots();
 
+	/*	TODO
 
-	//rutina de trabajo
+		//comportamientos que quiero activar para cada robot
+		int behaviors[robots]; //representar en binario
 
-	while(ros::ok()){
-		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+		//leer de un archivo de configuracion los comportamientos para cada robot
+		//por el momento los controladores instancian los mismos comportamientos para todos
+		//definir los comportamientos para los robots
+		for (int i = 0; i < robots; ++i)
+		{
+			behaviors[i] = fgets (...); //para evaluar en binario, se podria tomar de los argv
+		}
+	*/
+
+	/*	TODO
+		//instanciar Factory
+	*/
+
+		//controlador para cada robot
+		//Controller* ctrls[robots];
+		Controller* ctrl;
+		//instanciar los controladores
 		/*for (int i = 0; i < robots; ++i)
 		{
-			ctrls[i]->update();
-		}*/
-		test.publish(twistTest);
-		//ctrl->update();
+			//intanciar el control para cada robot.
+			cout << "Instanciando " << i << "° controlador"  << endl;
+			ctrls[i] = new Controller(i);
 
-		ros::spinOnce();
-		loop_rate.sleep(); //sleep por el resto del ciclo
+			//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
+		}*/
+		ctrl = new Controller(0);
+		
+		
+		//rutina de trabajo
+
+		while(ros::ok()){
+			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+			/*for (int i = 0; i < robots; ++i)
+			{
+				ctrls[i]->update();
+			}*/
+			ctrl->update();
+		
+			ros::spinOnce();
+			loop_rate.sleep(); //sleep por el resto del ciclo
+		}
 	}
 	return 0;
 }

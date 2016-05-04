@@ -34,15 +34,17 @@ Controller::Controller(unsigned int id)
 	ros::init(remappingsArgs, "controller_0");
 
 	//crear el manejador del nodo y apuntarlo desde la variable de la clase
-	ros::NodeHandle c;
-//	rosNode = &c;
+	rosNode = new ros::NodeHandle;
 
 //	TODO ...generar el nombre del topic a partir del id
 
 	//Crear el publicador y apuntarlo con la variable de la clase
-//	ros::Publisher ctrlr_pub_0 = c.advertise<geometry_msgs::Twist>("/robot_0/cmd_vel", 1000);
-//	ctrlPublisher = &ctrlr_pub_0;
+	ctrlPublisher = new ros::Publisher;
+	*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>("/robot_0/cmd_vel", 100000);
 
+//Valor por default para mostrar
+    myTwist.linear.x = 0.5;
+    myTwist.angular.z = -0.5;
 }
 
 Controller::~Controller() {
@@ -51,9 +53,5 @@ Controller::~Controller() {
 
 void Controller::update() 
 {
-	cout << "spining" << endl;
-    myTwist.linear.x = 0.5;
-    myTwist.angular.z = 0.5;
     ctrlPublisher->publish(myTwist);
-
 }
