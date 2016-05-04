@@ -18,7 +18,7 @@
 #include "ros/message.h"
 #include <string>
 #include <vector>
-
+#include <sstream>
 #include <iostream>
 using std::cout;
 using std::cin;

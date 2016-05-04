@@ -31,16 +31,22 @@ Controller::Controller(unsigned int id)
 
 //	TODO generar el nombre del nodo con el id!!
 
-	ros::init(remappingsArgs, "controller_0");
+	std::stringstream name;
+	name << "controller_" << id;
+
+	ros::init(remappingsArgs, name.str());
 
 	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	rosNode = new ros::NodeHandle;
 
 //	TODO ...generar el nombre del topic a partir del id
 
+	std::stringstream pubtopic;
+	pubtopic << "/robot_" << id << "/cmd_vel";
+
 	//Crear el publicador y apuntarlo con la variable de la clase
 	ctrlPublisher = new ros::Publisher;
-	*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>("/robot_0/cmd_vel", 100000);
+	*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopic.str(), 100000);
 
 //Valor por default para mostrar
     myTwist.linear.x = 0.5;
