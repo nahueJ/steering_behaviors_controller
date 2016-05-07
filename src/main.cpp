@@ -24,7 +24,7 @@ using std::endl;
 
 #include <string>
 
-int getNumberOfRobots();
+unsigned int getNumberOfRobots();
 
 int main(int argc, char **argv)
 {
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		int robots;
+		unsigned int robots;
 
 		robots = getNumberOfRobots();
 
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-int getNumberOfRobots()
+unsigned int getNumberOfRobots()
 {
 	char robotsChar[10];
 

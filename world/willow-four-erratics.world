@@ -8,8 +8,8 @@ define topurg ranger
 (
   sensor( 			
     range [ 0.0  30.0 ]
-    fov 270.25
-    samples 1
+    fov 10
+    samples 3
   )
 
   # generic model properties
@@ -25,8 +25,8 @@ define erratic position
   gui_nose 1
   drive "diff"
   topurg(pose [ 0.500 0.500 0.010 0.000 ])
-  topurg(pose [ 0.050 0.050 0.010 90.000 ])
-  topurg(pose [ 0.050 -0.050 0.010 270.000 ])
+  topurg(pose [ 0.050 0.050 0.010 45.000 ])
+  topurg(pose [ 0.050 -0.050 0.010 315.000 ])
 )
 
 define floorplan model
