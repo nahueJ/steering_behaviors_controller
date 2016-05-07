@@ -17,7 +17,14 @@
 void WallAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure)
 {
   //TODO comunicar lo que recibo
-	cout << "receiving data" << endl;
+	cout << "receiving data from laser " << laserId << " from robot " << robotId << endl;
+	//ROS_INFO("I heard: [%s]", msg->data.c_str());
+}
+
+void WallAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& actualTwist)
+{
+  //TODO comunicar lo que recibo
+	cout << "receiving odom from robot " << robotId << endl;
 	//ROS_INFO("I heard: [%s]", msg->data.c_str());
 }
 
@@ -50,18 +57,31 @@ WallAvoidance::WallAvoidance(unsigned int id, unsigned int mySensor) : SteeringB
 	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	rosNode = new ros::NodeHandle;
 	
-	//generar el nombre del topic a partir del robotId
-	std::stringstream substopic;
-	substopic << "/robot_" << robotId << "/base_scan_" << laserId;
 
+
+	/* Subscripcion al topic del laser*/
+	//generar el nombre del topic a partir del robotId
+	std::stringstream senstopic;
+	senstopic << "/robot_" << robotId << "/base_scan_" << laserId;
 	//Crear el suscriptor y apuntarlo con la variable de la clase
-	ctrlSubscriber = new ros::Subscriber;
-	*ctrlSubscriber = (*rosNode).subscribe<sensor_msgs::LaserScan>(substopic.str(), 1000, &WallAvoidance::sensorCallback,this);
+	sensorSubscriber = new ros::Subscriber;
+	*sensorSubscriber = (*rosNode).subscribe<sensor_msgs::LaserScan>(senstopic.str(), 1000, &WallAvoidance::sensorCallback,this);
+
+
+
+	/* Subscripcion al topic del base_pose_ground_truth*/
+	//generar el nombre del topic a partir del robotId
+	std::stringstream basetopic;
+	basetopic << "/robot_" << robotId << "/base_pose_ground_truth" ;
+	//Crear el suscriptor y apuntarlo con la variable de la clase
+	odomSubscriber = new ros::Subscriber;
+	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(basetopic.str(), 1000, &WallAvoidance::odomCallback,this);
+
 }
 
 WallAvoidance::~WallAvoidance() {
 	delete rosNode;
-	delete ctrlSubscriber;
+	delete sensorSubscriber;
 }
 
 

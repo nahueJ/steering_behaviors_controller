@@ -12,6 +12,7 @@
 #include "ros/message.h"
 
 #include <geometry_msgs/Twist.h>
+#include <nav_msgs/Odometry.h>
 #include <sensor_msgs/LaserScan.h>
 
 #include "SteeringBehavior.h"
@@ -47,11 +48,15 @@ class WallAvoidance : public SteeringBehavior {
 
 		//Variables para publicar por un topic
 		ros::NodeHandle* rosNode;
-		ros::Subscriber* ctrlSubscriber;
+		ros::Subscriber* sensorSubscriber;
+		ros::Subscriber* odomSubscriber;
 
 		geometry_msgs::Twist myTwist;
 
 		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
+
+		void odomCallback(const nav_msgs::Odometry::ConstPtr& actualTwist);
+
 };
 
 #endif //_WALLAVOIDANCE_H
