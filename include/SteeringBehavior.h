@@ -9,8 +9,18 @@
 #define _STEERINGBEHAVIOR_H
 
 #include "ros/ros.h"
+ #include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
 
- #include <geometry_msgs/Twist.h>
+
+//Behavior List //YO PENSABA Q TIENEN QUE ESTAR EN LOS INCLUDES, PERO NO
+//#include "Seek.h"
+//#include "Arrive.h"
+//#include "WallAvoidance.h"
+
+#include <geometry_msgs/Twist.h>
  
 class SteeringBehavior {
 public: 
@@ -19,26 +29,15 @@ public:
 	 * @param unasigned int id
 	 * @param float weight
 	 */
-	SteeringBehavior(unsigned int id, float weight);
+	SteeringBehavior(unsigned int id);
 	
 	~SteeringBehavior();
 	
-	void update();
+	virtual void update() const = 0; // función virtual pura
 	
-	void getDesiredTwist();
+	virtual geometry_msgs::Twist getDesiredTwist() const; // función virtual 
 	
-	/**
-	 * modify weight value
-	 * @param float w
-	 */
-	void setWeight(float w);
-	
-	/**
-	 * return weight variable value
-	 */
-	void getWeight();
-private: 
-	float weight;
+protected: 
 	unsigned int robotId;
 	geometry_msgs::Twist desiredTwist;
 };

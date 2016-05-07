@@ -14,21 +14,22 @@
 
 class Arrive: public SteeringBehavior {
 public: 
-	
-	/**
-	 * gets the last data and actualizes the desiredTwist
-	 * @param myPose
-	 */
-	void update(pose myPose);
-	
+
 	/**
 	 * @param objective
 	 * @param id
 	 * @param weight
 	 */
-	void Arrive(pose objective, unsigned int id, float weight);
+	Arrive(pose objective, unsigned int id, float weight);
 	
-	void ~Arrive();
+	~Arrive();
+
+	/**
+	 * gets the last data and actualizes the desiredTwist
+	 * @param myPose
+	 */
+	virtual void update() const;
+	
 private: 
 	pose target;
 };

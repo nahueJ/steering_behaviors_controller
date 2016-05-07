@@ -17,24 +17,23 @@
  * position.
  */
 
-
-/**
- * gets the last data and actualizes the desiredTwist
- * @param myPose
- */
-void Arrive::update(pose myPose) {
-
-}
-
 /**
  * @param objective
  * @param id
  * @param weight
  */
-void Arrive::Arrive(pose objective, unsigned int id, float weight) {
+Arrive::Arrive(pose objective, unsigned int id, float weight) {
 
 }
 
-void Arrive::~Arrive() {
+Arrive::~Arrive() {
+
+}
+
+/**
+ * gets the last data and actualizes the desiredTwist
+ * @param myPose
+ */
+virtual void Arrive::update() const{
 
 }

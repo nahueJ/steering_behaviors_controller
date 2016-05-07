@@ -8,7 +8,7 @@
 #include "SteeringBehavior.h"
 
 /**
- * SteeringBehavior implementation
+ * Abstract Class SteeringBehavior implementation
  */
 
 
@@ -16,33 +16,16 @@
  * @param unasigned int id
  * @param float weight
  */
-void SteeringBehavior::SteeringBehavior(void unasigned int id, void float weight) {
+SteeringBehavior::SteeringBehavior(unsigned int id) : robotId( id )
+{
+	
+}
+
+SteeringBehavior::~SteeringBehavior() {
 
 }
 
-void SteeringBehavior::~SteeringBehavior() {
-
-}
-
-void SteeringBehavior::update() {
-
-}
-
-void SteeringBehavior::getDesiredTwist() {
-
-}
-
-/**
- * modify weight value
- * @param float w
- */
-void SteeringBehavior::setWeight(void float w) {
-
-}
-
-/**
- * return weight variable value
- */
-void SteeringBehavior::getWeight() {
-
+geometry_msgs::Twist SteeringBehavior::getDesiredTwist() const
+{
+	return desiredTwist;
 }

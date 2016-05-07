@@ -80,29 +80,33 @@ int main(int argc, char **argv)
 	*/
 
 		//controlador para cada robot
-		//Controller* ctrls[robots];
-		Controller* ctrl;
-		//instanciar los controladores
-		/*for (int i = 0; i < robots; ++i)
+		Controller* ctrls[robots];
+		// instanciar los controladores
+		for (int i = 0; i < robots; ++i)
 		{
 			//intanciar el control para cada robot.
 			cout << "Instanciando " << i << "° controlador"  << endl;
 			ctrls[i] = new Controller(i);
 
 			//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
-		}*/
-		ctrl = new Controller(0);
+		}
+
+		//prueba con un solo controlador
+		// Controller* ctrl;
+		// ctrl = new Controller(0);
 		
 		
 		//rutina de trabajo
 
 		while(ros::ok()){
 			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-			/*for (int i = 0; i < robots; ++i)
+			for (int i = 0; i < robots; ++i)
 			{
 				ctrls[i]->update();
-			}*/
-			ctrl->update();
+			}
+
+			//prueba con un solo controlador
+			// ctrl->update();
 		
 			ros::spinOnce();
 			loop_rate.sleep(); //sleep por el resto del ciclo

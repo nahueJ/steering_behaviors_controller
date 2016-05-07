@@ -9,13 +9,17 @@
 #define _CONTROLLER_H
 
 #include "ros/ros.h"
-
-//#include "SteeringBehavior.h"
+#include "ros/message.h"
 
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Twist.h>
-#include "ros/message.h"
+
+#include "SteeringBehavior.h"
+
+//para test-->> pasa a factory
+#include "WallAvoidance.h"
+
 #include <string>
 #include <vector>
 #include <sstream>
@@ -46,9 +50,14 @@ private:
 	//Variables para publicar por un topic
 	ros::NodeHandle* rosNode;
 	ros::Publisher* ctrlPublisher;
-	ros::Rate* rosRate;
+	//ros::Subscriber* ctrlSubscriber;
 
-	//std::vector<SteeringBehavior*> behaviors;
+	std::vector<SteeringBehavior*> behaviors;
+	//para test
+	WallAvoidance* behavior;
+
+	//TODO AGREGAR VECTOR O ARREGLO CON LOS PESOS CORRESPONDIENTES
+
 	geometry_msgs::Pose myPosition;
 	geometry_msgs::Twist myTwist;
 	

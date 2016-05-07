@@ -1,0 +1,29 @@
+main.cpp
+
+//comportamientos que quiero activar para cada robot
+
+//leer de un archivo de configuracion los comportamientos para cada robot
+//por el momento los controladores instancian los mismos comportamientos para todos
+//definir los comportamientos para los robots
+
+//instanciar Factory
+
+Controller.h
+
+//AGREGAR VECTOR O ARREGLO CON LOS PESOS CORRESPONDIENTES
+
+Controller.cpp
+
+//INSTANCIAR LOS BEHAVIORS --->>> FACTORY
+
+//LIBERAR LOS BEHAVIORS
+
+SteeringBehaviors.h
+
+SteeringBehaviors.cpp
+
+WallAvoidance.h
+
+WallAvoidance.cpp
+
+//TODO comunicar lo que recibo

@@ -188,6 +188,6 @@ include_directories(
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(steering_behaviors_controller src/main.cpp src/Controller.cpp )
+add_executable(steering_behaviors_controller src/main.cpp src/Controller.cpp src/SteeringBehavior.cpp src/WallAvoidance.cpp)
 target_link_libraries(steering_behaviors_controller ${catkin_LIBRARIES})
 add_dependencies(steering_behaviors_controller steering_behaviors_controller_generate_messages_cpp)
