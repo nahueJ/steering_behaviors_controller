@@ -8,9 +8,22 @@
 #ifndef _SEEK_H
 #define _SEEK_H
 
+#include "ros/ros.h"
+#include "ros/message.h"
+
 #include "SteeringBehavior.h"
  
 #include <geometry_msgs/Pose.h>
+#include <nav_msgs/Odometry.h>
+
+#include <math.h>
+#include <sstream>
+#include <iostream>
+using std::cout;
+using std::cin;
+using std::endl;
+
+#define PI 3.14159265
 
 class Seek: public SteeringBehavior {
 public: 
@@ -20,7 +33,7 @@ public:
 	 * @param id
 	 * @param weight
 	 */
-	Seek(pose objective, unsigned int id, float weight);
+	Seek(geometry_msgs::Pose objective, unsigned int id);
 	
 	~Seek();
 	
@@ -28,10 +41,31 @@ public:
 	 * gets the last data and actualizes the desiredTwist
 	 * @param myPose
 	 */
-	virtual void update() const;
+	virtual void update();
+
 	
+
 private: 
-	pose target;
+	geometry_msgs::Pose target;
+
+	//Variables para suscribirse a un topic
+	ros::NodeHandle* rosNode;
+	ros::Subscriber* odomSubscriber;
+	std::vector<ros::Subscriber*> sensorSubscriber;
+
+	//Funciones de Callback para las suscripciones a los topic de la posicion)
+	void poseCallback(const nav_msgs::Odometry::ConstPtr& odom);
+
+	//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
+	nav_msgs::Odometry*	myData;
+
+	//distancia hasta el objetivo
+	float dx;
+	float dy;
+	float dw;
+
+	float wIdeal( float, float);
+
 };
 
 #endif //_SEEK_H

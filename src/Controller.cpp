@@ -23,8 +23,7 @@
  ------------------------------------------------------------------------*/
 Controller::Controller(unsigned int id)
 {
-	cout << "Controller " << id << "° responde : Instanciando" << endl ;
-	
+
 	robotId = id;
 
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
@@ -54,9 +53,12 @@ Controller::Controller(unsigned int id)
 	
 	unsigned int laserId = 0;
 
-	cout << "instanciando WallAvoidance de robot " << robotId << " laserId " << laserId << endl; 
-
-	behavior = new WallAvoidance(robotId, laserId);
+	// cout << "instanciando WallAvoidance de robot " << robotId << " laserId " << laserId << endl; 
+	behavior1 = new WallAvoidance(robotId);
+	geometry_msgs::Pose target;
+	target.position.x = -4;
+	target.position.y = 36;
+	behavior2 = new Seek (target,robotId);
 }
 
 Controller::~Controller() {
@@ -75,11 +77,14 @@ Controller::~Controller() {
 
 void Controller::update() 
 {
-
-
+	behavior1->update();
+	//behavior2->update();
+	myTwist = behavior2->getDesiredTwist();
+	// cout << "twist " << robotId << " : " << myTwist.linear.x << " " << myTwist.angular.z << endl;
+	//cout << "Twist " << myTwist << endl ;
 	//Valor por default para mostrar
-    myTwist.linear.x = 0.5;
-    myTwist.angular.z = -0.5;
+    //myTwist.linear.x = 0.5;
+    //myTwist.angular.z = 0.5;
 
     ctrlPublisher->publish(myTwist);
 }

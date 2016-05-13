@@ -29,13 +29,11 @@ using std::endl;
 class WallAvoidance : public SteeringBehavior {
 
 	private: 
-		//Id del robot del controlador
-		unsigned int laserId;
 
 		//Cantidad de lasers del robot
 		unsigned int nroLasers;
 
-		//Variables para publicar por un topic
+		//Variables para suscribirse a un topic
 		ros::NodeHandle* rosNode;
 		ros::Subscriber* odomSubscriber;
 		std::vector<ros::Subscriber*> sensorSubscriber;
@@ -50,9 +48,12 @@ class WallAvoidance : public SteeringBehavior {
 		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
 		//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
-		sensor_msgs::LaserScan* lasers;
+		float* lasers;
 		nav_msgs::Odometry	myData;
 
+		//distancia máxima a la que actua el comportamiento
+		float distMax;
+		float distMin;
 
 	public: 
 		
@@ -60,14 +61,14 @@ class WallAvoidance : public SteeringBehavior {
 		 * @param mySensor
 		 * @param unsigned int id
 		 */
-		WallAvoidance(unsigned int id, unsigned int mySensor);
+		WallAvoidance(unsigned int id);
 		
 		~WallAvoidance();
 
 		/**
 		 * gets the last data and actualizes the desiredTwist
 		 */
-		virtual void update() const;
+		virtual void update();
 
 };
 

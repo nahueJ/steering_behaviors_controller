@@ -14,12 +14,16 @@
  * with a wall.
  */
 
-void WallAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure)
+void WallAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
-	sensor_msgs::LaserScan tmpLaser = *messure;
+	sensor_msgs::LaserScan tmpLaser = *scan;
 	std::string tmpFrameId = tmpLaser.header.frame_id;	//separo el miembro frame_id para analizar de que laser viene la medicion
 	int laserNumber = atoi(&tmpFrameId[tmpFrameId.size()-1]); //extraigo el ultimo caracter del frame_id que indica el id del laser
-	lasers[laserNumber]=tmpLaser;	//almaceno la medicion en el lugar que le corresponde en el arrays con las ultimas mediciones recibidas de los laseres
+//	*lasers[laserNumber]=scan;	//almaceno la medicion en el lugar que le corresponde en el arrays con las ultimas mediciones recibidas de los laseres
+	for (int i = 0; i < 3; ++i)
+	{
+		lasers[laserNumber,i]=scan->ranges[i];
+	}
 }
 
 void WallAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
@@ -31,14 +35,14 @@ void WallAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param unsigned int id
  * @param mySensor
  */
-WallAvoidance::WallAvoidance(unsigned int id, unsigned int mySensor) : SteeringBehavior(id)
+WallAvoidance::WallAvoidance(unsigned int id) : SteeringBehavior(id)
 {	
-	laserId = mySensor;
+	distMax = 15.0 ;
+	distMin = 0.5 ;
 
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
 	ros::M_string remappingsArgs;
 
-	cout << "Construyendo para robot " << robotId << " laserId " << laserId << endl; 
 	//generar el nombre del nodo con el robotId
 	std::stringstream nameMaster;
 	nameMaster << "controller_" << robotId;
@@ -47,14 +51,13 @@ WallAvoidance::WallAvoidance(unsigned int id, unsigned int mySensor) : SteeringB
 
 	//generar el nombre del nodo con el robotId
 	std::stringstream name;
-	name << "wallavoidance_" << laserId;
+	name << "wallavoidance_" << robotId;
 
 	//inicializa el nodo
 	ros::init(remappingsArgs, name.str());
 
 	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	rosNode = new ros::NodeHandle;
-	
 
 	/* Subscripcion al topic base_pose_ground_truth de este robot*/
 	//generar el nombre del topic a partir del robotId
@@ -64,11 +67,10 @@ WallAvoidance::WallAvoidance(unsigned int id, unsigned int mySensor) : SteeringB
 	odomSubscriber = new ros::Subscriber;
 	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(basetopic.str(), 1000, &WallAvoidance::odomCallback,this);
 
-
 	/* Subscripcion a los topic de los laser*/
 	//obtener la cantidad de lasers
 	nroLasers = getNumberOfLasers(robotId);
-	cout << "El robot " << robotId << " tiene " << nroLasers << " lasers" << endl ;
+
 	//suscripcion al topic de cada uno de los lasers
 	for (int i = 0; i < nroLasers; ++i)
 	{
@@ -82,14 +84,15 @@ WallAvoidance::WallAvoidance(unsigned int id, unsigned int mySensor) : SteeringB
 		//lo añado a mi vector de suscripciones a lasers
 		sensorSubscriber.push_back(tmpSubscriber);
 	}
-
 	//inicializo el puntero con las variables para almacenar los valores de los lasers
-	lasers = new sensor_msgs::LaserScan[3];
+//	lasers = new sensor_msgs::LaserScan::ConstPtr[nroLasers];
+	lasers = new float[nroLasers,3];	//por construcción o representación los lasers devuelven 3 valores
 }
 
 WallAvoidance::~WallAvoidance() {
 	delete rosNode;
-//	delete sensorSubscriber;
+	//delete sensorSubscriber;	//una manera rapida de liberar vectores?
+	delete [] lasers;
 	delete odomSubscriber;
 }
 
@@ -98,27 +101,64 @@ WallAvoidance::~WallAvoidance() {
  * gets the last data and actualizes the desiredTwist
  * @param myTwist
  */
-void WallAvoidance::update() const{
-
-//calculo del twist deseado para evitar chocar paredes
-	//dist min 10
-	//dist max 0.5
-	//
+void WallAvoidance::update() {
+	//calculo del twist deseado para evitar chocar paredes
 	//revisar entre los 3 laseres cual tiene el mínimo (dist mas proxima a una pared)
-	//
+	int imin = 0;	//coord i de la menor medida en el arreglo de medidas
+	int jmin = 1;	//coord j de la menor medida en el arreglo de medidas
+
+	for (int i = 0; i < nroLasers; ++i)
+	{
+		for (int j = 0; j < 3; ++j)	//cada laser tiene 3 rayos
+		{
+			if (lasers[imin,jmin] > lasers[i,j])
+			{
+				imin = i;
+				jmin = j;
+			}
+		}
+		
+	}	
+
+	float tmpX;
+	float tmpZ;
+	float menorMedida = lasers[imin,jmin];
+	
+	if (menorMedida <= distMax)
+	{
+		tmpX = ( 1.1f * menorMedida / 10.0f) - 0.1f;	//da 0 para dist=0.1 y da 1 para dist=10
+		if (tmpX < 0.0f)
+		{
+			tmpZ = 1.0f;
+		}
+		else{
+			tmpZ = 1.1f-tmpX;			
+		}
+
+		//verificar la dirección del giro
+		if ((imin == 2) | ((imin == 0) ^ (lasers[0,0]>lasers[0,2])) )
+		{
+			tmpZ = -tmpZ;
+		}
+
+		//si estoy muy cerca de la pared es mejor retroceder y girar en el otro sentido
+		if (menorMedida < distMin)
+		{
+			tmpX = -0.5;	//al estar tan cerca de la pared tmpX tiene un valor muy pequeno, entonces lo aumento arbitrariamente para retroceder
+			tmpZ = -tmpZ;
+		}
+	}
+	else if (menorMedida > distMax)	//EN ESTA SITUACION SE DEBERIA MANDAR UN IGNORENME
+	{
+		tmpX = 0.0f;		
+		tmpZ = 0.0f;
+	}
+
+	setDesiredTwist(tmpX,tmpZ);
 	//en el laser del minimo calcular junto con el del medio el angulo de la pared
-	//
 	//con eso puedo establecer dist y angulo de impacto
-	//
 	//angulo de impacto saco la normal
-	//
 	//con los datos de pose saco la dif de angulo entre el ideal y el real
-	//
-	//
-	//
-	//
-
-
 }
 
 /**

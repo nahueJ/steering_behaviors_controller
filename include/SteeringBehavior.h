@@ -33,12 +33,16 @@ public:
 	
 	~SteeringBehavior();
 	
-	virtual void update() const = 0; // función virtual pura
+	virtual void update() ; // función virtual pura
 	
-	virtual geometry_msgs::Twist getDesiredTwist() const; // función virtual 
+	geometry_msgs::Twist getDesiredTwist() const; 
 	
+	void setDesiredTwist( float x, float z);
+
 protected: 
+
 	unsigned int robotId;
+
 	geometry_msgs::Twist desiredTwist;
 };
 

@@ -19,6 +19,7 @@
 
 //para test-->> pasa a factory
 #include "WallAvoidance.h"
+#include "Seek.h"
 
 #include <string>
 #include <vector>
@@ -54,7 +55,8 @@ private:
 
 	std::vector<SteeringBehavior*> behaviors;
 	//para test
-	WallAvoidance* behavior;
+	SteeringBehavior* behavior1;
+	SteeringBehavior* behavior2;
 
 	//TODO AGREGAR VECTOR O ARREGLO CON LOS PESOS CORRESPONDIENTES
 

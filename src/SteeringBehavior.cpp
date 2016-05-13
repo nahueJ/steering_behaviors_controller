@@ -29,3 +29,13 @@ geometry_msgs::Twist SteeringBehavior::getDesiredTwist() const
 {
 	return desiredTwist;
 }
+
+void SteeringBehavior::setDesiredTwist( float x,  float z) 
+{
+	desiredTwist.linear.x = ( x <= 1.0f ) ? x : 1.0f;
+	desiredTwist.angular.z = ( abs(z) <= 1.0 ) ? z : (z/abs(z));
+}
+
+void SteeringBehavior::update(){
+
+}

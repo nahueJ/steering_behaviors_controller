@@ -85,7 +85,6 @@ int main(int argc, char **argv)
 		for (int i = 0; i < robots; ++i)
 		{
 			//intanciar el control para cada robot.
-			cout << "Instanciando " << i << "° controlador"  << endl;
 			ctrls[i] = new Controller(i);
 
 			//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
@@ -104,7 +103,6 @@ int main(int argc, char **argv)
 			{
 				ctrls[i]->update();
 			}
-
 			//prueba con un solo controlador
 			// ctrl->update();
 		
@@ -122,7 +120,7 @@ unsigned int getNumberOfRobots()
 	FILE* fp;
 
 	/*Open the commando for reading*/
-	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'robot'","r");
+	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'cmd_vel'","r");
 
 	/*Read the output*/
 	fgets(robotsChar, sizeof(robotsChar), fp);
