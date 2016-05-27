@@ -11,6 +11,11 @@
  * Controller implementation
  */
 
+void Controller::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
+{
+	*myData = *odom;	//almaceno en la variable correspondiente los ultimos valores recibidos
+}
+
 /*--------------------------- Constructor -----------------------------------
  *	segun la cantidad de comportamientos solicitados en la variable behaviors
  *	inicializa el vector de comportamientos steering_behavior* behaviors[] 
@@ -26,45 +31,69 @@ Controller::Controller(unsigned int id)
 
 	robotId = id;
 
+	//*****************//
+	//Creacion del Nodo//
+	//*****************//
+
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
 	ros::M_string remappingsArgs;
 	remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
-
 	//generar el nombre del nodo con el robotId
 	std::stringstream name;
 	name << "controller_" << robotId;
-
 	//inicializa el nodo
 	ros::init(remappingsArgs, name.str());
-
 	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	rosNode = new ros::NodeHandle;
 
+	//*************************************//
+	//Suscripcion y Publicaciones en Topics//
+	//*************************************//
 
 	//generar el nombre del topic a partir del robotId
-	std::stringstream pubtopic;
-	pubtopic << "/robot_" << robotId << "/cmd_vel";
 
+	if (!imAlone())
+	{
+		pretopicname << "/robot_" << robotId ;
+	}
+	std::stringstream pubtopicname ;
+	pubtopicname << pretopicname.str() << "/cmd_vel" ;
 	//Crear el publicador y apuntarlo con la variable de la clase
 	ctrlPublisher = new ros::Publisher;
-	*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopic.str(), 100000);
+	*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
+
+	std::stringstream sustopicname ;
+	sustopicname << pretopicname.str() << "/odom" ;
+
+	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+	odomSubscriber = new ros::Subscriber;
+	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Controller::odomCallback,this);
+	
+	myData = new nav_msgs::Odometry;
+
+	//************************************//
+	//Instanciacion de los comportamientos//
+	//************************************//
 
 	//INSTANCIAR LOS BEHAVIORS --->>> FACTORY
 	
 	unsigned int laserId = 0;
-
-	// cout << "instanciando WallAvoidance de robot " << robotId << " laserId " << laserId << endl; 
-	behavior1 = new WallAvoidance(robotId);
+	
+	// Test solo Seek
 	geometry_msgs::Pose target;
-	target.position.x = -4;
-	target.position.y = 36;
-	behavior2 = new Seek (target,robotId);
+	target.position.x = 6;
+	target.position.y = 2;
+	behaviortest = new Seek(target,robotId,pretopicname.str());
+	
+	// Test solo obstacle avoidance
+	// behaviortest = new ObstacleAvoidance(robotId,pretopicname.str());
 }
 
 Controller::~Controller() {
 	delete rosNode;
 	delete ctrlPublisher;
-
+	delete odomSubscriber;
+	delete myData;
 	//LIBERAR LOS BEHAVIORS
 
 }
@@ -77,14 +106,38 @@ Controller::~Controller() {
 
 void Controller::update() 
 {
-	behavior1->update();
-	//behavior2->update();
-	myTwist = behavior2->getDesiredTwist();
-	// cout << "twist " << robotId << " : " << myTwist.linear.x << " " << myTwist.angular.z << endl;
-	//cout << "Twist " << myTwist << endl ;
-	//Valor por default para mostrar
-    //myTwist.linear.x = 0.5;
-    //myTwist.angular.z = 0.5;
+	//Velocidad Linear
+    myTwist.linear.x = 0.1;
+	//Velocidad Angular
+	myTwist.angular.z =  behaviortest->getDesiredW() - myData->pose.pose.orientation.z;
+
+	if (myTwist.angular.z > 1)
+	{	
+		//giro hacia la izq z negativo
+		myTwist.angular.z = 2 - myTwist.angular.z;	//es la diferencia de orientacion real
+		myTwist.angular.z = -myTwist.angular.z;	//el segundo argumento es negativo para que gire hacia la izquierda
+	}
 
     ctrlPublisher->publish(myTwist);
+}
+
+int Controller::imAlone(){
+	char robotsChar[10];
+
+	FILE* fp;
+
+	/*Open the commando for reading*/
+	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'cmd_vel'","r");
+
+	/*Read the output*/
+	fgets(robotsChar, sizeof(robotsChar), fp);
+
+	if (atoi(robotsChar)>1)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }

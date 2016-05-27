@@ -28,8 +28,6 @@ unsigned int getNumberOfRobots();
 
 int main(int argc, char **argv)
 {
-	//variable de prueba
-	int prueba = 0;
 
 	//Inicializa el nodo de ros
 
@@ -37,29 +35,9 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(10);
 
+	unsigned int robots;
 
-	if (prueba==1)
-	{
-	//TESTING PUBLISH
-
-	ros::Publisher test = n.advertise<geometry_msgs::Twist>("/robot_0/cmd_vel",1000);
-
-	geometry_msgs::Twist twistTest;
-
-	twistTest.linear.x=1.0;
-
-		while(ros::ok())
-		{
-			test.publish(twistTest);		
-			ros::spinOnce();
-			loop_rate.sleep(); //sleep por el resto del ciclo
-		}
-	}
-	else
-	{
-		unsigned int robots;
-
-		robots = getNumberOfRobots();
+	robots = getNumberOfRobots();
 
 	/*	TODO
 
@@ -79,36 +57,27 @@ int main(int argc, char **argv)
 		//instanciar Factory
 	*/
 
-		//controlador para cada robot
-		Controller* ctrls[robots];
-		// instanciar los controladores
+	//controlador para cada robot
+	Controller* ctrls[robots];
+	// instanciar los controladores
+	for (int i = 0; i < robots; ++i)
+	{
+		//intanciar el control para cada robot.
+		ctrls[i] = new Controller(i);
+		//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
+	}
+
+	//rutina de trabajo
+
+	while(ros::ok())
+	{
+		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
 		for (int i = 0; i < robots; ++i)
 		{
-			//intanciar el control para cada robot.
-			ctrls[i] = new Controller(i);
-
-			//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
+			ctrls[i]->update();
 		}
-
-		//prueba con un solo controlador
-		// Controller* ctrl;
-		// ctrl = new Controller(0);
-		
-		
-		//rutina de trabajo
-
-		while(ros::ok()){
-			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-			for (int i = 0; i < robots; ++i)
-			{
-				ctrls[i]->update();
-			}
-			//prueba con un solo controlador
-			// ctrl->update();
-		
-			ros::spinOnce();
-			loop_rate.sleep(); //sleep por el resto del ciclo
-		}
+		ros::spinOnce();
+		loop_rate.sleep(); //sleep por el resto del ciclo
 	}
 	return 0;
 }

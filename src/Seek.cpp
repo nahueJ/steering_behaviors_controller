@@ -13,10 +13,9 @@
  * The seek steering behavior returns a force that directs an agent toward a
  * target position.
  */
-void Seek::poseCallback(const nav_msgs::Odometry::ConstPtr& odom)
+void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
 	*myData = *odom;		//almaceno en la variable correspondiente los ultimos valores recibidos
-	//cout << myData.pose.pose.position.x << " " << myData.pose.pose.position.y << endl;
 	update();
 }
 
@@ -25,7 +24,7 @@ void Seek::poseCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param id
  * @param weight
  */
-Seek::Seek(geometry_msgs::Pose objective, unsigned int id) : SteeringBehavior(id)
+Seek::Seek(geometry_msgs::Pose objective, unsigned int id, std::string pre) : SteeringBehavior(id,pre)
 {
 	target = objective;
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
@@ -49,11 +48,13 @@ Seek::Seek(geometry_msgs::Pose objective, unsigned int id) : SteeringBehavior(id
 
 	/* Subscripcion al topic base_pose_ground_truth de este robot*/
 	//generar el nombre del topic a partir del robotId
-	std::stringstream basetopic;
-	basetopic << "/robot_" << robotId << "/base_pose_ground_truth" ;
+	std::stringstream topicname;
+
+	topicname << pretopicname << "/odom" ;
+
 	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	odomSubscriber = new ros::Subscriber;
-	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(basetopic.str(), 1000, &Seek::poseCallback,this);
+	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
 
 	myData = new nav_msgs::Odometry;
 }
@@ -69,42 +70,29 @@ Seek::~Seek() {
  * @param myPose
  */
 void Seek::update() {
-	
-	dx = target.position.x - myData->pose.pose.position.x;
-	dy = target.position.y - myData->pose.pose.position.y;
+
+	errorx = target.position.x - myData->pose.pose.position.x;
+	errory = target.position.y - myData->pose.pose.position.y;
 
 	//calcular la orientacion ideal!
-	float wi = wIdeal(dx,dy);
-	dw = wi - myData->pose.pose.orientation.w;
-	
+	float wi = wIdeal(errorx,errory);
 
-	if (dw > 1)
-	{	
-		//giro hacia la izq z negativo
-		dw = 2 - dw;	//es la diferencia de orientacion real
-		setDesiredTwist(1-dw,-dw);	//el segundo argumento es negativo para que gire hacia la izquierda
-	
-	}
-	else if (dw==0.0)
-	{
-		setDesiredTwist(1,0);	//ya esta alineado, solo avanzo
-	}
-	else
-	{
-		// giro hacia la derecha z positivo
-		setDesiredTwist(1-dw,dw);
-	}
-	cout << "Update de " << robotId << endl ; 
-	cout << "wideal " << wi << " dx, dy, dw " << dx << " " << dy << " " << dw << endl ;
+	// cout << "Received data: " << endl;
+	// cout << "x = " << myData->pose.pose.position.x << endl;
+	// cout << "y = " << myData->pose.pose.position.y << endl;
+	// cout << "w = " << myData->pose.pose.orientation.z << endl ;
+	// cout << "Desired data: " << endl;
+	// cout << "x = " << target.position.x << endl;
+	// cout << "y = " << target.position.y << endl;
+	// cout << "w = " << wi << endl ;
 
+	setDesiredW(wi);
 
 }
 
 float Seek::wIdeal( float dx, float dy)
 {
-	float angulo = atan2(dy,dx) * 180 / PI;
-	cout << angulo << endl ;
-	float wIdeal = 1 - (2 * angulo / 360);	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
-	cout << wIdeal << endl ;
+	float angulo = (atan2(dy,dx) * 180 / PI) + 180;
+	float wIdeal = (2 * angulo / 360) -1;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
 	return wIdeal;
 }

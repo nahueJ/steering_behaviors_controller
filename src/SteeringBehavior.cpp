@@ -16,24 +16,23 @@
  * @param unasigned int id
  * @param float weight
  */
-SteeringBehavior::SteeringBehavior(unsigned int id) : robotId( id )
+SteeringBehavior::SteeringBehavior(unsigned int id, std::string pre) : robotId( id ), pretopicname(pre)
 {
-	
+
 }
 
 SteeringBehavior::~SteeringBehavior() {
 
 }
 
-geometry_msgs::Twist SteeringBehavior::getDesiredTwist() const
+float SteeringBehavior::getDesiredW() const
 {
-	return desiredTwist;
+	return desiredW;
 }
 
-void SteeringBehavior::setDesiredTwist( float x,  float z) 
+void SteeringBehavior::setDesiredW(float z) 
 {
-	desiredTwist.linear.x = ( x <= 1.0f ) ? x : 1.0f;
-	desiredTwist.angular.z = ( abs(z) <= 1.0 ) ? z : (z/abs(z));
+	desiredW = ( abs(z) <= 1.0 ) ? z : (z/abs(z));
 }
 
 void SteeringBehavior::update(){

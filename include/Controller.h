@@ -18,7 +18,7 @@
 #include "SteeringBehavior.h"
 
 //para test-->> pasa a factory
-#include "WallAvoidance.h"
+#include "ObstacleAvoidance.h"
 #include "Seek.h"
 
 #include <string>
@@ -43,6 +43,8 @@ public:
 	~Controller();
 	
 	void update();
+
+	int imAlone();
 	
 private: 
 	//Id del robot del controlador
@@ -50,18 +52,21 @@ private:
 
 	//Variables para publicar por un topic
 	ros::NodeHandle* rosNode;
+	ros::Subscriber* odomSubscriber;
 	ros::Publisher* ctrlPublisher;
 	//ros::Subscriber* ctrlSubscriber;
-
-	std::vector<SteeringBehavior*> behaviors;
+	std::stringstream pretopicname;
+	//std::vector<SteeringBehavior*> behaviors;
 	//para test
-	SteeringBehavior* behavior1;
-	SteeringBehavior* behavior2;
-
-	//TODO AGREGAR VECTOR O ARREGLO CON LOS PESOS CORRESPONDIENTES
+	SteeringBehavior* behaviortest;
 
 	geometry_msgs::Pose myPosition;
 	geometry_msgs::Twist myTwist;
+
+	//Funciones de Callback para las suscripciones al odometro 
+	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
+
+	nav_msgs::Odometry*	myData;
 	
 };
 

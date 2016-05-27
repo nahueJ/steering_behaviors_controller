@@ -9,7 +9,8 @@
 #define _STEERINGBEHAVIOR_H
 
 #include "ros/ros.h"
- #include <iostream>
+#include <string>
+#include <iostream>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -20,7 +21,7 @@ using std::endl;
 //#include "Arrive.h"
 //#include "WallAvoidance.h"
 
-#include <geometry_msgs/Twist.h>
+//#include <geometry_msgs/Twist.h>
  
 class SteeringBehavior {
 public: 
@@ -29,21 +30,23 @@ public:
 	 * @param unasigned int id
 	 * @param float weight
 	 */
-	SteeringBehavior(unsigned int id);
+	SteeringBehavior(unsigned int id, std::string pre);
 	
 	~SteeringBehavior();
 	
 	virtual void update() ; // función virtual pura
 	
-	geometry_msgs::Twist getDesiredTwist() const; 
+	float getDesiredW() const; 
 	
-	void setDesiredTwist( float x, float z);
+	void setDesiredW(float z);
 
 protected: 
 
 	unsigned int robotId;
 
-	geometry_msgs::Twist desiredTwist;
+	std::string pretopicname;
+
+	double desiredW;
 };
 
 #endif //_STEERINGBEHAVIOR_H

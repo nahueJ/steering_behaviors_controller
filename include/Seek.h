@@ -33,7 +33,7 @@ public:
 	 * @param id
 	 * @param weight
 	 */
-	Seek(geometry_msgs::Pose objective, unsigned int id);
+	Seek(geometry_msgs::Pose objective, unsigned int id, std::string pre);
 	
 	~Seek();
 	
@@ -54,15 +54,15 @@ private:
 	std::vector<ros::Subscriber*> sensorSubscriber;
 
 	//Funciones de Callback para las suscripciones a los topic de la posicion)
-	void poseCallback(const nav_msgs::Odometry::ConstPtr& odom);
+	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
 	//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
 	nav_msgs::Odometry*	myData;
 
 	//distancia hasta el objetivo
-	float dx;
-	float dy;
-	float dw;
+	float errorx;
+	float errory;
+	float errorw;
 
 	float wIdeal( float, float);
 
