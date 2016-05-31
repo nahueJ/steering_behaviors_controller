@@ -50,7 +50,7 @@ Seek::Seek(geometry_msgs::Pose objective, unsigned int id, std::string pre) : St
 	//generar el nombre del topic a partir del robotId
 	std::stringstream topicname;
 
-	topicname << pretopicname << "/odom" ;
+	topicname << pretopicname << "odom" ;
 
 	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	odomSubscriber = new ros::Subscriber;
@@ -76,15 +76,6 @@ void Seek::update() {
 
 	//calcular la orientacion ideal!
 	float wi = wIdeal(errorx,errory);
-
-	// cout << "Received data: " << endl;
-	// cout << "x = " << myData->pose.pose.position.x << endl;
-	// cout << "y = " << myData->pose.pose.position.y << endl;
-	// cout << "w = " << myData->pose.pose.orientation.z << endl ;
-	// cout << "Desired data: " << endl;
-	// cout << "x = " << target.position.x << endl;
-	// cout << "y = " << target.position.y << endl;
-	// cout << "w = " << wi << endl ;
 
 	setDesiredW(wi);
 

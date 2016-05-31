@@ -19,11 +19,12 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 	sensor_msgs::LaserScan tmpLaser = *scan;
 	std::string tmpFrameId = tmpLaser.header.frame_id;	//separo el miembro frame_id para analizar de que laser viene la medicion
 	int laserNumber = atoi(&tmpFrameId[tmpFrameId.size()-1]); //extraigo el ultimo caracter del frame_id que indica el id del laser
-//	*lasers[laserNumber]=scan;	//almaceno la medicion en el lugar que le corresponde en el arrays con las ultimas mediciones recibidas de los laseres
+
 	for (int i = 0; i < 3; ++i)
 	{
 		lasers[laserNumber,i]=scan->ranges[i];
 	}
+	//calcMin(lasers);
 }
 
 void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
@@ -63,31 +64,37 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre) : Steerin
 	/* Subscripcion al topic odometro de este robot*/
 	//generar el nombre del topic a partir del robotId
 	std::stringstream odomtopicname;
-	odomtopicname << pretopicname << "/odom" ;
+	odomtopicname << pretopicname << "odom" ;
 	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	odomSubscriber = new ros::Subscriber;
 	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(odomtopicname.str(), 1000, &ObstacleAvoidance::odomCallback,this);
+	
+	myData = new nav_msgs::Odometry;
 
 	/* Subscripcion a los topic de los laser*/
-	std::stringstream lasertopicname;
-	lasertopicname << pretopicname ;
 	//obtener la cantidad de lasers
 	nroLasers = getNumberOfLasers(robotId);
+
+	//inicializo el puntero con las variables para almacenar los valores de los lasers
+	lasers = new float[nroLasers,3];	//por construcción o representación los lasers devuelven 3 valores
+
+	std::stringstream* lasertopicname;
+	
 	//suscripcion al topic de cada uno de los lasers
 	for (int i = 0; i < nroLasers; ++i)
 	{
 		//generar el nombre del topic a partir del robotId
-		lasertopicname << "/base_scan_" << i;
+		lasertopicname = new std::stringstream ;
+		*lasertopicname << pretopicname << "base_scan_" << i;
+		cout << lasertopicname->str() << endl;
 		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 		ros::Subscriber* tmpSubscriber;
 		tmpSubscriber = new ros::Subscriber;
-		*tmpSubscriber = (*rosNode).subscribe<sensor_msgs::LaserScan>(lasertopicname.str(), 1000, &ObstacleAvoidance::sensorCallback,this);
+		*tmpSubscriber = (*rosNode).subscribe<sensor_msgs::LaserScan>(lasertopicname->str(), 1000, &ObstacleAvoidance::sensorCallback,this);
 		//lo añado a mi vector de suscripciones a lasers
 		sensorSubscriber.push_back(tmpSubscriber);
+		delete lasertopicname;
 	}
-	//inicializo el puntero con las variables para almacenar los valores de los lasers
-//	lasers = new sensor_msgs::LaserScan::ConstPtr[nroLasers];
-	lasers = new float[nroLasers,3];	//por construcción o representación los lasers devuelven 3 valores
 }
 
 ObstacleAvoidance::~ObstacleAvoidance() {
@@ -109,59 +116,17 @@ ObstacleAvoidance::~ObstacleAvoidance() {
  * @param myTwist
  */
 void ObstacleAvoidance::update() {
-	//calculo del twist deseado para evitar chocar paredes
-	//revisar entre los 3 laseres cual tiene el mínimo (dist mas proxima a una pared)
-	int imin = 0;	//coord i de la menor medida en el arreglo de medidas
-	int jmin = 1;	//coord j de la menor medida en el arreglo de medidas
-
+	//calculo del twist deseado para evitar chocar
 	for (int i = 0; i < nroLasers; ++i)
 	{
-		for (int j = 0; j < 3; ++j)	//cada laser tiene 3 rayos
+		for (int j = 0; j < 3; ++j)
 		{
-			if (lasers[imin,jmin] > lasers[i,j])
-			{
-				imin = i;
-				jmin = j;
-			}
-		}
-		
-	}	
-
-	float tmpX;
-	float tmpZ;
-	float menorMedida = lasers[imin,jmin];
-	
-	if (menorMedida <= distMax)
-	{
-		tmpX = ( 1.1f * menorMedida / 10.0f) - 0.1f;	//da 0 para dist=0.1 y da 1 para dist=10
-		if (tmpX < 0.0f)
-		{
-			tmpZ = 1.0f;
-		}
-		else{
-			tmpZ = 1.1f-tmpX;			
-		}
-
-		//verificar la dirección del giro
-		if ((imin == 2) | ((imin == 0) ^ (lasers[0,0]>lasers[0,2])) )
-		{
-			tmpZ = -tmpZ;
-		}
-
-		//si estoy muy cerca de la pared es mejor retroceder y girar en el otro sentido
-		if (menorMedida < distMin)
-		{
-			tmpX = -0.5;	//al estar tan cerca de la pared tmpX tiene un valor muy pequeno, entonces lo aumento arbitrariamente para retroceder
-			tmpZ = -tmpZ;
+			cout << "lasers[" << i << "," << j << "]= " << lasers[i,j] << endl ;
 		}
 	}
-	else if (menorMedida > distMax)	//EN ESTA SITUACION SE DEBERIA MANDAR UN IGNORENME
-	{
-		tmpX = 0.0f;		
-		tmpZ = 0.0f;
-	}
 
-	setDesiredW(tmpZ);
+	setDesiredW(myData->pose.pose.orientation.z);
+
 	//en el laser del minimo calcular junto con el del medio el angulo de la pared
 	//con eso puedo establecer dist y angulo de impacto
 	//angulo de impacto saco la normal
@@ -179,7 +144,7 @@ unsigned int ObstacleAvoidance::getNumberOfLasers(unsigned int id)
 
 	//generar el argumento para la busqueda de topics de lasers
 	std::stringstream sscommand;
-	sscommand << "/opt/ros/indigo/bin/rostopic list | /bin/grep -c '/robot_" << id << "/base_scan'" ;
+	sscommand << "/opt/ros/indigo/bin/rostopic list | /bin/grep -c '" << pretopicname << "base_scan'" ;
 	const std::string tmp = sscommand.str();
 	const char* command = tmp.c_str();
 	/*Open the commando for reading*/
@@ -189,4 +154,19 @@ unsigned int ObstacleAvoidance::getNumberOfLasers(unsigned int id)
 	fgets(robotsChar, sizeof(robotsChar), fp);
 
 	return atoi(robotsChar);
+}
+
+/**
+ * gets the last data and actualizes the desiredTwist
+ * @param myTwist
+ */
+void ObstacleAvoidance::calcMin(float matrix[][3]) {
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			cout << matrix[i,j] << " " ;
+		}
+		cout << endl;
+	}
 }

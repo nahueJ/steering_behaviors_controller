@@ -10,7 +10,7 @@
 //------------------------------------------------------------------------
 
 #include "ros/ros.h"
-#include "../include/Controller.h"
+#include "../include/Agent.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -58,12 +58,12 @@ int main(int argc, char **argv)
 	*/
 
 	//controlador para cada robot
-	Controller* ctrls[robots];
+	Agent* agents[robots];
 	// instanciar los controladores
 	for (int i = 0; i < robots; ++i)
 	{
 		//intanciar el control para cada robot.
-		ctrls[i] = new Controller(i);
+		agents[i] = new Agent(i);
 		//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
 	}
 
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
 		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
 		for (int i = 0; i < robots; ++i)
 		{
-			ctrls[i]->update();
+			agents[i]->update();
 		}
 		ros::spinOnce();
 		loop_rate.sleep(); //sleep por el resto del ciclo
