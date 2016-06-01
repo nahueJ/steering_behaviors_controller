@@ -42,7 +42,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 		//Funcion para obtener la cantidad de lasers que posee el robot
 		unsigned int getNumberOfLasers(unsigned int id);
-		void calcMin(float matrix[]);
+		float calcMin(float matrix[],int* index);
 
 		//Funciones de Callback para las suscripciones a los topic del laser y del odometro (posicion y twist)
 		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
@@ -53,6 +53,14 @@ class ObstacleAvoidance : public SteeringBehavior {
 		float* laserCentral;
 		float* laserIzquierda;
 		float* laserDerecha;
+
+		float minCentral;
+		float minIzquierda;
+		float minDerecha;
+
+		int minCentralIndex;
+		int minIzquierdaIndex;
+		int minDerechaIndex;
 		
 		nav_msgs::Odometry*	myData;
 

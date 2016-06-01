@@ -26,8 +26,7 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 		{
 			laserCentral[i]=scan->ranges[i];
 		}
-		cout << "centro " ;
-		calcMin(laserCentral);
+		minCentral = calcMin(laserCentral,&minCentralIndex);
 	}
 	else if (laserNumber==1)
 	{
@@ -35,8 +34,7 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 		{
 			laserDerecha[i]=scan->ranges[i];
 		}
-		cout << "Izquierda " ;
-		calcMin(laserIzquierda);		
+		minIzquierda = calcMin(laserIzquierda,&minIzquierdaIndex);		
 	}
 	else if (laserNumber==2)
 	{
@@ -44,10 +42,8 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 		{
 			laserIzquierda[i]=scan->ranges[i];
 		}
-		cout << "derecha " ;
-		calcMin(laserDerecha);
+		minDerecha = calcMin(laserDerecha,&minDerechaIndex);
 	}
-	//calcMin(lasers);
 }
 
 void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
@@ -61,8 +57,17 @@ void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  */
 ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre) : SteeringBehavior(id, pre)
 {	
+	//inicializar algunos valores
 	distMax = 15.0 ;
 	distMin = 0.5 ;
+	
+	minCentral = 0.0;
+	minIzquierda = 0.0;
+	minDerecha = 0.0;
+
+	minCentralIndex = 0;
+	minIzquierdaIndex = 0;
+	minDerechaIndex = 0;
 
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
 	ros::M_string remappingsArgs;
@@ -187,10 +192,14 @@ unsigned int ObstacleAvoidance::getNumberOfLasers(unsigned int id)
  * gets the last data and actualizes the desiredTwist
  * @param myTwist
  */
-void ObstacleAvoidance::calcMin(float matrix[]) {
-	for (int i = 0; i < haz; ++i)
+float ObstacleAvoidance::calcMin(float matrix[], int* index) {
+	*index = 0;
+	for (int i = 1; i < haz; ++i)
 	{
-		cout << matrix[i] << " " ;
+		if (matrix[*index] >= matrix[i])
+		{
+			*index = i ;
+		}
 	}
-	cout << endl;
+	return matrix[*index];
 }
