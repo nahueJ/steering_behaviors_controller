@@ -20,9 +20,32 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 	std::string tmpFrameId = tmpLaser.header.frame_id;	//separo el miembro frame_id para analizar de que laser viene la medicion
 	int laserNumber = atoi(&tmpFrameId[tmpFrameId.size()-1]); //extraigo el ultimo caracter del frame_id que indica el id del laser
 
-	for (int i = 0; i < 3; ++i)
+	if(laserNumber==0)
 	{
-		lasers[laserNumber,i]=scan->ranges[i];
+		for (int i = 0; i < haz; ++i)
+		{
+			laserCentral[i]=scan->ranges[i];
+		}
+		cout << "centro " ;
+		calcMin(laserCentral);
+	}
+	else if (laserNumber==1)
+	{
+		for (int i = 0; i < haz; ++i)
+		{
+			laserDerecha[i]=scan->ranges[i];
+		}
+		cout << "Izquierda " ;
+		calcMin(laserIzquierda);		
+	}
+	else if (laserNumber==2)
+	{
+		for (int i = 0; i < haz; ++i)
+		{
+			laserIzquierda[i]=scan->ranges[i];
+		}
+		cout << "derecha " ;
+		calcMin(laserDerecha);
 	}
 	//calcMin(lasers);
 }
@@ -30,7 +53,6 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
 	*myData = *odom;		//almaceno en la variable correspondiente los ultimos valores recibidos
-	update();
 }
 
 /**			CONSTRUCTOR
@@ -75,8 +97,12 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre) : Steerin
 	//obtener la cantidad de lasers
 	nroLasers = getNumberOfLasers(robotId);
 
+	haz = 3;		//por construcción o representación los lasers devuelven 3 valores
+
 	//inicializo el puntero con las variables para almacenar los valores de los lasers
-	lasers = new float[nroLasers,3];	//por construcción o representación los lasers devuelven 3 valores
+	laserCentral = new float[haz];	//almacena base_scan_0
+	laserIzquierda = new float[haz];	//almacena base_scan_1
+	laserDerecha = new float[haz];	//almacena base_scan_2
 
 	std::stringstream* lasertopicname;
 	
@@ -106,7 +132,9 @@ ObstacleAvoidance::~ObstacleAvoidance() {
 		delete tmpPtr;
 	}
 	//delete sensorSubscriber;	//una manera rapida de liberar vectores?
-	delete [] lasers;
+	delete [] laserCentral;
+	delete [] laserIzquierda;
+	delete [] laserDerecha;
 	delete odomSubscriber;
 }
 
@@ -117,13 +145,6 @@ ObstacleAvoidance::~ObstacleAvoidance() {
  */
 void ObstacleAvoidance::update() {
 	//calculo del twist deseado para evitar chocar
-	for (int i = 0; i < nroLasers; ++i)
-	{
-		for (int j = 0; j < 3; ++j)
-		{
-			cout << "lasers[" << i << "," << j << "]= " << lasers[i,j] << endl ;
-		}
-	}
 
 	setDesiredW(myData->pose.pose.orientation.z);
 
@@ -131,6 +152,12 @@ void ObstacleAvoidance::update() {
 	//con eso puedo establecer dist y angulo de impacto
 	//angulo de impacto saco la normal
 	//con los datos de pose saco la dif de angulo entre el ideal y el real
+}
+
+float ObstacleAvoidance::getDesiredW()
+{
+	update();
+	return desiredW;
 }
 
 /**
@@ -160,13 +187,10 @@ unsigned int ObstacleAvoidance::getNumberOfLasers(unsigned int id)
  * gets the last data and actualizes the desiredTwist
  * @param myTwist
  */
-void ObstacleAvoidance::calcMin(float matrix[][3]) {
-	for (int i = 0; i < 3; ++i)
+void ObstacleAvoidance::calcMin(float matrix[]) {
+	for (int i = 0; i < haz; ++i)
 	{
-		for (int j = 0; j < 3; ++j)
-		{
-			cout << matrix[i,j] << " " ;
-		}
-		cout << endl;
+		cout << matrix[i] << " " ;
 	}
+	cout << endl;
 }

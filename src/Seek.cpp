@@ -16,7 +16,6 @@
 void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
 	*myData = *odom;		//almaceno en la variable correspondiente los ultimos valores recibidos
-	update();
 }
 
 /**
@@ -79,6 +78,12 @@ void Seek::update() {
 
 	setDesiredW(wi);
 
+}
+
+float Seek::getDesiredW() 
+{
+	update();
+	return desiredW;
 }
 
 float Seek::wIdeal( float dx, float dy)

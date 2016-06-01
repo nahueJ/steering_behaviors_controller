@@ -36,7 +36,7 @@ public:
 	
 	virtual void update() ; // función virtual pura
 	
-	float getDesiredW() const; 
+	virtual float getDesiredW(); 
 	
 	void setDesiredW(float z);
 

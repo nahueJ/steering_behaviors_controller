@@ -42,14 +42,18 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 		//Funcion para obtener la cantidad de lasers que posee el robot
 		unsigned int getNumberOfLasers(unsigned int id);
-		void calcMin(float matrix[][3]);
+		void calcMin(float matrix[]);
 
 		//Funciones de Callback para las suscripciones a los topic del laser y del odometro (posicion y twist)
 		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
 		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
 		//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
-		float* lasers;
+		int haz;
+		float* laserCentral;
+		float* laserIzquierda;
+		float* laserDerecha;
+		
 		nav_msgs::Odometry*	myData;
 
 		//distancia máxima a la que actua el comportamiento
@@ -70,6 +74,8 @@ class ObstacleAvoidance : public SteeringBehavior {
 		 * gets the last data and actualizes the desiredTwist
 		 */
 		virtual void update();
+
+		virtual float getDesiredW(); 
 
 };
 

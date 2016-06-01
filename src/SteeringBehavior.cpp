@@ -25,7 +25,7 @@ SteeringBehavior::~SteeringBehavior() {
 
 }
 
-float SteeringBehavior::getDesiredW() const
+float SteeringBehavior::getDesiredW() 
 {
 	return desiredW;
 }

@@ -43,7 +43,7 @@ public:
 	 */
 	virtual void update();
 
-	
+	virtual float getDesiredW(); 
 
 private: 
 	geometry_msgs::Pose target;
