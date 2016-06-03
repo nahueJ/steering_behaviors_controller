@@ -83,14 +83,14 @@ Agent::Agent(unsigned int id)
 	
 	unsigned int laserId = 0;
 	
-	// Test solo Seek
-	geometry_msgs::Pose target;
-	target.position.x = 10;
-	target.position.y = -4;
-	behaviortest = new Seek(target,robotId,pretopicname->str());
+	// // Test solo Seek
+	// geometry_msgs::Pose target;
+	// target.position.x = 10;
+	// target.position.y = -4;
+	// behaviortest = new Seek(target,robotId,pretopicname->str());
 	
 	// Test solo obstacle avoidance
-	// behaviortest = new ObstacleAvoidance(robotId,pretopicname->str());
+	behaviortest = new ObstacleAvoidance(robotId,pretopicname->str());
 }
 
 Agent::~Agent() {

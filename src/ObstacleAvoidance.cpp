@@ -44,6 +44,7 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 		}
 		minDerecha = calcMin(laserDerecha,&minDerechaIndex);
 	}
+	// cout << "minimoCentral= " << laserCentral[minCentralIndex] << endl << "minimoIzquierda= " << laserIzquierda[minIzquierdaIndex] << endl << "minimoDerecha= " << laserDerecha[minDerechaIndex] << endl ;
 }
 
 void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
@@ -152,7 +153,18 @@ void ObstacleAvoidance::update() {
 	//calculo del twist deseado para evitar chocar
 
 	setDesiredW(myData->pose.pose.orientation.z);
-
+	if ((minCentral <= minIzquierda) & (minCentral <= minDerecha))
+	{
+		cout << minCentral << " > " << minIzquierda << " y " << minDerecha << endl ;
+	}
+	else if ((minIzquierda <= minCentral) & (minIzquierda<= minDerecha))
+	{
+		cout << minIzquierda << " > " << minCentral << " y " << minDerecha << endl ;
+	}
+	else if ((minDerecha <= minCentral) & (minDerecha <= minIzquierda))
+	{
+		cout << minDerecha << " > " << minCentral << " y " << minIzquierda << endl ;
+	}
 	//en el laser del minimo calcular junto con el del medio el angulo de la pared
 	//con eso puedo establecer dist y angulo de impacto
 	//angulo de impacto saco la normal
