@@ -26,7 +26,7 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  *
  * @param unsigned int id
  ------------------------------------------------------------------------*/
-Agent::Agent(unsigned int id)
+Agent::Agent(unsigned int id, Factory* FactoryPtr)
 {
 
 	robotId = id;
@@ -78,19 +78,21 @@ Agent::Agent(unsigned int id)
 	//************************************//
 	//Instanciacion de los comportamientos//
 	//************************************//
+	
+	// Def del target: Test --> Pasar a un archivo de config
+	geometry_msgs::Pose target;
+	target.position.x = 10;
+	target.position.y = -4;
 
-	//INSTANCIAR LOS BEHAVIORS --->>> FACTORY
-	
-	unsigned int laserId = 0;
-	
-	// // Test solo Seek
-	// geometry_msgs::Pose target;
-	// target.position.x = 10;
-	// target.position.y = -4;
-	// behaviortest = new Seek(target,robotId,pretopicname->str());
-	
-	// Test solo obstacle avoidance
-	behaviortest = new ObstacleAvoidance(robotId,pretopicname->str());
+	behaviors = FactoryPtr->instanciateBehaviors(target,robotId,pretopicname->str());
+	int numberOfBehaviors = 2;
+	weights = new float[numberOfBehaviors];
+	// for (int i = 0; i < numberOfBehaviors; ++i)
+	// {
+	// 	weights[i] = 1.0/numberOfBehaviors;
+	// }
+	weights[0]=0.6;
+	weights[1]=0.4;
 }
 
 Agent::~Agent() {
@@ -102,18 +104,28 @@ Agent::~Agent() {
 
 }
 
-/*--------------------------- Update -----------------------------------
+/*--------------------------- Update ------------------------------------
  *	Hace update a los behavior q corresponden, luego sumar los twists de
  *	cada uno de ellos ponderadamente y comunicar eso a los actuadores del
  *	robot
- ------------------------------------------------------------------------*/
+ ----------------------------------------------------------------------*/
 
 void Agent::update() 
 {
+	float desiredW;
 	//Velocidad Linear
     myTwist.linear.x = 0.15;
 	//Velocidad Angular
-	myTwist.angular.z =  behaviortest->getDesiredW() - myData->pose.pose.orientation.z;
+	myTwist.angular.z = 0.0;
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		desiredW = behaviors[i]->getDesiredW();
+		if (desiredW != 2)
+		{
+			myTwist.angular.z +=  weights[i]*desiredW;
+		}
+	}
+	myTwist.angular.z -= myData->pose.pose.orientation.z;
 
 	if (myTwist.angular.z > 1.0)
 	{	

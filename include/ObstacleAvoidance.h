@@ -4,7 +4,6 @@
  * @version 1.0.0
  */
 
-
 #ifndef _OBSTACLEAVOIDANCE_H
 #define _OBSTACLEAVOIDANCE_H
 
@@ -42,7 +41,12 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 		//Funcion para obtener la cantidad de lasers que posee el robot
 		unsigned int getNumberOfLasers(unsigned int id);
+		//funcion que devuelve el menor elementro del arreglo del primer parametro
 		float calcMin(float matrix[],int* index);
+		//funcion para sumarle al primer parametro (orientación) una cantidad de grados dada por el segundo parametro hacia izq o derecha (1 o 0) dada por el tercer parametro
+		float addW(float,float,int);
+		//funcion para definir cual obstaculo es mas prioritario o si no hay ninguno prioritario
+		int minIndex(float,float,float);
 
 		//Funciones de Callback para las suscripciones a los topic del laser y del odometro (posicion y twist)
 		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
@@ -87,4 +91,4 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 };
 
-#endif //_WALLAVOIDANCE_H
+#endif //_OBSTACLEAVOIDANCE_H

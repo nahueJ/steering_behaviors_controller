@@ -7,7 +7,7 @@ define block model
 define topurg ranger  #definicion del sensor del laser
 (
   sensor( 			
-    range [ 0.0  30.0 ] #intervalo de distancias que mide
+    range [ 0.0  7.0 ] #intervalo de distancias que mide
     fov 10  #amplitud angular de la medicion en grados
     samples 3 #cantidad de muestras
   )#en resumen este laser toma 3 medidas, una a -5° otra a 0° y otra a 5° (10° de amplitud) y cada haz mide distancias entre 0 y 30 "metros" (en realidad depende de la resolucion que pongas *ver linea 50)

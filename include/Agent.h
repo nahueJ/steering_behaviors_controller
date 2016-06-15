@@ -17,17 +17,19 @@
 
 #include "SteeringBehavior.h"
 
-//para test-->> pasa a factory
-#include "ObstacleAvoidance.h"
-#include "Seek.h"
+// //para test-->> pasa a factory
+// #include "ObstacleAvoidance.h"
+// #include "Seek.h"
+
+#include "Factory.h"
 
 #include <string>
 #include <vector>
 #include <sstream>
-#include <iostream>
-using std::cout;
-using std::cin;
-using std::endl;
+// #include <iostream>
+// using std::cout;
+// using std::cin;
+// using std::endl;
 
 
 class Agent {
@@ -36,9 +38,7 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Agent(unsigned int id);
-
-	//Agent(i,behaviors[i], FactoryPtr);
+	Agent(unsigned int id, Factory* FactoryPtr);
 	
 	~Agent();
 	
@@ -56,10 +56,10 @@ private:
 	ros::Publisher* ctrlPublisher;
 	//ros::Subscriber* ctrlSubscriber;
 	std::stringstream* pretopicname;
-	//std::vector<SteeringBehavior*> behaviors;
-	//para test
-	SteeringBehavior* behaviortest;
-
+	
+	std::vector<SteeringBehavior*> behaviors;
+	float* weights;
+	
 	geometry_msgs::Pose myPosition;
 	geometry_msgs::Twist myTwist;
 

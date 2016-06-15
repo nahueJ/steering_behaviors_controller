@@ -4,7 +4,6 @@
  * @version 1.0.0
  */
 
-
 #include "ObstacleAvoidance.h"
 
 /**
@@ -32,17 +31,18 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 	{
 		for (int i = 0; i < haz; ++i)
 		{
-			laserDerecha[i]=scan->ranges[i];
+			laserIzquierda[i]=scan->ranges[i];
 		}
-		minIzquierda = calcMin(laserIzquierda,&minIzquierdaIndex);		
+		minDerecha = calcMin(laserDerecha,&minDerechaIndex);		
 	}
 	else if (laserNumber==2)
 	{
+
 		for (int i = 0; i < haz; ++i)
 		{
-			laserIzquierda[i]=scan->ranges[i];
+			laserDerecha[i]=scan->ranges[i];
 		}
-		minDerecha = calcMin(laserDerecha,&minDerechaIndex);
+		minIzquierda = calcMin(laserIzquierda,&minIzquierdaIndex);
 	}
 	// cout << "minimoCentral= " << laserCentral[minCentralIndex] << endl << "minimoIzquierda= " << laserIzquierda[minIzquierdaIndex] << endl << "minimoDerecha= " << laserDerecha[minDerechaIndex] << endl ;
 }
@@ -118,7 +118,6 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre) : Steerin
 		//generar el nombre del topic a partir del robotId
 		lasertopicname = new std::stringstream ;
 		*lasertopicname << pretopicname << "base_scan_" << i;
-		cout << lasertopicname->str() << endl;
 		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 		ros::Subscriber* tmpSubscriber;
 		tmpSubscriber = new ros::Subscriber;
@@ -129,7 +128,8 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre) : Steerin
 	}
 }
 
-ObstacleAvoidance::~ObstacleAvoidance() {
+ObstacleAvoidance::~ObstacleAvoidance() 
+{
 	delete rosNode;
 	while (!sensorSubscriber.empty())
 	{
@@ -149,22 +149,37 @@ ObstacleAvoidance::~ObstacleAvoidance() {
  * gets the last data and actualizes the desiredTwist
  * @param myTwist
  */
-void ObstacleAvoidance::update() {
-	//calculo del twist deseado para evitar chocar
+void ObstacleAvoidance::update() 
+{
+	float wideal;
+	int minLaser = minIndex(minCentral,minIzquierda,minDerecha);
+	if (minLaser==0)
+	{
+		//El obstaculo más cercano está al frente
+		if (laserCentral[1] < laserCentral[2])
+		{
+			wideal = addW(myData->pose.pose.orientation.z, 90.0, 0);
+		}
+		else {
+			wideal = addW(myData->pose.pose.orientation.z, 90.0, 1);	
+		}
+	}
+	if (minLaser==1)
+	{
+		//El obstaculo más cercano está a la Izquierda
+		wideal = addW(myData->pose.pose.orientation.z ,60.0, 1);
+	}
+	if (minLaser==2)
+	{
+		//El obstaculo más cercano está a la Derecha
+		wideal = addW(myData->pose.pose.orientation.z ,60.0, 0);
+	}
+	if (minLaser==-1)
+	{
+		wideal = 2;	//NULL no esta implementado, como 2 no es un valor válido estoy usando eso
+	}
+	setDesiredW(wideal);
 
-	setDesiredW(myData->pose.pose.orientation.z);
-	if ((minCentral <= minIzquierda) & (minCentral <= minDerecha))
-	{
-		cout << minCentral << " > " << minIzquierda << " y " << minDerecha << endl ;
-	}
-	else if ((minIzquierda <= minCentral) & (minIzquierda<= minDerecha))
-	{
-		cout << minIzquierda << " > " << minCentral << " y " << minDerecha << endl ;
-	}
-	else if ((minDerecha <= minCentral) & (minDerecha <= minIzquierda))
-	{
-		cout << minDerecha << " > " << minCentral << " y " << minIzquierda << endl ;
-	}
 	//en el laser del minimo calcular junto con el del medio el angulo de la pared
 	//con eso puedo establecer dist y angulo de impacto
 	//angulo de impacto saco la normal
@@ -214,4 +229,68 @@ float ObstacleAvoidance::calcMin(float matrix[], int* index) {
 		}
 	}
 	return matrix[*index];
+}
+
+/**
+ * funcion para sumarle al primer parametro (orientación) una cantidad de grados dada por el segundo parametro hacia izq o derecha (1 o 0) dada por el tercer parametro
+ * @param myTwist
+ */
+float ObstacleAvoidance::addW(float w, float angle, int direction)
+{
+	float wi;
+	float escala = 2.0/360;
+	if (direction == 0)
+	{
+		wi = w + (angle * escala);
+	}
+	else if (direction == 1)
+	{
+		wi = w - (angle * escala);
+	}
+
+	if (wi > 1.0)
+	{
+		wi -= 2.0;
+	}
+	else if (wi < -1.0)
+	{
+		wi += 2.0;
+	}
+
+	return wi;
+}
+
+/**
+ * funcion para sumarle al primer parametro (orientación) una cantidad de grados dada por el segundo parametro hacia izq o derecha (1 o 0) dada por el tercer parametro
+ * @param myTwist
+ */
+int ObstacleAvoidance::minIndex(float c, float l, float r) //c:minCentral l:minLeft r:minRight
+{
+	int min=-1;
+	if (l<c & l<r)
+	{
+		if (l<2.0)
+		{
+			min = 1;
+		}
+	}
+	else if (r<c & r<l)
+	{
+		if (r<2.0)
+		{
+			min = 2;
+		}
+	}
+	else if (c<l & c<r)
+	{
+		if (c<3.5)
+		{
+			min = 0;
+		}
+	}
+	else{
+		min = -1;
+	}
+	cout << min << endl;
+	return min;
 }

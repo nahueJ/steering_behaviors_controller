@@ -11,20 +11,36 @@
 
 #include "ros/ros.h"
 #include "../include/Agent.h"
+#include "../include/Factory.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 //solo para el test
 #include <geometry_msgs/Twist.h>
 
-#include <iostream>
-using std::cout;
-using std::cin;
-using std::endl;
+
+
+// #include <iostream>
+// using std::cout;
+// using std::cin;
+// using std::endl;
 
 #include <string>
 
-unsigned int getNumberOfRobots();
+unsigned int getNumberOfRobots()
+{
+	char robotsChar[10];
+
+	FILE* fp;
+
+	/*Open the commando for reading*/
+	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'cmd_vel'","r");
+
+	/*Read the output*/
+	fgets(robotsChar, sizeof(robotsChar), fp);
+
+	return atoi(robotsChar);
+}
 
 int main(int argc, char **argv)
 {
@@ -53,9 +69,9 @@ int main(int argc, char **argv)
 		}
 	*/
 
-	/*	TODO
-		//instanciar Factory
-	*/
+
+	Factory* FactoryPtr;
+	FactoryPtr = new Factory(); //pasar direccion de un archivo de conf?
 
 	//controlador para cada robot
 	Agent* agents[robots];
@@ -63,8 +79,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < robots; ++i)
 	{
 		//intanciar el control para cada robot.
-		agents[i] = new Agent(i);
-		//ctrls[i] = Controller(i,behaviors[i], FactoryPtr);  Arg: i para saber en que topic publicar y behaviors que representa los comport a activar en el ctrl y ptrFactory, puntero de la fabrica de behaviors
+		agents[i] = new Agent(i,FactoryPtr);
 	}
 
 	//rutina de trabajo
@@ -80,19 +95,4 @@ int main(int argc, char **argv)
 		loop_rate.sleep(); //sleep por el resto del ciclo
 	}
 	return 0;
-}
-
-unsigned int getNumberOfRobots()
-{
-	char robotsChar[10];
-
-	FILE* fp;
-
-	/*Open the commando for reading*/
-	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'cmd_vel'","r");
-
-	/*Read the output*/
-	fgets(robotsChar, sizeof(robotsChar), fp);
-
-	return atoi(robotsChar);
 }
