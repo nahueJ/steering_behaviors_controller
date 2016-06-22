@@ -7,10 +7,11 @@ define block model
 define topurg ranger  #definicion del sensor del laser
 (
   sensor( 			
-    range [ 0.0  7.0 ] #intervalo de distancias que mide
-    fov 10  #amplitud angular de la medicion en grados
-    samples 3 #cantidad de muestras
-  )#en resumen este laser toma 3 medidas, una a -5° otra a 0° y otra a 5° (10° de amplitud) y cada haz mide distancias entre 0 y 30 "metros" (en realidad depende de la resolucion que pongas *ver linea 50)
+    range [ 0.0  7.0 ]        #intervalo de distancias que mide
+    fov 10                    #amplitud angular de la medicion en grados
+    samples 3                 #cantidad de muestras
+  )
+  #en resumen este laser toma 3 medidas, una a -5° otra a 0° y otra a 5° (10° de amplitud) y cada haz mide distancias entre 0 y 30 "metros" (en realidad depende de la resolucion que pongas *ver linea 50)
 
   # generic model properties
   color "black"
@@ -24,9 +25,12 @@ define erratic position
   origin [-0.05 0 0 0]
   gui_nose 1
   drive "diff"
-  topurg(pose [ 0.125 0.000 -0.100 0.000 ]) #posicion (xyx) y orientacion del emisor de laser
-  topurg(pose [ 0.125 0.175 -0.100 45.000 ])
-  topurg(pose [ 0.125 -0.175 -0.100 315.000 ])
+
+  #posicion (xyx) y orientacion del emisor de laser
+  
+  topurg(pose [ 0.125 0.000 -0.100 0.000 ])         #este toma el nombre de laser 0
+  topurg(pose [ 0.125 0.175 -0.100 45.000 ])        #este toma el nombre de laser 1
+  topurg(pose [ 0.125 -0.175 -0.100 315.000 ])      #este toma el nombre de laser 2
 )
 
 define floorplan model
@@ -43,21 +47,21 @@ define floorplan model
   gui_outline 0
   gripper_return 0
   fiducial_return 0
-  laser_return 1
+  #laser_return 1
 )
 
 # set the resolution of the underlying raytrace model in meters
-resolution 0.02
+resolution 0.01   #resolucion del mapa, influye en la percepción de los lasers
 
-interval_sim 100  # simulation timestep in milliseconds
+interval_sim 50  # simulation timestep in milliseconds
 
 
 window
 ( 
-  size [ 745.000 448.000 ] 
+  size [ 500.000 500.000 ] 
 
-  rotate [ 0.000 -1.560 ]
-  scale 28.806 
+  rotate [ 0.000 0.000 ]
+  scale 25.000
 )
 
 # load an environment bitmap
@@ -66,8 +70,8 @@ floorplan
   name "willow"
   #ROOMBA STAGE
   bitmap "roomba-stage.png"  #imagen del mapa!
-  size [27.0 29.35 0.5]
-  pose [ -15.350 27.000 0 90.000 ]
+  size [17.5 20.0 0.5]     # tamano de la imagen en el simulador
+  pose [ 0.000 0.000 0 90.000 ]     #ubicacion del mapa en el simulador
   
   #WILLOW
   #bitmap "willow-full.pgm"  #imagen del mapa!
@@ -76,7 +80,7 @@ floorplan
 )
 
 # throw in two robots
-erratic( pose [ -11.277 23.266 0 180.000 ] name "era" color "blue")
+erratic( pose [ -8.000 -7.500 0 0.000 ] name "era" color "blue")  # posicion del robot en el mapa
 #erratic( pose [ -13.277 22.266 0 180.000 ] name "era2" color "blue")
 #erratic( pose [ -13.277 23.266 0 180.000 ] name "era3" color "blue")
 #erratic( pose [ -11.277 22.266 0 180.000 ] name "era4" color "blue")

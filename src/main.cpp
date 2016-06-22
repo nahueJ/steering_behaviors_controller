@@ -86,6 +86,7 @@ int main(int argc, char **argv)
 
 	while(ros::ok())
 	{
+		system("clear"); //limpia la consola
 		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
 		for (int i = 0; i < robots; ++i)
 		{

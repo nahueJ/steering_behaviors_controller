@@ -81,18 +81,21 @@ Agent::Agent(unsigned int id, Factory* FactoryPtr)
 	
 	// Def del target: Test --> Pasar a un archivo de config
 	geometry_msgs::Pose target;
-	target.position.x = 10;
-	target.position.y = -4;
+	target.position.x = 15;
+	target.position.y = 14;
 
 	behaviors = FactoryPtr->instanciateBehaviors(target,robotId,pretopicname->str());
 	int numberOfBehaviors = 2;
-	weights = new float[numberOfBehaviors];
+	/*weights = new float[numberOfBehaviors];
 	// for (int i = 0; i < numberOfBehaviors; ++i)
 	// {
 	// 	weights[i] = 1.0/numberOfBehaviors;
 	// }
-	weights[0]=0.6;
-	weights[1]=0.4;
+	weights[0]=1;
+	weights[1]=1;*/
+	seekWeight = 0.75;
+	ObsAvWeight = 1;
+
 }
 
 Agent::~Agent() {
@@ -114,27 +117,52 @@ void Agent::update()
 {
 	float desiredW;
 	//Velocidad Linear
-    myTwist.linear.x = 0.15;
+    myTwist.linear.x = 0.25;
 	//Velocidad Angular
 	myTwist.angular.z = 0.0;
+
+	cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
+
+	float seekDelta;
+	float obsAvDelta;
+	float seekDeltaPond;
+	float obsAvDeltaPond;
+
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
 		desiredW = behaviors[i]->getDesiredW();
-		if (desiredW != 2)
+		if (i==0)
 		{
-			myTwist.angular.z +=  weights[i]*desiredW;
+			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
+			seekDelta = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 		}
+		else if (i==1)
+		{
+			if (desiredW == -1.0)
+			{
+				obsAvDelta = 0;													//obstacle avoidance no percibe un obstaculo no modifica el angulo actual
+				cout << "NO OBSTACLE" << endl << endl << endl;
+			}
+			else 
+			{
+				cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
+				obsAvDelta = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek										
+			}
+		}
+		cout << endl;
 	}
-	myTwist.angular.z -= myData->pose.pose.orientation.z;
 
-	if (myTwist.angular.z > 1.0)
-	{	
-		//giro hacia la izq z negativo
-		myTwist.angular.z = 2.0 - myTwist.angular.z;	//es la diferencia de orientacion real
-		myTwist.angular.z = -myTwist.angular.z;	//el segundo argumento es negativo para que gire hacia la izquierda
-	}
+	float defDelta = seekWeight * seekDelta + ObsAvWeight * obsAvDelta;				//error definitivo = suma de los errores ponderada
+	//cout << "suma de errores ponderado: " << defDelta << endl;
+	float desiredAngle = addAngle(myData->pose.pose.orientation.z, defDelta);		//angulo deseado = angulo + error
 
-    ctrlPublisher->publish(myTwist);
+	cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -defDelta << ")" << endl;
+
+	myTwist.angular.z = turningVel(defDelta);		//para este error que velocidad corresponde
+
+	cout << "velocidad publicada: R" << myTwist.angular.z << endl << endl;
+
+    ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
 
 int Agent::imAlone(){
@@ -156,4 +184,90 @@ int Agent::imAlone(){
 	{
 		return 1;
 	}
+}
+
+float Agent::addAngle(float initialAngle, float error){	//angulo deseado = angulo + error
+	
+	//cout << "ADDANGLE" <<endl;
+	//cout << initialAngle << "R (" << initialAngle*180 << "°) - " << error << "R (" << error*180 << "°)" << endl; 
+	
+	//paso todo a angulos [0,360) (esta en la medida de orientacion de ros [-1,1) )
+	//escala = 2/360 = 1/180
+
+	initialAngle = initialAngle * 180 ;
+	error = error * 180 ;
+
+	float desiredAngle = initialAngle - error ;
+	//cout << "= " << desiredAngle/180 << "R (" << desiredAngle << "°)" << endl ;
+	desiredAngle = desiredAngle / 180;
+
+	if(desiredAngle>1)
+	{
+		desiredAngle = 2 - desiredAngle;
+	}
+	
+	if (desiredAngle>1.0 ^ desiredAngle<-1.0)
+	{
+		cout << "ERROR1 ADDANGLE EN AGENT" << endl ;
+	}
+
+	return desiredAngle;
+}
+
+float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del angulo
+
+	//paso todo a angulos [0,360) (esta en la medida de orientacion de ros [-1,1) )
+	//escala = 2/360 = 1/180
+	initialAngle = toScale(initialAngle * 180) ;
+	desiredAngle = toScale(desiredAngle * 180) ;
+
+	float deltaAng = initialAngle - desiredAngle ;
+
+	if (abs(deltaAng) > 180)
+	{
+		if(deltaAng < 0)
+		{
+			deltaAng = 360 + deltaAng ;			
+		}
+		else if (deltaAng > 0)
+		{
+			deltaAng = deltaAng - 360 ;
+		}
+	}
+
+	cout << "deltaAng( " << deltaAng << "° ) = " << "initialAngle( " << initialAngle << "° ) - " << "desiredAngle( " << desiredAngle << "° ) " << endl ;
+
+	//vuelvo a la escala de ROS
+	deltaAng = deltaAng / 180;
+
+//	cout << "delta angulo R: " << deltaAng << endl ;
+
+	if (deltaAng>1.0 ^ deltaAng<-1.0)
+	{
+		cout << "ERROR1 DELTAANGLE EN AGENT" << endl ;
+	}
+
+	return deltaAng;
+}
+
+float Agent::turningVel(float error){	//para este error que velocidad corresponde
+
+	if (error>1.0 ^ error<-1.0)
+	{
+		cout << "ERROR1 TURNINGVEL EN AGENT" << endl ;
+	}
+
+	return -error;
+}
+
+float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
+	if (angle < 0.0)
+	{
+		angle = 360 + angle;
+	}
+	else if (angle > 360)
+	{
+		angle = angle - 360; 
+	}
+	return angle;
 }

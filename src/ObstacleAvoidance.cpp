@@ -44,7 +44,6 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 		}
 		minIzquierda = calcMin(laserIzquierda,&minIzquierdaIndex);
 	}
-	// cout << "minimoCentral= " << laserCentral[minCentralIndex] << endl << "minimoIzquierda= " << laserIzquierda[minIzquierdaIndex] << endl << "minimoDerecha= " << laserDerecha[minDerechaIndex] << endl ;
 }
 
 void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
@@ -156,27 +155,46 @@ void ObstacleAvoidance::update()
 	if (minLaser==0)
 	{
 		//El obstaculo más cercano está al frente
-		if (laserCentral[1] < laserCentral[2])
+//		cout << "CENTRO" << endl;
+		if (laserIzquierda[1] == laserDerecha[1])
 		{
-			wideal = addW(myData->pose.pose.orientation.z, 90.0, 0);
+			if (laserCentral[0] > laserCentral [2])
+			{
+//				cout << "CENTRO IZQ > CENTRO DER" << endl;
+				wideal = addW(myData->pose.pose.orientation.z, 90.0, 0);
+			}
+			else
+			{
+//				cout << "CENTRO DER > CENTRO IZQ" << endl;
+				wideal = addW(myData->pose.pose.orientation.z, 90.0, 1);
+			}
 		}
-		else {
-			wideal = addW(myData->pose.pose.orientation.z, 90.0, 1);	
+		else if (laserIzquierda[1] < laserDerecha[1]) {
+//			cout << "LASER DER > LASER IZQ" << endl;
+			wideal = addW(myData->pose.pose.orientation.z, 90.0, 0);	
+		}
+		else if (laserIzquierda[1] > laserDerecha[1])
+		{
+//			cout << "LASER IZQ > LASER DER" << endl;
+			wideal = addW(myData->pose.pose.orientation.z, 90.0, 1);
 		}
 	}
 	if (minLaser==1)
 	{
+//		cout << "IZQUIERDA" << endl;
 		//El obstaculo más cercano está a la Izquierda
-		wideal = addW(myData->pose.pose.orientation.z ,60.0, 1);
+		wideal = addW(myData->pose.pose.orientation.z, 60.0, 0);
 	}
 	if (minLaser==2)
 	{
+//		cout << "DERECHA" << endl;
 		//El obstaculo más cercano está a la Derecha
-		wideal = addW(myData->pose.pose.orientation.z ,60.0, 0);
+		wideal = addW(myData->pose.pose.orientation.z, 60.0, 1);
 	}
 	if (minLaser==-1)
 	{
-		wideal = 2;	//NULL no esta implementado, como 2 no es un valor válido estoy usando eso
+		wideal = -1.0;	//NULL no esta implementado, como 2 no es un valor válido estoy usando eso
+//		cout << "NO OBSTACLE" << endl;
 	}
 	setDesiredW(wideal);
 
@@ -237,24 +255,37 @@ float ObstacleAvoidance::calcMin(float matrix[], int* index) {
  */
 float ObstacleAvoidance::addW(float w, float angle, int direction)
 {
+	w = (w + 1) * 180 ;
 	float wi;
-	float escala = 2.0/360;
-	if (direction == 0)
+	if (direction == 0)		//left
 	{
-		wi = w + (angle * escala);
+		wi = w - angle;
 	}
-	else if (direction == 1)
+	else if (direction == 1)	//right
 	{
-		wi = w - (angle * escala);
+		wi = w + angle;
 	}
 
-	if (wi > 1.0)
+
+	if (wi < 0.0)
 	{
-		wi -= 2.0;
+		wi = 360 + wi;
 	}
-	else if (wi < -1.0)
+	if (wi > 360)
 	{
-		wi += 2.0;
+		wi = wi - 360 ;
+	}
+
+	if (wi>360.0 ^ wi<0.0)
+	{
+		cout << "ERROR1 ADDW EN OBS AV" << endl ;
+	}
+
+	wi = (2.0 * wi / 360) -1;
+
+	if (wi>1.0 ^ wi<-1.0)
+	{
+		cout << "ERROR2 ADDW EN OBS AV" << endl ;
 	}
 
 	return wi;
@@ -267,30 +298,23 @@ float ObstacleAvoidance::addW(float w, float angle, int direction)
 int ObstacleAvoidance::minIndex(float c, float l, float r) //c:minCentral l:minLeft r:minRight
 {
 	int min=-1;
-	if (l<c & l<r)
+	if (c<=4.0)				//distancia inferior a 4.0 en el centro
 	{
-		if (l<2.0)
+		min = 0;
+	}
+	if (l<=c & l<=r)		//minimo en la izquierda
+	{
+		if (l<=2.0)			//distancia inferior a 2.0 en el laser de la izquierda
 		{
 			min = 1;
 		}
 	}
-	else if (r<c & r<l)
+	else if (r<=c & r<=l)	//minimo en la derecha
 	{
-		if (r<2.0)
+		if (r<=2.0)			//distancia inferior a 2.0 en el laser de la derecha
 		{
 			min = 2;
 		}
 	}
-	else if (c<l & c<r)
-	{
-		if (c<3.5)
-		{
-			min = 0;
-		}
-	}
-	else{
-		min = -1;
-	}
-	cout << min << endl;
 	return min;
 }

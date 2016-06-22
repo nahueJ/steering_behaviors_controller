@@ -45,6 +45,14 @@ public:
 	void update();
 
 	int imAlone();
+
+	float addAngle(float, float);
+
+	float deltaAngle(float, float);
+
+	float turningVel(float);
+
+	float toScale(float);
 	
 private: 
 	//Id del robot del controlador
@@ -58,7 +66,9 @@ private:
 	std::stringstream* pretopicname;
 	
 	std::vector<SteeringBehavior*> behaviors;
-	float* weights;
+	//float* weights;
+	float seekWeight;
+	float ObsAvWeight;
 	
 	geometry_msgs::Pose myPosition;
 	geometry_msgs::Twist myTwist;
