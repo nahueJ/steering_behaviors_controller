@@ -17,9 +17,11 @@
  * @param float weight
  */
 SteeringBehavior::SteeringBehavior(
+	std::string name,
 	unsigned int id, 
 	std::string pre, 
 	Configuration* configurationPtr) : 
+	myName (name),
 	robotId( id ), 
 	pretopicname(pre),
 	config (configurationPtr)
@@ -31,10 +33,26 @@ SteeringBehavior::~SteeringBehavior() {
 
 }
 
+string SteeringBehavior::getName() 
+{
+	return myName;
+}
+
+float SteeringBehavior::getDesiredV() 
+{
+	return desiredV;
+}
+
 float SteeringBehavior::getDesiredW() 
 {
 	return desiredW;
 }
+
+void SteeringBehavior::setDesiredV(float y) 
+{
+	desiredV = ( abs(y) <= 1.0 ) ? y : (y/abs(y));
+}
+
 
 void SteeringBehavior::setDesiredW(float z) 
 {

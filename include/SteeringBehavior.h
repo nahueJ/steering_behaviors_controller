@@ -28,28 +28,29 @@ using std::endl;
  
 class SteeringBehavior {
 public: 
-	
-	/**
-	 * @param unasigned int id
-	 * @param float weight
-	 */
-	SteeringBehavior(unsigned int id, std::string pre, Configuration* configurationPtr);
+
+	SteeringBehavior(std::string myName, unsigned int id, std::string pre, Configuration* configurationPtr);
 	
 	~SteeringBehavior();
 	
 	virtual void update() ; // función virtual pura
 	
+	virtual string getName();
+	virtual float getDesiredV();
 	virtual float getDesiredW(); 
 	
+	void setDesiredV(float y);
 	void setDesiredW(float z);
 
 protected: 
 
+	string myName;
 	unsigned int robotId;
 
 	std::string pretopicname;
 
-	double desiredW;
+	float desiredV;
+	float desiredW;
 	
 	//Clase para el ingreso de parametros de configuración
 	Configuration* config;
