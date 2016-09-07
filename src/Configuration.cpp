@@ -139,10 +139,10 @@ bool Configuration::Get(const string& key, bool& value) const
 bool Configuration::Get(const string& key, float& value) const
 {
     string str;
- 
+    
     if (Get(key, str))
     {
-        value = (str == "true");
+        value = atof(str.c_str());
         return true;
     }
     else

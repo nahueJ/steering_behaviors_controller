@@ -65,7 +65,7 @@ Seek::Seek(unsigned int id, std::string pre, Configuration* configurationPtr) : 
 	}
 	else
 	{
-	    cout << "Missing parameter in configuration file." << endl;
+	    cout << "SEEK " << robotId << ": Missing parameter in configuration file." << endl;
 	}
 }
 

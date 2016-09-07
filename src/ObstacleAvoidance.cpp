@@ -89,7 +89,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Configura
 	}
 	else
 	{
-	    cout << "Missing parameter in configuration file." << endl;
+	    cout << "OA " << robotId << ": Missing parameter in configuration file." << endl;
 	}
 }
 

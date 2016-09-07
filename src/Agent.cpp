@@ -86,7 +86,7 @@ Agent::Agent(unsigned int id, Factory* factoryPtr, Configuration* configurationP
 	}
 	else
 	{
-	    cout << "Missing parameter in configuration file." << endl;
+	    cout << "Agent " << robotId << ": Missing parameter in configuration file." << endl;
 	}
 }
 
