@@ -64,6 +64,8 @@ private:
 	float errory;
 	float errorw;
 
+	float toleranceToTarget;
+
 	float wIdeal( float, float);
 };
 

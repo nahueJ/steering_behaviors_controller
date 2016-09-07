@@ -80,9 +80,9 @@ Agent::Agent(unsigned int id, Factory* factoryPtr, Configuration* configurationP
 
 		//************************************//
 		//Instanciacion de los comportamientos//
-		//************************************//
-		
+		//************************************//		
 		behaviors = factoryPtr->instanciateBehaviors(robotId,pretopicname->str());
+
 	}
 	else
 	{
@@ -108,10 +108,6 @@ Agent::~Agent() {
 void Agent::update() 
 {
 	float desiredW;
-	//Velocidad Linear
-    myTwist.linear.x = 0.25;
-	//Velocidad Angular
-	myTwist.angular.z = 0.0;
 
 	cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
 
@@ -123,12 +119,14 @@ void Agent::update()
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
 		desiredW = behaviors[i]->getDesiredW();
-		if (i==0)
+		if (behaviors[i]->getName()=="seek")
 		{
 			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			seekDelta = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
+
+			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
-		else if (i==1)
+		else if (behaviors[i]->getName()=="obstacleAvoidance")
 		{
 			if (desiredW == -1.0)
 			{

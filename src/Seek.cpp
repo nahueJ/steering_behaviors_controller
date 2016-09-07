@@ -25,9 +25,12 @@ void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  */
 Seek::Seek(unsigned int id, std::string pre, Configuration* configurationPtr) : SteeringBehavior(std::string("seek"), id, pre, configurationPtr)
 {
+	float vel;
 	//Cargar Valores de configuracion 
-	if (config->Get("targetX", target.position.x)    &&
-	    config->Get("targetY",  target.position.y))
+	if (config->Get("targetX",	target.position.x)	&&
+	    config->Get("targetY",  target.position.y)	&&
+	    config->Get("desiredV",	vel)				&&
+	    config->Get("toleranceToTarget", toleranceToTarget))
 	{
 	 
 		cout << "Instanciando Seek" << endl;
@@ -62,6 +65,8 @@ Seek::Seek(unsigned int id, std::string pre, Configuration* configurationPtr) : 
 		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
 
 		myData = new nav_msgs::Odometry;
+
+		setDesiredV(vel);
 	}
 	else
 	{
@@ -89,6 +94,12 @@ void Seek::update() {
 
 	setDesiredW(wi);
 
+	//verificar distancia al objetivo
+	if (toleranceToTarget>sqrt(pow(errorx,2)+pow(errory,2)))
+	{
+		//si es menor que la tolerancia se detiene
+		setDesiredV(0.0);
+	}
 }
 
 float Seek::getDesiredW() 
