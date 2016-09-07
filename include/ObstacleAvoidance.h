@@ -27,58 +27,9 @@ using std::endl;
 
 class ObstacleAvoidance : public SteeringBehavior {
 
-	private: 
-
-		//Cantidad de lasers del robot
-		unsigned int nroLasers;
-
-		//Variables para suscribirse a un topic
-		ros::NodeHandle* rosNode;
-		ros::Subscriber* odomSubscriber;
-		std::vector<ros::Subscriber*> sensorSubscriber;
-
-		geometry_msgs::Twist myTwist;
-
-		//Funcion para obtener la cantidad de lasers que posee el robot
-		unsigned int getNumberOfLasers(unsigned int id);
-		//funcion que devuelve el menor elementro del arreglo del primer parametro
-		float calcMin(float matrix[],int* index);
-		//funcion para sumarle al primer parametro (orientación) una cantidad de grados dada por el segundo parametro hacia izq o derecha (1 o 0) dada por el tercer parametro
-		float addW(float,float,int);
-		//funcion para definir cual obstaculo es mas prioritario o si no hay ninguno prioritario
-		int minIndex(float,float,float);
-
-		//Funciones de Callback para las suscripciones a los topic del laser y del odometro (posicion y twist)
-		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
-		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
-
-		//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
-		int haz;
-		float* laserCentral;
-		float* laserIzquierda;
-		float* laserDerecha;
-
-		float minCentral;
-		float minIzquierda;
-		float minDerecha;
-
-		int minCentralIndex;
-		int minIzquierdaIndex;
-		int minDerechaIndex;
-		
-		nav_msgs::Odometry*	myData;
-
-		//distancia máxima a la que actua el comportamiento
-		float distMax;
-		float distMin;
-
 	public: 
 		
-		/**
-		 * @param mySensor
-		 * @param unsigned int id
-		 */
-		ObstacleAvoidance(unsigned int id, std::string pre);
+		ObstacleAvoidance(unsigned int id, std::string pre, Configuration* configurationPtr);
 		
 		~ObstacleAvoidance();
 
@@ -89,6 +40,38 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 		virtual float getDesiredW(); 
 
+	private: 
+
+		//Variables para suscribirse a un topic
+		ros::NodeHandle* rosNode;
+		ros::Subscriber* odomSubscriber;
+		ros::Subscriber* sensorSubscriber;
+
+		geometry_msgs::Twist myTwist;
+
+		//Funciones de Callback para las suscripciones a los topic del laser y del odometro (posicion y twist)
+		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
+		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
+
+		//cantidad de haces del laser
+		int haz;
+		//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
+		float* laser;
+		
+		nav_msgs::Odometry*	myData;
+		//variables para almacenar los datos del odometro
+		float x;
+		float y;
+		float tita;
+
+		//distancia máxima a la que actua el comportamiento
+		float distMax;
+		float distMin;
+
+		//Funciones privadas
+		float estimateLasers(float xnext, float ynext);
+		float nextDist( float dist, float angulo);
+		
 };
 
 #endif //_OBSTACLEAVOIDANCE_H

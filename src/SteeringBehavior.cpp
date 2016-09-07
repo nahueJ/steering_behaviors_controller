@@ -16,7 +16,13 @@
  * @param unasigned int id
  * @param float weight
  */
-SteeringBehavior::SteeringBehavior(unsigned int id, std::string pre) : robotId( id ), pretopicname(pre)
+SteeringBehavior::SteeringBehavior(
+	unsigned int id, 
+	std::string pre, 
+	Configuration* configurationPtr) : 
+	robotId( id ), 
+	pretopicname(pre),
+	config (configurationPtr)
 {
 
 }

@@ -12,7 +12,7 @@
 #include "ros/message.h"
 
 #include "SteeringBehavior.h"
- 
+
 #include <geometry_msgs/Pose.h>
 #include <nav_msgs/Odometry.h>
 
@@ -33,7 +33,7 @@ public:
 	 * @param id
 	 * @param weight
 	 */
-	Seek(geometry_msgs::Pose objective, unsigned int id, std::string pre);
+	Seek(unsigned int id, std::string pre, Configuration* configurationPtr);
 	
 	~Seek();
 	
@@ -65,7 +65,6 @@ private:
 	float errorw;
 
 	float wIdeal( float, float);
-
 };
 
 #endif //_SEEK_H

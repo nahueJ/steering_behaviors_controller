@@ -26,76 +26,68 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  *
  * @param unsigned int id
  ------------------------------------------------------------------------*/
-Agent::Agent(unsigned int id, Factory* FactoryPtr)
+Agent::Agent(unsigned int id, Factory* factoryPtr, Configuration* configurationPtr)
 {
-
-	robotId = id;
-
-	//*****************//
-	//Creacion del Nodo//
-	//*****************//
-
-	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
-	ros::M_string remappingsArgs;
-	remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
-	//generar el nombre del nodo con el robotId
-	std::stringstream name;
-	name << "controller_" << robotId;
-	//inicializa el nodo
-	ros::init(remappingsArgs, name.str());
-	//crear el manejador del nodo y apuntarlo desde la variable de la clase
-	rosNode = new ros::NodeHandle;
-
-	//*************************************//
-	//Suscripcion y Publicaciones en Topics//
-	//*************************************//
-
-	//generar el nombre del topic a partir del robotId
-	pretopicname = new std::stringstream;
-	if (!imAlone())
+	//Cargar Valores de configuracion 
+	if (configurationPtr->Get("seekWeight", seekWeight)    &&
+	    configurationPtr->Get("obstacleAvoidanceWeight",  ObsAvWeight))
 	{
-		*pretopicname << "/robot_" << robotId ;
+		robotId = id;
+
+		//*****************//
+		//Creacion del Nodo//
+		//*****************//
+
+		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+		ros::M_string remappingsArgs;
+		remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
+		//generar el nombre del nodo con el robotId
+		std::stringstream name;
+		name << "controller_" << robotId;
+		//inicializa el nodo
+		ros::init(remappingsArgs, name.str());
+		//crear el manejador del nodo y apuntarlo desde la variable de la clase
+		rosNode = new ros::NodeHandle;
+
+		//*************************************//
+		//Suscripcion y Publicaciones en Topics//
+		//*************************************//
+
+		//generar el nombre del topic a partir del robotId
+		pretopicname = new std::stringstream;
+		if (!imAlone())
+		{
+			*pretopicname << "/robot_" << robotId << "/";
+		}
+		else
+		{
+			*pretopicname << "/" ;
+		}
+		std::stringstream pubtopicname ;
+		pubtopicname << pretopicname->str() << "cmd_vel" ;
+		//Crear el publicador y apuntarlo con la variable de la clase
+		ctrlPublisher = new ros::Publisher;
+		*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
+
+		std::stringstream sustopicname ;
+		sustopicname << pretopicname->str() << "odom" ;
+
+		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+		odomSubscriber = new ros::Subscriber;
+		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
+		
+		myData = new nav_msgs::Odometry;
+
+		//************************************//
+		//Instanciacion de los comportamientos//
+		//************************************//
+		
+		behaviors = factoryPtr->instanciateBehaviors(robotId,pretopicname->str());
 	}
 	else
 	{
-		*pretopicname << "/" ;
+	    cout << "Missing parameter in configuration file." << endl;
 	}
-	std::stringstream pubtopicname ;
-	pubtopicname << pretopicname->str() << "cmd_vel" ;
-	//Crear el publicador y apuntarlo con la variable de la clase
-	ctrlPublisher = new ros::Publisher;
-	*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
-
-	std::stringstream sustopicname ;
-	sustopicname << pretopicname->str() << "odom" ;
-
-	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
-	odomSubscriber = new ros::Subscriber;
-	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
-	
-	myData = new nav_msgs::Odometry;
-
-	//************************************//
-	//Instanciacion de los comportamientos//
-	//************************************//
-	
-	// Def del target: Test --> Pasar a un archivo de config
-	geometry_msgs::Pose target;
-	target.position.x = 15;
-	target.position.y = 14;
-
-	behaviors = FactoryPtr->instanciateBehaviors(target,robotId,pretopicname->str());
-	int numberOfBehaviors = 2;
-	/*weights = new float[numberOfBehaviors];
-	// for (int i = 0; i < numberOfBehaviors; ++i)
-	// {
-	// 	weights[i] = 1.0/numberOfBehaviors;
-	// }
-	weights[0]=1;
-	weights[1]=1;*/
-	seekWeight = 0.75;
-	ObsAvWeight = 1;
-
 }
 
 Agent::~Agent() {

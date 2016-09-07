@@ -9,6 +9,9 @@
 #define _STEERINGBEHAVIOR_H
 
 #include "ros/ros.h"
+
+#include "Configuration.h"
+
 #include <string>
 #include <iostream>
 using std::cout;
@@ -30,7 +33,7 @@ public:
 	 * @param unasigned int id
 	 * @param float weight
 	 */
-	SteeringBehavior(unsigned int id, std::string pre);
+	SteeringBehavior(unsigned int id, std::string pre, Configuration* configurationPtr);
 	
 	~SteeringBehavior();
 	
@@ -47,6 +50,9 @@ protected:
 	std::string pretopicname;
 
 	double desiredW;
+	
+	//Clase para el ingreso de parametros de configuración
+	Configuration* config;
 };
 
 #endif //_STEERINGBEHAVIOR_H

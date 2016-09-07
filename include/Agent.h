@@ -17,10 +17,8 @@
 
 #include "SteeringBehavior.h"
 
-// //para test-->> pasa a factory
-// #include "ObstacleAvoidance.h"
-// #include "Seek.h"
 
+#include "Configuration.h" 
 #include "Factory.h"
 
 #include <string>
@@ -38,7 +36,7 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Agent(unsigned int id, Factory* FactoryPtr);
+	Agent(unsigned int id, Factory* factoryPtr, Configuration* configurationPtr);
 	
 	~Agent();
 	
@@ -69,6 +67,8 @@ private:
 	//float* weights;
 	float seekWeight;
 	float ObsAvWeight;
+
+	geometry_msgs::Pose target;
 	
 	geometry_msgs::Pose myPosition;
 	geometry_msgs::Twist myTwist;

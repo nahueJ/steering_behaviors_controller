@@ -23,39 +23,50 @@ void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param id
  * @param weight
  */
-Seek::Seek(geometry_msgs::Pose objective, unsigned int id, std::string pre) : SteeringBehavior(id,pre)
+Seek::Seek(unsigned int id, std::string pre, Configuration* configurationPtr) : SteeringBehavior(id,pre, configurationPtr)
 {
-	target = objective;
-	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
-	ros::M_string remappingsArgs;
+	//Cargar Valores de configuracion 
+	if (config->Get("targetX", target.position.x)    &&
+	    config->Get("targetY",  target.position.y))
+	{
+	 
+		cout << "Instanciando Seek" << endl;
 
-	//generar el nombre del nodo con el robotId
-	std::stringstream nameMaster;
-	nameMaster << "controller_" << robotId;
+		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+		ros::M_string remappingsArgs;
 
-	remappingsArgs.insert(ros::M_string::value_type( "__master", nameMaster.str()));
+		//generar el nombre del nodo con el robotId
+		std::stringstream nameMaster;
+		nameMaster << "controller_" << robotId;
 
-	//generar el nombre del nodo con el robotId
-	std::stringstream name;
-	name << "seek_" << robotId;
+		remappingsArgs.insert(ros::M_string::value_type( "__master", nameMaster.str()));
 
-	//inicializa el nodo
-	ros::init(remappingsArgs, name.str());
+		//generar el nombre del nodo con el robotId
+		std::stringstream name;
+		name << "seek_" << robotId;
 
-	//crear el manejador del nodo y apuntarlo desde la variable de la clase
-	rosNode = new ros::NodeHandle;
+		//inicializa el nodo
+		ros::init(remappingsArgs, name.str());
 
-	/* Subscripcion al topic base_pose_ground_truth de este robot*/
-	//generar el nombre del topic a partir del robotId
-	std::stringstream topicname;
+		//crear el manejador del nodo y apuntarlo desde la variable de la clase
+		rosNode = new ros::NodeHandle;
 
-	topicname << pretopicname << "odom" ;
+		/* Subscripcion al topic base_pose_ground_truth de este robot*/
+		//generar el nombre del topic a partir del robotId
+		std::stringstream topicname;
 
-	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
-	odomSubscriber = new ros::Subscriber;
-	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
+		topicname << pretopicname << "odom" ;
 
-	myData = new nav_msgs::Odometry;
+		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+		odomSubscriber = new ros::Subscriber;
+		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
+
+		myData = new nav_msgs::Odometry;
+	}
+	else
+	{
+	    cout << "Missing parameter in configuration file." << endl;
+	}
 }
 
 Seek::~Seek() {

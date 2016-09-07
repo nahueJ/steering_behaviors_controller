@@ -12,19 +12,9 @@
 #include "ros/ros.h"
 #include "../include/Agent.h"
 #include "../include/Factory.h"
+#include "../include/Configuration.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-//solo para el test
-#include <geometry_msgs/Twist.h>
-
-
-
-// #include <iostream>
-// using std::cout;
-// using std::cin;
-// using std::endl;
-
 #include <string>
 
 unsigned int getNumberOfRobots()
@@ -55,23 +45,12 @@ int main(int argc, char **argv)
 
 	robots = getNumberOfRobots();
 
-	/*	TODO
+	Configuration* configurationPtr;
+	configurationPtr = new Configuration();
+	configurationPtr->Load("./src/steering_behaviors_controller/simulation.cfg");
 
-		//comportamientos que quiero activar para cada robot
-		int behaviors[robots]; //representar en binario
-
-		//leer de un archivo de configuracion los comportamientos para cada robot
-		//por el momento los controladores instancian los mismos comportamientos para todos
-		//definir los comportamientos para los robots
-		for (int i = 0; i < robots; ++i)
-		{
-			behaviors[i] = fgets (...); //para evaluar en binario, se podria tomar de los argv
-		}
-	*/
-
-
-	Factory* FactoryPtr;
-	FactoryPtr = new Factory(); //pasar direccion de un archivo de conf?
+	Factory* factoryPtr;
+	factoryPtr = new Factory(configurationPtr); //pasar direccion de un archivo de conf?
 
 	//controlador para cada robot
 	Agent* agents[robots];
@@ -79,7 +58,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < robots; ++i)
 	{
 		//intanciar el control para cada robot.
-		agents[i] = new Agent(i,FactoryPtr);
+		agents[i] = new Agent(i,factoryPtr,configurationPtr);
 	}
 
 	//rutina de trabajo

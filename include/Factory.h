@@ -12,6 +12,8 @@
 #include "ObstacleAvoidance.h"
 #include "Seek.h"
 
+#include "Configuration.h" 
+
 #include <string>
 #include <vector>
 #include <sstream>
@@ -26,17 +28,19 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Factory();
+	Factory(Configuration* configurationPtr);
 
 	//Factory(i,behaviors[i], FactoryPtr);
 	
 	~Factory();
 
-	std::vector<SteeringBehavior*> instanciateBehaviors(geometry_msgs::Pose objective, unsigned int id, std::string pre);
+	std::vector<SteeringBehavior*> instanciateBehaviors(unsigned int id, std::string pre);
 
 private: 
 
 	std::vector<SteeringBehavior*>* vectorPtr;
+
+	Configuration config;
 };
 
 #endif //_FACTORY_H
