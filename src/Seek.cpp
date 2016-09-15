@@ -23,14 +23,15 @@ void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param id
  * @param weight
  */
-Seek::Seek(unsigned int id, std::string pre, Configuration* configurationPtr) : SteeringBehavior(std::string("seek"), id, pre, configurationPtr)
+Seek::Seek(unsigned int id, std::string pre, config_t* configurationPtr) : SteeringBehavior(std::string("seek"), id, pre, configurationPtr)
 {
 	float vel;
 	//Cargar Valores de configuracion 
-	if (config->Get("targetX",	target.position.x)	&&
-	    config->Get("targetY",  target.position.y)	&&
-	    config->Get("desiredV",	vel)				&&
-	    config->Get("toleranceToTarget", toleranceToTarget))
+	// if (config.lookupValue("targetX",	target.position.x)	&&
+	//     config.lookupValue("targetY",  target.position.y)	&&
+	//     config.lookupValue("desiredV",	vel)				&&
+	//     config.lookupValue("toleranceToTarget", toleranceToTarget))
+	if(1)
 	{
 	 
 		cout << "Instanciando Seek" << endl;

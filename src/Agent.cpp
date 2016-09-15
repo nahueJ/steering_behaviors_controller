@@ -26,14 +26,17 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  *
  * @param unsigned int id
  ------------------------------------------------------------------------*/
-Agent::Agent(unsigned int id, Factory* factoryPtr, Configuration* configurationPtr)
+Agent::Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr)
 {
-	//Cargar Valores de configuracion 
-	if (configurationPtr->Get("seekWeight", seekWeight)    &&
-	    configurationPtr->Get("obstacleAvoidanceWeight",  ObsAvWeight))
-	{
-		robotId = id;
+	robotId = id;
+	std::stringstream name;
+	name << "agent" << robotId;
 
+
+	//Cargar Valores de configuracion 
+	if (0)
+	{
+		
 		//*****************//
 		//Creacion del Nodo//
 		//*****************//
@@ -107,10 +110,9 @@ Agent::~Agent() {
 
 void Agent::update() 
 {
-	float desiredW;
-
 	cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
 
+	float desiredW;
 	float seekDelta;
 	float obsAvDelta;
 	float seekDeltaPond;

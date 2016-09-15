@@ -7,10 +7,12 @@
 
 #include "../include/Factory.h"
 
-Factory::Factory(Configuration* configurationPtr)
+Factory::Factory(config_t* configurationPtr)
 {
 	//Cargo los valores en el archivo de configuracion
 	config = *configurationPtr;
+
+
 }
 	
 Factory::~Factory()

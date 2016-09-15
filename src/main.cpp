@@ -12,10 +12,14 @@
 #include "ros/ros.h"
 #include "../include/Agent.h"
 #include "../include/Factory.h"
-#include "../include/Configuration.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <libconfig.h++>
+using namespace libconfig;
+
+#define CONFIGFILE "./src/steering_behaviors_controller/simulation.cfg"
 
 unsigned int getNumberOfRobots()
 {
@@ -45,34 +49,43 @@ int main(int argc, char **argv)
 
 	robots = getNumberOfRobots();
 
-	Configuration* configurationPtr;
-	configurationPtr = new Configuration();
-	configurationPtr->Load("./src/steering_behaviors_controller/simulation.cfg");
+	Config cfg;
 
-	Factory* factoryPtr;
-	factoryPtr = new Factory(configurationPtr); //pasar direccion de un archivo de conf?
+	// Read the file. If there is an error, report it and exit.
 
-	//controlador para cada robot
-	Agent* agents[robots];
-	// instanciar los controladores
-	for (int i = 0; i < robots; ++i)
-	{
-		//intanciar el control para cada robot.
-		agents[i] = new Agent(i,factoryPtr,configurationPtr);
-	}
+	cfg.readFile(CONFIGFILE);
+	cout << "kinda succes" << endl;
+	
 
-	//rutina de trabajo
 
-	while(ros::ok())
-	{
-		system("clear"); //limpia la consola
-		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-		for (int i = 0; i < robots; ++i)
-		{
-			agents[i]->update();
-		}
-		ros::spinOnce();
-		loop_rate.sleep(); //sleep por el resto del ciclo
-	}
+
+
+
+
+	// Factory* factoryPtr;
+	// factoryPtr = new Factory(configurationPtr); //pasar direccion de un archivo de conf?
+
+	// //controlador para cada robot
+	// Agent* agents[robots];
+	// // instanciar los controladores
+	// for (int i = 0; i < robots; ++i)
+	// {
+	// 	//intanciar el control para cada robot.
+	// 	agents[i] = new Agent(i,factoryPtr,configurationPtr);
+	// }
+
+	// //rutina de trabajo
+
+	// while(ros::ok())
+	// {
+	// 	system("clear"); //limpia la consola
+	// 	//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+	// 	for (int i = 0; i < robots; ++i)
+	// 	{
+	// 		agents[i]->update();
+	// 	}
+	// 	ros::spinOnce();
+	// 	loop_rate.sleep(); //sleep por el resto del ciclo
+	// }
 	return 0;
 }

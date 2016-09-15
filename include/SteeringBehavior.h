@@ -10,13 +10,14 @@
 
 #include "ros/ros.h"
 
-#include "Configuration.h"
+#include <libconfig.h++>
 
 #include <string>
 #include <iostream>
 using std::cout;
 using std::cin;
 using std::endl;
+using std::string;
 
 
 //Behavior List //YO PENSABA Q TIENEN QUE ESTAR EN LOS INCLUDES, PERO NO
@@ -29,7 +30,7 @@ using std::endl;
 class SteeringBehavior {
 public: 
 
-	SteeringBehavior(std::string myName, unsigned int id, std::string pre, Configuration* configurationPtr);
+	SteeringBehavior(std::string myName, unsigned int id, std::string pre, config_t* configurationPtr);
 	
 	~SteeringBehavior();
 	
@@ -53,7 +54,7 @@ protected:
 	float desiredW;
 	
 	//Clase para el ingreso de parametros de configuración
-	Configuration* config;
+	config_t* config;
 };
 
 #endif //_STEERINGBEHAVIOR_H

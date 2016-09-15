@@ -17,18 +17,12 @@
 
 #include "SteeringBehavior.h"
 
-
-#include "Configuration.h" 
+#include <libconfig.h++>
 #include "Factory.h"
 
 #include <string>
 #include <vector>
 #include <sstream>
-// #include <iostream>
-// using std::cout;
-// using std::cin;
-// using std::endl;
-
 
 class Agent {
 public: 
@@ -36,7 +30,7 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Agent(unsigned int id, Factory* factoryPtr, Configuration* configurationPtr);
+	Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr);
 	
 	~Agent();
 	

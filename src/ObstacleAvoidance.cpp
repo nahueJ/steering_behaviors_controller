@@ -36,12 +36,13 @@ void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param unsigned int id
  * @param mySensor
  */
-ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Configuration* configurationPtr) : SteeringBehavior(std::string("obstacleAvoidance"), id, pre, configurationPtr)
+ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, config_t* configurationPtr) : SteeringBehavior(std::string("obstacleAvoidance"), id, pre, configurationPtr)
 {	
 	//Cargar Valores de configuracion 
-	if (config->Get("distMax", 	distMax)    &&
-	    config->Get("distMin", 	distMin)    &&
-	    config->Get("haz", 		haz))
+	// if (config.lookupValue("distMax", 	distMax)    &&
+	//     config.lookupValue("distMin", 	distMin)    &&
+	//     config.lookupValue("haz", 		haz))
+	if(1)
 	{
 		cout << "Instanciando Obstacle Avoidance" << endl;
 		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente

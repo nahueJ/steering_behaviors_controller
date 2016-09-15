@@ -1,0 +1,22 @@
+{	aOnlySeek : { 
+		"name"	: "agenteSoloSeek", 
+		"behaviors"	: ["seekReactive"]},
+
+	aOnlyAvoidObstacles : { 
+		"name"	: "agenteSoloAO", 
+		"behaviors"	: ["avoidObstaclesReactive"]},
+
+	aReactivo : { 
+		"name"	: "agenteReactivoSimple", 
+		"behaviors"	: [	"seekReactive",
+						"avoidObstaclesReactive"]},
+
+	aBuscadorInteligente : { 
+		"name"	: "Buscador", 
+		"behaviors"	: [	"seekReactive",
+						"avoidObstaclesReactive"]},
+}
+
+{
+	
+}
