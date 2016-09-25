@@ -26,7 +26,7 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  *
  * @param unsigned int id
  ------------------------------------------------------------------------*/
-Agent::Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr)
+Agent::Agent(unsigned int id)
 {
 	robotId = id;
 	std::stringstream name;
@@ -34,7 +34,7 @@ Agent::Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr)
 
 
 	//Cargar Valores de configuracion 
-	if (0)
+	if (1)
 	{
 		
 		//*****************//
@@ -83,9 +83,9 @@ Agent::Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr)
 
 		//************************************//
 		//Instanciacion de los comportamientos//
-		//************************************//		
-		behaviors = factoryPtr->instanciateBehaviors(robotId,pretopicname->str());
-
+		//************************************//
+		behaviors = Factory::instance()->instanciateBehaviors(robotId,pretopicname->str());
+		// *factoryPtr = Factory::instance();
 	}
 	else
 	{

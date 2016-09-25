@@ -19,12 +19,10 @@
 SteeringBehavior::SteeringBehavior(
 	std::string name,
 	unsigned int id, 
-	std::string pre, 
-	config_t* configurationPtr) : 
+	std::string pre) : 
 	myName (name),
 	robotId( id ), 
-	pretopicname(pre),
-	config (configurationPtr)
+	pretopicname(pre)
 {
 
 }

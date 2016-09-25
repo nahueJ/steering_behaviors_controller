@@ -29,7 +29,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 	public: 
 		
-		ObstacleAvoidance(unsigned int id, std::string pre, config_t* configurationPtr);
+		ObstacleAvoidance(unsigned int id, std::string pre);
 		
 		~ObstacleAvoidance();
 

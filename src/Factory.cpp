@@ -7,11 +7,8 @@
 
 #include "../include/Factory.h"
 
-Factory::Factory(config_t* configurationPtr)
+Factory::Factory()
 {
-	//Cargo los valores en el archivo de configuracion
-	config = *configurationPtr;
-
 
 }
 	
@@ -20,15 +17,26 @@ Factory::~Factory()
 
 }
 
+Factory *Factory::instance(int s = 0)
+{
+	inst = 
+	if (s)
+	{
+		s_instance = new Factory();
+		inst = 1;
+	}
+	return s_instance;
+}
+
 std::vector<SteeringBehavior*> Factory::instanciateBehaviors(unsigned int id, std::string pre)
 {
 	vectorPtr = new std::vector<SteeringBehavior*>;
 
 	//Instanciate Seek
-	SteeringBehavior* seekPtr = new Seek (id,pre,&config);
+	SteeringBehavior* seekPtr = new Seek (id,pre);
 
 	//Instanciate ObstacleAvoidance
-	SteeringBehavior* obstacleavoidancePtr = new ObstacleAvoidance (id,pre,&config);
+	SteeringBehavior* obstacleavoidancePtr = new ObstacleAvoidance (id,pre);
 
 	vectorPtr->push_back(seekPtr);
 	vectorPtr->push_back(obstacleavoidancePtr);

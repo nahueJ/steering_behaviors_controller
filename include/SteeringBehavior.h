@@ -30,7 +30,7 @@ using std::string;
 class SteeringBehavior {
 public: 
 
-	SteeringBehavior(std::string myName, unsigned int id, std::string pre, config_t* configurationPtr);
+	SteeringBehavior(std::string myName, unsigned int id, std::string pre);
 	
 	~SteeringBehavior();
 	
@@ -53,8 +53,8 @@ protected:
 	float desiredV;
 	float desiredW;
 	
-	//Clase para el ingreso de parametros de configuración
-	config_t* config;
+	//TODO Clase para el ingreso de parametros de configuración
+
 };
 
 #endif //_STEERINGBEHAVIOR_H

@@ -49,43 +49,37 @@ int main(int argc, char **argv)
 
 	robots = getNumberOfRobots();
 
-	Config cfg;
+	// Config cfg;
 
-	// Read the file. If there is an error, report it and exit.
+	// // Read the file. If there is an error, report it and exit.
 
-	cfg.readFile(CONFIGFILE);
-	cout << "kinda succes" << endl;
+	// cfg.readFile(CONFIGFILE);
+	// cout << "kinda succes" << endl;
 	
+	Factory* factoryPtr;
+	factoryPtr = Factory::instance(1);
 
+	//controlador para cada robot
+	Agent* agents[robots];
+	// instanciar los controladores
+	for (int i = 0; i < robots; ++i)
+	{
+		//intanciar el control para cada robot.
+		agents[i] = new Agent(i);
+	}
 
+	//rutina de trabajo
 
-
-
-
-	// Factory* factoryPtr;
-	// factoryPtr = new Factory(configurationPtr); //pasar direccion de un archivo de conf?
-
-	// //controlador para cada robot
-	// Agent* agents[robots];
-	// // instanciar los controladores
-	// for (int i = 0; i < robots; ++i)
-	// {
-	// 	//intanciar el control para cada robot.
-	// 	agents[i] = new Agent(i,factoryPtr,configurationPtr);
-	// }
-
-	// //rutina de trabajo
-
-	// while(ros::ok())
-	// {
-	// 	system("clear"); //limpia la consola
-	// 	//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-	// 	for (int i = 0; i < robots; ++i)
-	// 	{
-	// 		agents[i]->update();
-	// 	}
-	// 	ros::spinOnce();
-	// 	loop_rate.sleep(); //sleep por el resto del ciclo
-	// }
+	while(ros::ok())
+	{
+		system("clear"); //limpia la consola
+		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+		for (int i = 0; i < robots; ++i)
+		{
+			agents[i]->update();
+		}
+		ros::spinOnce();
+		loop_rate.sleep(); //sleep por el resto del ciclo
+	}
 	return 0;
 }

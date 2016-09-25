@@ -33,7 +33,7 @@ public:
 	 * @param id
 	 * @param weight
 	 */
-	Seek(unsigned int id, std::string pre, config_t* configurationPtr);
+	Seek(unsigned int id, std::string pre);
 	
 	~Seek();
 	

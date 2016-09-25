@@ -30,7 +30,7 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr);
+	Agent(unsigned int id);
 	
 	~Agent();
 	
@@ -71,7 +71,8 @@ private:
 	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
 	nav_msgs::Odometry*	myData;
-	
+
+	Factory *factoryPtr;
 };
 
 #endif //_AGENT_H
