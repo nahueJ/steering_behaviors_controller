@@ -17,7 +17,6 @@
 
 #include "SteeringBehavior.h"
 
-#include <libconfig.h++>
 #include "Factory.h"
 
 #include <string>
@@ -30,7 +29,7 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr);
+	Agent(unsigned int id, Factory* factoryPtr);
 	
 	~Agent();
 	
@@ -58,7 +57,7 @@ private:
 	std::stringstream* pretopicname;
 	
 	std::vector<SteeringBehavior*> behaviors;
-	//float* weights;
+	std::vector<float> weights;
 	float seekWeight;
 	float ObsAvWeight;
 

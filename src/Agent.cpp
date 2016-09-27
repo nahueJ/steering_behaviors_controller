@@ -26,66 +26,64 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  *
  * @param unsigned int id
  ------------------------------------------------------------------------*/
-Agent::Agent(unsigned int id, Factory* factoryPtr, config_t* configurationPtr)
+Agent::Agent(unsigned int id, Factory* factoryPtr)
 {
 	robotId = id;
 	std::stringstream name;
 	name << "agent" << robotId;
 
+	//Generar prefijo del nombre de los topics del robot del simulador para futuras suscripciones
+	pretopicname = new std::stringstream;
+	if (!imAlone())
+	{
+		*pretopicname << "/robot_" << robotId << "/";
+	}
+	else
+	{
+		*pretopicname << "/" ;
+	}
 
-	//Cargar Valores de configuracion 
-	if (0)
+	//Intento instanciar los comportamientos
+
+	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),behaviors,weights))
 	{
 		
-		//*****************//
-		//Creacion del Nodo//
-		//*****************//
+		// //*****************//
+		// //Creacion del Nodo//
+		// //*****************//
 
-		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
-		ros::M_string remappingsArgs;
-		remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
-		//generar el nombre del nodo con el robotId
-		std::stringstream name;
-		name << "controller_" << robotId;
-		//inicializa el nodo
-		ros::init(remappingsArgs, name.str());
-		//crear el manejador del nodo y apuntarlo desde la variable de la clase
-		rosNode = new ros::NodeHandle;
+		// //Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+		// ros::M_string remappingsArgs;
+		// remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
+		// //generar el nombre del nodo con el robotId
+		// std::stringstream name;
+		// name << "controller_" << robotId;
+		// //inicializa el nodo
+		// ros::init(remappingsArgs, name.str());
+		// //crear el manejador del nodo y apuntarlo desde la variable de la clase
+		// rosNode = new ros::NodeHandle;
 
-		//*************************************//
-		//Suscripcion y Publicaciones en Topics//
-		//*************************************//
+		// //*************************************//
+		// //Suscripcion y Publicaciones en Topics//
+		// //*************************************//
 
-		//generar el nombre del topic a partir del robotId
-		pretopicname = new std::stringstream;
-		if (!imAlone())
-		{
-			*pretopicname << "/robot_" << robotId << "/";
-		}
-		else
-		{
-			*pretopicname << "/" ;
-		}
-		std::stringstream pubtopicname ;
-		pubtopicname << pretopicname->str() << "cmd_vel" ;
-		//Crear el publicador y apuntarlo con la variable de la clase
-		ctrlPublisher = new ros::Publisher;
-		*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
+		// //generar el nombre del topic a partir del robotId
+	
+		// std::stringstream pubtopicname ;
+		// pubtopicname << pretopicname->str() << "cmd_vel" ;
+		// //Crear el publicador y apuntarlo con la variable de la clase
+		// ctrlPublisher = new ros::Publisher;
+		// *ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
 
-		std::stringstream sustopicname ;
-		sustopicname << pretopicname->str() << "odom" ;
+		// std::stringstream sustopicname ;
+		// sustopicname << pretopicname->str() << "odom" ;
 
-		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
-		odomSubscriber = new ros::Subscriber;
-		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
+		// //Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+		// odomSubscriber = new ros::Subscriber;
+		// *odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
 		
-		myData = new nav_msgs::Odometry;
-
-		//************************************//
-		//Instanciacion de los comportamientos//
-		//************************************//		
-		behaviors = factoryPtr->instanciateBehaviors(robotId,pretopicname->str());
-
+		// myData = new nav_msgs::Odometry;
+		cout << "Agent " << robotId << ": GOOD." << endl;
 	}
 	else
 	{

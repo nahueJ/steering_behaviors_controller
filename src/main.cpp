@@ -45,30 +45,38 @@ int main(int argc, char **argv)
 	Factory* factoryPtr;
 	factoryPtr = new Factory(); //pasar direccion de un archivo de conf?
 
+	int robots = getNumberOfRobots();
 
-	cout << "kinda succes" << endl;
+	if (robots == factoryPtr->getAgents())	//Si los hay definicion para todos los agentes en el simulador
+	{
+		//controlador para cada robot
+		Agent* agents[robots];
+		// instanciar los controladores
+		for (int i = 0; i < robots; ++i)
+		{
+			//intanciar el control para cada robot.
+			agents[i] = new Agent(i,factoryPtr);
+		}
 
-	// //controlador para cada robot
-	// Agent* agents[robots];
-	// // instanciar los controladores
-	// for (int i = 0; i < robots; ++i)
-	// {
-	// 	//intanciar el control para cada robot.
-	// 	agents[i] = new Agent(i,factoryPtr,configurationPtr);
-	// }
+		cout << "kinda succes" << endl;
 
-	// //rutina de trabajo
+		// //rutina de trabajo
 
-	// while(ros::ok())
-	// {
-	// 	system("clear"); //limpia la consola
-	// 	//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-	// 	for (int i = 0; i < robots; ++i)
-	// 	{
-	// 		agents[i]->update();
-	// 	}
-	// 	ros::spinOnce();
-	// 	loop_rate.sleep(); //sleep por el resto del ciclo
-	// }
+		// while(ros::ok())
+		// {
+		// 	system("clear"); //limpia la consola
+		// 	//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+		// 	for (int i = 0; i < robots; ++i)
+		// 	{
+		// 		agents[i]->update();
+		// 	}
+		// 	ros::spinOnce();
+		// 	loop_rate.sleep(); //sleep por el resto del ciclo
+		// }
+	}
+	else{
+		cout << "Faltan/Sobran configuraciones para algunos robots." << endl;
+	}
+
 	return 0;
 }

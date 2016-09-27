@@ -33,15 +33,15 @@ public:
 	
 	~Factory();
 
-	std::vector<SteeringBehavior*> instanciateBehaviors(unsigned int id, std::string pre);
+	int instanciateBehaviors(unsigned int id, std::string pre, std::vector<SteeringBehavior*> behaviors, std::vector<float> weights);
+
+	int getAgents();
 
 private: 
 
-	std::vector<SteeringBehavior*>* vectorPtr;
-
 	int nbAgents;
 
-	string agentsType[];
+	// Setting& agentsType;
 
 	Config* cfg;
 };
