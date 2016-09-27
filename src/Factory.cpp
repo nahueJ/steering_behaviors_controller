@@ -7,12 +7,18 @@
 
 #include "../include/Factory.h"
 
-Factory::Factory(config_t* configurationPtr)
+Factory::Factory()
 {
 	//Cargo los valores en el archivo de configuracion
-	config = *configurationPtr;
+	cfg = new Config;
 
+	cfg->readFile(CONFIGFILE);
 
+	string test = "mistake";
+
+	cfg->lookupValue("test", test);
+
+	cout << "this was a " << test << endl;
 }
 	
 Factory::~Factory()
@@ -25,10 +31,10 @@ std::vector<SteeringBehavior*> Factory::instanciateBehaviors(unsigned int id, st
 	vectorPtr = new std::vector<SteeringBehavior*>;
 
 	//Instanciate Seek
-	SteeringBehavior* seekPtr = new Seek (id,pre,&config);
+	SteeringBehavior* seekPtr = new Seek (id,pre,cfg);
 
 	//Instanciate ObstacleAvoidance
-	SteeringBehavior* obstacleavoidancePtr = new ObstacleAvoidance (id,pre,&config);
+	SteeringBehavior* obstacleavoidancePtr = new ObstacleAvoidance (id,pre,cfg);
 
 	vectorPtr->push_back(seekPtr);
 	vectorPtr->push_back(obstacleavoidancePtr);

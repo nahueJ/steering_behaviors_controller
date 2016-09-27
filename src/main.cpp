@@ -16,10 +16,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <libconfig.h++>
-using namespace libconfig;
-
-#define CONFIGFILE "./src/steering_behaviors_controller/simulation.cfg"
 
 unsigned int getNumberOfRobots()
 {
@@ -45,25 +41,12 @@ int main(int argc, char **argv)
 	ros::NodeHandle n;
 	ros::Rate loop_rate(10);
 
-	unsigned int robots;
+	// Instanciar la clase factory que genera los bh para la clase agente segun el archivo de conf
+	Factory* factoryPtr;
+	factoryPtr = new Factory(); //pasar direccion de un archivo de conf?
 
-	robots = getNumberOfRobots();
 
-	Config cfg;
-
-	// Read the file. If there is an error, report it and exit.
-
-	cfg.readFile(CONFIGFILE);
 	cout << "kinda succes" << endl;
-	
-
-
-
-
-
-
-	// Factory* factoryPtr;
-	// factoryPtr = new Factory(configurationPtr); //pasar direccion de un archivo de conf?
 
 	// //controlador para cada robot
 	// Agent* agents[robots];

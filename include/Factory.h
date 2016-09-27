@@ -12,11 +12,14 @@
 #include "ObstacleAvoidance.h"
 #include "Seek.h"
 
-#include <libconfig.h>
-
 #include <string>
 #include <vector>
 #include <sstream>
+
+#include <libconfig.h++>
+using namespace libconfig;
+
+#define CONFIGFILE "./src/steering_behaviors_controller/simulation.cfg"
 
 class Factory {
 public: 
@@ -24,7 +27,7 @@ public:
 	/**
 	 * @param unsigned int id
 	 */
-	Factory(config_t* configurationPtr);
+	Factory();
 
 	//Factory(i,behaviors[i], FactoryPtr);
 	
@@ -36,11 +39,11 @@ private:
 
 	std::vector<SteeringBehavior*>* vectorPtr;
 
-	config_t config;
-
 	int nbAgents;
 
 	string agentsType[];
+
+	Config* cfg;
 };
 
 #endif //_FACTORY_H

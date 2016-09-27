@@ -24,12 +24,14 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+#include <libconfig.h++>
+using namespace libconfig;
 
 class ObstacleAvoidance : public SteeringBehavior {
 
 	public: 
 		
-		ObstacleAvoidance(unsigned int id, std::string pre, config_t* configurationPtr);
+		ObstacleAvoidance(unsigned int id, std::string pre, Config* configurationPtr);
 		
 		~ObstacleAvoidance();
 

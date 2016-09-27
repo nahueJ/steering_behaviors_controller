@@ -25,6 +25,9 @@ using std::endl;
 
 #define PI 3.14159265
 
+#include <libconfig.h++>
+using namespace libconfig;
+
 class Seek: public SteeringBehavior {
 public: 
 
@@ -33,7 +36,7 @@ public:
 	 * @param id
 	 * @param weight
 	 */
-	Seek(unsigned int id, std::string pre, config_t* configurationPtr);
+	Seek(unsigned int id, std::string pre, Config* configurationPtr);
 	
 	~Seek();
 	

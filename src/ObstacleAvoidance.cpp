@@ -36,7 +36,7 @@ void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param unsigned int id
  * @param mySensor
  */
-ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, config_t* configurationPtr) : SteeringBehavior(std::string("obstacleAvoidance"), id, pre, configurationPtr)
+ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Config* configurationPtr) : SteeringBehavior(std::string("obstacleAvoidance"), id, pre, configurationPtr)
 {	
 	//Cargar Valores de configuracion 
 	// if (config.lookupValue("distMax", 	distMax)    &&

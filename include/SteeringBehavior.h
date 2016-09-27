@@ -11,6 +11,7 @@
 #include "ros/ros.h"
 
 #include <libconfig.h++>
+using namespace libconfig;
 
 #include <string>
 #include <iostream>
@@ -30,7 +31,7 @@ using std::string;
 class SteeringBehavior {
 public: 
 
-	SteeringBehavior(std::string myName, unsigned int id, std::string pre, config_t* configurationPtr);
+	SteeringBehavior(std::string myName, unsigned int id, std::string pre, Config* configurationPtr);
 	
 	~SteeringBehavior();
 	
@@ -54,7 +55,7 @@ protected:
 	float desiredW;
 	
 	//Clase para el ingreso de parametros de configuración
-	config_t* config;
+	Config* config;
 };
 
 #endif //_STEERINGBEHAVIOR_H
