@@ -112,11 +112,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS} /usr/include/
-)
-
-link_directories(/usr/lib/x86_64-linux-gnu/)
+include_directories(include /usr/include/ ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ library
 # add_library(steering_behaviors_controller
@@ -130,18 +126,20 @@ link_directories(/usr/lib/x86_64-linux-gnu/)
 
 ## Declare a C++ executable
 # add_executable(steering_behaviors_controller_node src/steering_behaviors_controller_node.cpp)
-add_executable(steering_behaviors_controller src/main.cpp src/Agent.cpp src/SteeringBehavior.cpp src/ObstacleAvoidance.cpp src/Seek.cpp src/Factory.cpp)
+add_executable(steering_behaviors_controller src/main.cpp src/Agent.cpp src/SteeringBehavior.cpp src/ObstacleAvoidance.cpp src/Seek.cpp src/Factory.cpp src/ConfigSingleton.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(steering_behaviors_controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(steering_behaviors_controller steering_behaviors_controller_generate_messages_cpp)
+
+# MM: La linea que sigue estaba causando un warning porque dice que una de las dependencies no existe. Si realmente no hace falta esto, quitar esta linea por completo
+#add_dependencies(steering_behaviors_controller steering_behaviors_controller_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(steering_behaviors_controller_node
 #   ${catkin_LIBRARIES}
 # )
-target_link_libraries(steering_behaviors_controller ${catkin_LIBRARIES})
+target_link_libraries(steering_behaviors_controller ${catkin_LIBRARIES} -lconfig++)
 
 #############
 ## Install ##
