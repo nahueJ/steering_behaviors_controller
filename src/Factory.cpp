@@ -15,40 +15,86 @@ Factory::Factory()
 	cfg->readFile(CONFIGFILE);
 	//inicializo la variable
 	nbAgents = cfg->lookup("simulationParams")["agentsOnSimulation"].getLength();	
+	//cantidad de definiciones de agentes en la conf
+	nbAgentsCfg = cfg->lookup("agents").getLength();
 }
 	
 Factory::~Factory()
 {
 }
 
-int Factory::instanciateBehaviors(unsigned int id, std::string pre, std::vector<SteeringBehavior*> behaviors, std::vector<float> weights)
+int Factory::instanciateBehaviors(	unsigned int id, std::string pre, 
+									std::vector<SteeringBehavior*>* behaviors, 
+									std::vector<float>* weights,
+									std::string* type)
 {
-	// Setting& params = cfg->lookup("simulationParams");
-	cout << "aqui" << endl;
 	//busco el tipo de agente
 	string agentType = 	cfg->lookup("simulationParams")["agentsOnSimulation"][id];
-	//con el tipo de agente busco el array de arreglos correspondientes
-	// y la lista de pesos
-	SteeringBehavior* auxBhPtr;
-	if (!agentType.empty())
-	{
+
+	if (!agentType.empty()){
 		cout << "the agent " << id << " is an " << agentType << endl;
-		//Instanciate Seek
-		auxBhPtr = new Seek (id,pre,cfg);
-		behaviors.push_back(auxBhPtr);
-		//Instanciate ObstacleAvoidance
-		auxBhPtr = new ObstacleAvoidance (id,pre,cfg);
-		behaviors.push_back(auxBhPtr);
+		
+		//con el tipo de agente busco el elemento en el array de configuraciones de agentes correspondiente
+		for (int i = 0; i < nbAgentsCfg; ++i)
+		{
+			string typeCfg = cfg->lookup("agents")[i]["type"];
+			if (agentType == typeCfg)
+			{
+				//cuando encuetro el tipo correspondiente
+				cout << typeCfg << " -> FOUND" << endl;
+				//verifico que la cantidad de comportamientos es igual que la cantidad de pesos
+				int nbBehaviorsType = cfg->lookup("agents")[i]["behaviors"].getLength();
+				int nbWeightsType = cfg->lookup("agents")[i]["weights"].getLength();
+				if(nbBehaviorsType == nbWeightsType)
+				{
+					Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
+					Setting& weightsToCreate = cfg ->lookup("agents")[i]["weights"];
+					for (int j = 0; j < nbBehaviorsType; ++j)
+					{
+						//cargar el vector de comportamiento con los que dice el array behaviorsToCreate
+						behaviors->push_back(pickBehavior(behaviorsToCreate[j].c_str() , id, pre));
+						weights->push_back(weightsToCreate[j]);
+					}
+					*type = agentType;
+				}
+				break;
+			}
+		}
 		return 1;
 	}
 	else{
 		cout << "Cant find agent " << id << " definition" << endl;
 		return 0;
 	}
-
 }
 
 int Factory::getAgents()
 {
 	return nbAgents;
+}
+
+SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::string pre)
+{
+	SteeringBehavior* auxBhPtr;
+	if (behaviorName == "seekReactive" )
+	{
+		Setting& sets = cfg ->lookup("seekBehaviors.seekReactive");
+		auxBhPtr = new Seek (id,pre,&sets);
+	}
+	else if (behaviorName == "seekRL" )
+	{
+		Setting& sets = cfg ->lookup("seekBehaviors.seekRL");
+		auxBhPtr = new Seek (id,pre,&sets);		
+	}
+	else if (behaviorName == "avoidObstaclesReactive")
+	{
+		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesReactive");
+		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
+	}
+	else if (behaviorName == "avoidObstaclesRL")
+	{
+		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesRL");
+		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
+	}
+	return auxBhPtr;
 }

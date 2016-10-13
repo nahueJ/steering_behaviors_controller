@@ -58,21 +58,19 @@ int main(int argc, char **argv)
 			agents[i] = new Agent(i,factoryPtr);
 		}
 
-		cout << "kinda succes" << endl;
+		//rutina de trabajo
 
-		// //rutina de trabajo
-
-		// while(ros::ok())
-		// {
-		// 	system("clear"); //limpia la consola
-		// 	//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-		// 	for (int i = 0; i < robots; ++i)
-		// 	{
-		// 		agents[i]->update();
-		// 	}
-		// 	ros::spinOnce();
-		// 	loop_rate.sleep(); //sleep por el resto del ciclo
-		// }
+		while(ros::ok())
+		{
+			system("clear"); //limpia la consola
+			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+			for (int i = 0; i < robots; ++i)
+			{
+				agents[i]->update();
+			}
+			ros::spinOnce();
+			loop_rate.sleep(); //sleep por el resto del ciclo
+		}
 	}
 	else{
 		cout << "Faltan/Sobran configuraciones para algunos robots." << endl;

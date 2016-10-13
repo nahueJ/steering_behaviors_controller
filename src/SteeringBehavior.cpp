@@ -17,16 +17,14 @@
  * @param float weight
  */
 SteeringBehavior::SteeringBehavior(
-	std::string name,
 	unsigned int id, 
 	std::string pre, 
-	Config* configurationPtr) : 
-	myName (name),
+	Setting* configurationPtr) : 
 	robotId( id ), 
 	pretopicname(pre),
 	config (configurationPtr)
 {
-
+	myName = (*configurationPtr)["type"].c_str();
 }
 
 SteeringBehavior::~SteeringBehavior() {

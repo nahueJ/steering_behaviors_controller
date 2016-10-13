@@ -31,7 +31,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 	public: 
 		
-		ObstacleAvoidance(unsigned int id, std::string pre, Config* configurationPtr);
+		ObstacleAvoidance(unsigned int id, std::string pre, Setting* configurationPtr);
 		
 		~ObstacleAvoidance();
 
@@ -46,20 +46,23 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 		//Variables para suscribirse a un topic
 		ros::NodeHandle* rosNode;
-		ros::Subscriber* odomSubscriber;
+
+		//Funcion de Callback y variables para la suscripcion al topic del laser
 		ros::Subscriber* sensorSubscriber;
-
-		geometry_msgs::Twist myTwist;
-
-		//Funciones de Callback para las suscripciones a los topic del laser y del odometro (posicion y twist)
 		void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& messure);
-		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
-
-		//cantidad de haces del laser
-		int haz;
-		//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
+		//Array para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
 		float* laser;
-		
+		//Variables inherentes al sensor laser
+		int haz;					//cantidad de haces del laser
+		int sectores;				//cantidad de sectores en que se discretiza el barrido del laser
+		std::vector<float> zona;	//vector en el que se carga los valores de cada seccion discreta
+		int div;					//cantidad de haces por sector
+		float prescicion;			//separacion entre mediciones del laser, en angulos, es decir, la prescicion del sensor
+		float abanico;				//angulo total barrido por el sensor
+
+		//Funcion de Callback y variables para la suscripcion al topic del odometro (posicion y twist)
+		ros::Subscriber* odomSubscriber;
+		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);		
 		nav_msgs::Odometry*	myData;
 		//variables para almacenar los datos del odometro
 		float x;
@@ -73,7 +76,15 @@ class ObstacleAvoidance : public SteeringBehavior {
 		//Funciones privadas
 		float estimateLasers(float xnext, float ynext);
 		float nextDist( float dist, float angulo);
+		int updateZona(int* min);
+		float relativeToAbsolute(int relativeIndex);
+		float escapeTo(int minArea);
 		
+		void updateAct();
+		void updateFut();
+		float emergencia();
+		int zonaSafe();
+		void printZona();
 };
 
 #endif //_OBSTACLEAVOIDANCE_H

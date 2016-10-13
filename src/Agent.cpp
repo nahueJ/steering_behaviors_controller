@@ -45,45 +45,50 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 
 	//Intento instanciar los comportamientos
 
-	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),behaviors,weights))
+	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),&behaviors,&weights,&myType))
 	{
 		
-		// //*****************//
-		// //Creacion del Nodo//
-		// //*****************//
+		//*****************//
+		//Creacion del Nodo//
+		//*****************//
 
-		// //Inicializacion del publisher en el topic cmd_vel del robot correspondiente
-		// ros::M_string remappingsArgs;
-		// remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
-		// //generar el nombre del nodo con el robotId
-		// std::stringstream name;
-		// name << "controller_" << robotId;
-		// //inicializa el nodo
-		// ros::init(remappingsArgs, name.str());
-		// //crear el manejador del nodo y apuntarlo desde la variable de la clase
-		// rosNode = new ros::NodeHandle;
+		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+		ros::M_string remappingsArgs;
+		remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
+		//generar el nombre del nodo con el robotId
+		std::stringstream name;
+		name << "controller_" << robotId;
+		//inicializa el nodo
+		ros::init(remappingsArgs, name.str());
+		//crear el manejador del nodo y apuntarlo desde la variable de la clase
+		rosNode = new ros::NodeHandle;
 
-		// //*************************************//
-		// //Suscripcion y Publicaciones en Topics//
-		// //*************************************//
+		//*************************************//
+		//Suscripcion y Publicaciones en Topics//
+		//*************************************//
 
-		// //generar el nombre del topic a partir del robotId
+		//generar el nombre del topic a partir del robotId
 	
-		// std::stringstream pubtopicname ;
-		// pubtopicname << pretopicname->str() << "cmd_vel" ;
-		// //Crear el publicador y apuntarlo con la variable de la clase
-		// ctrlPublisher = new ros::Publisher;
-		// *ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
+		std::stringstream pubtopicname ;
+		pubtopicname << pretopicname->str() << "cmd_vel" ;
+		//Crear el publicador y apuntarlo con la variable de la clase
+		ctrlPublisher = new ros::Publisher;
+		*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
 
-		// std::stringstream sustopicname ;
-		// sustopicname << pretopicname->str() << "odom" ;
+		std::stringstream sustopicname ;
+		sustopicname << pretopicname->str() << "odom" ;
 
-		// //Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
-		// odomSubscriber = new ros::Subscriber;
-		// *odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
+		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+		odomSubscriber = new ros::Subscriber;
+		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
 		
-		// myData = new nav_msgs::Odometry;
-		cout << "Agent " << robotId << ": GOOD." << endl;
+		myData = new nav_msgs::Odometry;
+
+		cout << "Agent " << robotId << ": GOOD." << endl << "Recibi " << behaviors.size() << " comportamientos:" << endl;
+		for (int i = 0; i < behaviors.size(); ++i)
+		{
+			cout << "BH: " << behaviors[i]->getName() << " con W: " << weights[i] << endl;
+		}
 	}
 	else
 	{
@@ -108,49 +113,22 @@ Agent::~Agent() {
 
 void Agent::update() 
 {
-	cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
+	// cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
 
-	float desiredW;
-	float seekDelta;
-	float obsAvDelta;
-	float seekDeltaPond;
-	float obsAvDeltaPond;
+	float totalDelta = pondSum();				//error definitivo = suma de los errores ponderada
+//	cout << "suma de errores ponderado: " << totalDelta << endl;
+	float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
 
-	for (int i = 0; i < behaviors.size(); ++i)
+	cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -totalDelta << ")" << endl;
+
+	myTwist.angular.z = turningVel(totalDelta);		//para este error que velocidad corresponde
+
+	// cout << "velocidad publicada: R" << myTwist.angular.z << endl << endl;
+
+	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
-		desiredW = behaviors[i]->getDesiredW();
-		if (behaviors[i]->getName()=="seek")
-		{
-			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
-			seekDelta = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
-
-			myTwist.linear.x = behaviors[i]->getDesiredV();
-		}
-		else if (behaviors[i]->getName()=="obstacleAvoidance")
-		{
-			if (desiredW == -1.0)
-			{
-				obsAvDelta = 0;													//obstacle avoidance no percibe un obstaculo no modifica el angulo actual
-				cout << "NO OBSTACLE" << endl << endl << endl;
-			}
-			else 
-			{
-				cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
-				obsAvDelta = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek										
-			}
-		}
-		cout << endl;
-	}
-
-	float defDelta = seekWeight * seekDelta + ObsAvWeight * obsAvDelta;				//error definitivo = suma de los errores ponderada
-	//cout << "suma de errores ponderado: " << defDelta << endl;
-	float desiredAngle = addAngle(myData->pose.pose.orientation.z, defDelta);		//angulo deseado = angulo + error
-
-	cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -defDelta << ")" << endl;
-
-	myTwist.angular.z = turningVel(defDelta);		//para este error que velocidad corresponde
-
-	cout << "velocidad publicada: R" << myTwist.angular.z << endl << endl;
+	 	myTwist.linear.x = 0.2;
+	} 
 
     ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
@@ -195,10 +173,13 @@ float Agent::addAngle(float initialAngle, float error){	//angulo deseado = angul
 	{
 		desiredAngle = 2 - desiredAngle;
 	}
-	
+	else if (desiredAngle<-1)
+	{
+		desiredAngle = 2 + desiredAngle;
+	}
 	if (desiredAngle>1.0 ^ desiredAngle<-1.0)
 	{
-		cout << "ERROR1 ADDANGLE EN AGENT" << endl ;
+		cout << "ERROR1 ADDANGLE EN AGENT " << desiredAngle << endl ;
 	}
 
 	return desiredAngle;
@@ -234,7 +215,7 @@ float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del ang
 
 	if (deltaAng>1.0 ^ deltaAng<-1.0)
 	{
-		cout << "ERROR1 DELTAANGLE EN AGENT" << endl ;
+		cout << "ERROR1 DELTAANGLE EN AGENT" << deltaAng << endl ;
 	}
 
 	return deltaAng;
@@ -244,7 +225,7 @@ float Agent::turningVel(float error){	//para este error que velocidad correspond
 
 	if (error>1.0 ^ error<-1.0)
 	{
-		cout << "ERROR1 TURNINGVEL EN AGENT" << endl ;
+		cout << "ERROR1 TURNINGVEL EN AGENT " << error<< endl ;
 	}
 
 	return -error;
@@ -260,4 +241,62 @@ float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
 		angle = angle - 360; 
 	}
 	return angle;
+}
+
+float Agent::pondSum()
+{
+	float desiredW;
+	float behaviorDelta[weights.size()];
+	float tempW[weights.size()];
+	float sum = 0;
+	float distribute = 0;
+	int zeros = 0;
+	// recupero los W de cada comportamiento	
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		desiredW = behaviors[i]->getDesiredW();
+		if (behaviors[i]->getName()=="seekReactive")
+		{
+			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
+			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
+			tempW[i] = weights[i];
+			myTwist.linear.x = behaviors[i]->getDesiredV();
+		}
+		else if (behaviors[i]->getName()=="avoidObstaclesReactive")
+		{
+			if (desiredW == -1.0)
+			{
+				behaviorDelta[i] = 0;													//obstacle avoidance no percibe un obstaculo no modifica el angulo actual
+				cout << "NO OBSTACLE" << endl << endl << endl;
+				tempW[i] = 0;
+				distribute += weights[i];
+				zeros++;
+			}
+			else 
+			{
+				cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
+				behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
+				tempW[i] = weights[i];
+			}
+		}
+		cout << endl;
+	}
+
+	//redistribuyo los pesos que no se utilizan
+	distribute = distribute / (weights.size() - zeros); //distribuyo equitativamente entre los comportamientos que estan activos
+	for (int i = 0; i < weights.size(); ++i)
+	{
+		if (tempW[i] != 0)
+		{
+			tempW[i] += distribute;
+		}
+	}
+
+	//ya los pesos distribuidos, hago la suma ponderada
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		sum += tempW[i]*behaviorDelta[i];
+	}
+	
+	return sum;
 }

@@ -35,19 +35,12 @@ public:
 	
 	void update();
 
-	int imAlone();
 
-	float addAngle(float, float);
-
-	float deltaAngle(float, float);
-
-	float turningVel(float);
-
-	float toScale(float);
 	
 private: 
 	//Id del robot del controlador
 	unsigned int robotId;
+	string myType;
 
 	//Variables para publicar por un topic
 	ros::NodeHandle* rosNode;
@@ -58,8 +51,6 @@ private:
 	
 	std::vector<SteeringBehavior*> behaviors;
 	std::vector<float> weights;
-	float seekWeight;
-	float ObsAvWeight;
 
 	geometry_msgs::Pose target;
 	
@@ -71,6 +62,17 @@ private:
 
 	nav_msgs::Odometry*	myData;
 	
+	int imAlone();
+
+	float addAngle(float, float);
+
+	float deltaAngle(float, float);
+
+	float turningVel(float);
+
+	float toScale(float);
+
+	float pondSum();
 };
 
 #endif //_AGENT_H

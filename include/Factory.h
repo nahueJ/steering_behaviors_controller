@@ -33,7 +33,10 @@ public:
 	
 	~Factory();
 
-	int instanciateBehaviors(unsigned int id, std::string pre, std::vector<SteeringBehavior*> behaviors, std::vector<float> weights);
+	int instanciateBehaviors(unsigned int id, std::string pre, 
+							std::vector<SteeringBehavior*>* behaviors, 
+							std::vector<float>* weights,
+							std::string* type);
 
 	int getAgents();
 
@@ -41,9 +44,13 @@ private:
 
 	int nbAgents;
 
+	int nbAgentsCfg;
+
 	// Setting& agentsType;
 
 	Config* cfg;
+
+	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
 };
 
 #endif //_FACTORY_H

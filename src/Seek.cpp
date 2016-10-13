@@ -23,56 +23,48 @@ void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param id
  * @param weight
  */
-Seek::Seek(unsigned int id, std::string pre, Config* configurationPtr) : SteeringBehavior(std::string("seek"), id, pre, configurationPtr)
+Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : SteeringBehavior(id, pre, configurationPtr)
 {
-	float vel;
 	//Cargar Valores de configuracion 
-	// if (config.lookupValue("targetX",	target.position.x)	&&
-	//     config.lookupValue("targetY",  target.position.y)	&&
-	//     config.lookupValue("desiredV",	vel)				&&
-	//     config.lookupValue("toleranceToTarget", toleranceToTarget))
-	if(1)
-	{
-	 
-		cout << "Instanciando Seek" << endl;
+	target.position.x = (*configurationPtr)["targetX"];
+	target.position.y = (*configurationPtr)["targetY"];
+	float vel = (*configurationPtr)["desiredV"];
+	toleranceToTarget = (*configurationPtr)["toleranceToTarget"];
 
-		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
-		ros::M_string remappingsArgs;
+	cout << "Instanciando Seek, objetivo (" << target.position.x << "," << target.position.y << ")" << endl;
 
-		//generar el nombre del nodo con el robotId
-		std::stringstream nameMaster;
-		nameMaster << "controller_" << robotId;
+	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+	ros::M_string remappingsArgs;
 
-		remappingsArgs.insert(ros::M_string::value_type( "__master", nameMaster.str()));
+	//generar el nombre del nodo con el robotId
+	std::stringstream nameMaster;
+	nameMaster << "controller_" << robotId;
 
-		//generar el nombre del nodo con el robotId
-		std::stringstream name;
-		name << "seek_" << robotId;
+	remappingsArgs.insert(ros::M_string::value_type( "__master", nameMaster.str()));
 
-		//inicializa el nodo
-		ros::init(remappingsArgs, name.str());
+	//generar el nombre del nodo con el robotId
+	std::stringstream name;
+	name << "seek_" << robotId;
 
-		//crear el manejador del nodo y apuntarlo desde la variable de la clase
-		rosNode = new ros::NodeHandle;
+	//inicializa el nodo
+	ros::init(remappingsArgs, name.str());
 
-		/* Subscripcion al topic base_pose_ground_truth de este robot*/
-		//generar el nombre del topic a partir del robotId
-		std::stringstream topicname;
+	//crear el manejador del nodo y apuntarlo desde la variable de la clase
+	rosNode = new ros::NodeHandle;
 
-		topicname << pretopicname << "odom" ;
+	// Subscripcion al topic base_pose_ground_truth de este robot
+	//generar el nombre del topic a partir del robotId
+	std::stringstream topicname;
 
-		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
-		odomSubscriber = new ros::Subscriber;
-		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
+	topicname << pretopicname << "odom" ;
 
-		myData = new nav_msgs::Odometry;
+	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+	odomSubscriber = new ros::Subscriber;
+	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
 
-		setDesiredV(vel);
-	}
-	else
-	{
-	    cout << "SEEK " << robotId << ": Missing parameter in configuration file." << endl;
-	}
+	myData = new nav_msgs::Odometry;
+
+	setDesiredV(vel);
 }
 
 Seek::~Seek() {
@@ -96,10 +88,18 @@ void Seek::update() {
 	setDesiredW(wi);
 
 	//verificar distancia al objetivo
-	if (toleranceToTarget>sqrt(pow(errorx,2)+pow(errory,2)))
+	float almost = sqrt(pow(errorx,2)+pow(errory,2));
+	cout << "ALMOST! " << almost << endl;
+	if (almost < toleranceToTarget*3)
+	{
+		setDesiredV(0.1);
+	}
+	if (toleranceToTarget>almost)
 	{
 		//si es menor que la tolerancia se detiene
+		cout << "OBJETIVO ALCANZADO" << endl;
 		setDesiredV(0.0);
+		setDesiredW(0.0);
 	}
 }
 
