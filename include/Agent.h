@@ -16,7 +16,7 @@
 #include <geometry_msgs/Twist.h>
 
 #include "SteeringBehavior.h"
-
+#include "Weights.h"
 #include "Factory.h"
 
 #include <string>
@@ -50,7 +50,7 @@ private:
 	std::stringstream* pretopicname;
 	
 	std::vector<SteeringBehavior*> behaviors;
-	std::vector<float> weights;
+	Weights* weights;
 
 	geometry_msgs::Pose target;
 	
