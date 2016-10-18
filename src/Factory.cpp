@@ -25,7 +25,7 @@ Factory::~Factory()
 
 int Factory::instanciateBehaviors(	unsigned int id, std::string pre, 
 									std::vector<SteeringBehavior*>* behaviors, 
-									std::vector<float>* weights,
+									Weights** weights,
 									std::string* type)
 {
 	//busco el tipo de agente
@@ -49,11 +49,14 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 				{
 					Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
 					Setting& weightsToCreate = cfg ->lookup("agents")[i]["weights"];
+					string learning = cfg->lookup("agents")[i]["learning"];
+					(*weights) = new Weights(learning);
 					for (int j = 0; j < nbBehaviorsType; ++j)
 					{
 						//cargar el vector de comportamiento con los que dice el array behaviorsToCreate
 						behaviors->push_back(pickBehavior(behaviorsToCreate[j].c_str() , id, pre));
-						weights->push_back(weightsToCreate[j]);
+						cout << behaviorsToCreate[j].c_str() << " instantiated" << endl;
+						(*weights)->addWeight(behaviorsToCreate[j].c_str(),weightsToCreate[j]);
 					}
 					*type = agentType;
 				}

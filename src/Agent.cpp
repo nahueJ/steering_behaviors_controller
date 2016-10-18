@@ -87,8 +87,9 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		cout << "Agent " << robotId << ": GOOD." << endl << "Recibi " << behaviors.size() << " comportamientos:" << endl;
 		for (int i = 0; i < behaviors.size(); ++i)
 		{
-			cout << "BH: " << behaviors[i]->getName() << " con W: " << weights[i] << endl;
+			cout << "BH: " << behaviors[i]->getName() << " con W: " << weights->getWeight(i,behaviors[i]->getName()) << endl;
 		}
+		nbBehaviors = behaviors.size();
 	}
 	else
 	{
@@ -246,20 +247,20 @@ float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
 float Agent::pondSum()
 {
 	float desiredW;
-	float behaviorDelta[weights.size()];
-	float tempW[weights.size()];
+	float behaviorDelta[nbBehaviors];
+	float tempW[nbBehaviors];
 	float sum = 0;
-	float distribute = 0;
-	int zeros = 0;
+	float distribute = 0;								// de esto se tiene que encargar weights
+	int zeros = 0;										// de esto se tiene que encargar weights
 	// recupero los W de cada comportamiento	
-	for (int i = 0; i < behaviors.size(); ++i)
+	for (int i = 0; i < nbBehaviors; ++i)
 	{
 		desiredW = behaviors[i]->getDesiredW();
 		if (behaviors[i]->getName()=="seekReactive")
 		{
 			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
-			tempW[i] = weights[i];
+			tempW[i] = weights->getWeight(i,behaviors[i]->getName());
 			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
 		else if (behaviors[i]->getName()=="avoidObstaclesReactive")
@@ -269,22 +270,22 @@ float Agent::pondSum()
 				behaviorDelta[i] = 0;													//obstacle avoidance no percibe un obstaculo no modifica el angulo actual
 				cout << "NO OBSTACLE" << endl << endl << endl;
 				tempW[i] = 0;
-				distribute += weights[i];
-				zeros++;
+				distribute += weights->getWeight(i,behaviors[i]->getName());	// de esto se tiene que encargar weights
+				zeros++;													// de esto se tiene que encargar weights
 			}
 			else 
 			{
 				cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
 				behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
-				tempW[i] = weights[i];
+				tempW[i] = weights->getWeight(i,behaviors[i]->getName());	// de esto se tiene que encargar weights
 			}
 		}
 		cout << endl;
 	}
 
-	//redistribuyo los pesos que no se utilizan
-	distribute = distribute / (weights.size() - zeros); //distribuyo equitativamente entre los comportamientos que estan activos
-	for (int i = 0; i < weights.size(); ++i)
+	//redistribuyo los pesos que no se utilizan		// de esto se tiene que encargar weights
+	distribute = distribute / (nbBehaviors - zeros); //distribuyo equitativamente entre los comportamientos que estan activos
+	for (int i = 0; i < nbBehaviors; ++i)
 	{
 		if (tempW[i] != 0)
 		{
@@ -293,7 +294,7 @@ float Agent::pondSum()
 	}
 
 	//ya los pesos distribuidos, hago la suma ponderada
-	for (int i = 0; i < behaviors.size(); ++i)
+	for (int i = 0; i < nbBehaviors; ++i)
 	{
 		sum += tempW[i]*behaviorDelta[i];
 	}

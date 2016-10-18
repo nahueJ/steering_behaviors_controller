@@ -39,6 +39,7 @@ float Weights::getWeight(int id, std::string name){
 int Weights::addWeight(std::string name, float value){
 	names.push_back(name);
 	weights.push_back(value);
+	//informar al critico si hay
 	return(names.size()-1);
 }
 

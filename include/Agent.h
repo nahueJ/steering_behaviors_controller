@@ -51,6 +51,7 @@ private:
 	
 	std::vector<SteeringBehavior*> behaviors;
 	Weights* weights;
+	int nbBehaviors;
 
 	geometry_msgs::Pose target;
 	

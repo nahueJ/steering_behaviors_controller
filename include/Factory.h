@@ -8,7 +8,7 @@
 #define _FACTORY_H
 
 #include "SteeringBehavior.h"
-
+#include "Weights.h"
 #include "ObstacleAvoidance.h"
 #include "Seek.h"
 
@@ -28,14 +28,12 @@ public:
 	 * @param unsigned int id
 	 */
 	Factory();
-
-	//Factory(i,behaviors[i], FactoryPtr);
 	
 	~Factory();
 
 	int instanciateBehaviors(unsigned int id, std::string pre, 
 							std::vector<SteeringBehavior*>* behaviors, 
-							std::vector<float>* weights,
+							Weights** weights,
 							std::string* type);
 
 	int getAgents();
