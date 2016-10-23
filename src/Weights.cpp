@@ -4,7 +4,6 @@
  * @version 1.0.0
  */
 
-
 #include "../include/Weights.h"
 
 
@@ -16,24 +15,18 @@ Weights::~Weights(){
 
 }
 
-float Weights::getWeight(int id, std::string name){
-	if (name == names[id])
+std::vector<float> Weights::getWeights(){
+	if (optimization == "si")
 	{
-		if (optimization == "si")
-		{
-			if(update(id)){
-				//cout de un OK 
-				//guardar un historico...
-			}
-			else{
-				//cout de error de update
-			}
+		if(update()){
+			//cout de un OK 
+			//guardar un historico...
 		}
-		return weights[id];
+		else{
+			//cout de error de update
+		}
 	}
-	else{
-		return -1;
-	}
+	return weights;
 }
 
 int Weights::addWeight(std::string name, float value){
@@ -43,13 +36,13 @@ int Weights::addWeight(std::string name, float value){
 	return(names.size()-1);
 }
 
-int Weights::setCritic(/* puntero del critico */){
-	//asignarlo al atributo...
+int Weights::setCritic(Critic* c){
+	critic = c;
 	return 1;
 }
 
-int Weights::update(int wid){
+int Weights::update(){
 	//pedirle al critico q actualize el valor del peso
-//	return	critico.update(wid);
+//	return	critico.update(wid,names[wid]);
 	return 0.0;
 }

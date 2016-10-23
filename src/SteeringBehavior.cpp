@@ -24,7 +24,9 @@ SteeringBehavior::SteeringBehavior(
 	pretopicname(pre),
 	config (configurationPtr)
 {
-	myName = (*configurationPtr)["type"].c_str();
+	myName = (*configurationPtr)["name"].c_str();
+	myType = (*configurationPtr)["type"].c_str();
+	variables = (*configurationPtr)["variables"];
 }
 
 SteeringBehavior::~SteeringBehavior() {
@@ -34,6 +36,16 @@ SteeringBehavior::~SteeringBehavior() {
 string SteeringBehavior::getName() 
 {
 	return myName;
+}
+
+string SteeringBehavior::getType() 
+{
+	return myType;
+}
+
+int SteeringBehavior::getNbVbles() 
+{
+	return variables;
 }
 
 float SteeringBehavior::getDesiredV() 

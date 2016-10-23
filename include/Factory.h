@@ -8,9 +8,11 @@
 #define _FACTORY_H
 
 #include "SteeringBehavior.h"
-#include "Weights.h"
 #include "ObstacleAvoidance.h"
 #include "Seek.h"
+
+#include "Weights.h"
+#include "Critic.h"
 
 #include <string>
 #include <vector>

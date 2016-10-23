@@ -4,7 +4,6 @@
  * @version 1.0.0
  */
 
-
 #include "../include/Factory.h"
 
 Factory::Factory()
@@ -51,12 +50,20 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 					Setting& weightsToCreate = cfg ->lookup("agents")[i]["weights"];
 					string learning = cfg->lookup("agents")[i]["learning"];
 					(*weights) = new Weights(learning);
+					//Instancio los comportamientos y cargo los pesos a la clase Weights correspondiente
 					for (int j = 0; j < nbBehaviorsType; ++j)
 					{
 						//cargar el vector de comportamiento con los que dice el array behaviorsToCreate
 						behaviors->push_back(pickBehavior(behaviorsToCreate[j].c_str() , id, pre));
 						cout << behaviorsToCreate[j].c_str() << " instantiated" << endl;
 						(*weights)->addWeight(behaviorsToCreate[j].c_str(),weightsToCreate[j]);
+					}
+					//si el agente se definio con aprendizaje, instancio el critico correspondiente y le paso el puntero a la clase pesos para que realize el update
+					if (learning != "no")
+					{
+						Setting& sets = cfg ->lookup("critics.criticQ");
+						Critic* criticPtr = new Critic(id,&sets, behaviors);
+						(*weights)->setCritic(criticPtr);
 					}
 					*type = agentType;
 				}
@@ -92,6 +99,11 @@ SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::s
 	else if (behaviorName == "avoidObstaclesReactive")
 	{
 		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesReactive");
+		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
+	}
+	else if (behaviorName == "avoidObstaclesRL")
+	{
+		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesRL");
 		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
 	}
 	else if (behaviorName == "avoidObstaclesRL")

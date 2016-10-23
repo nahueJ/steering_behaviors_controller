@@ -87,7 +87,8 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		cout << "Agent " << robotId << ": GOOD." << endl << "Recibi " << behaviors.size() << " comportamientos:" << endl;
 		for (int i = 0; i < behaviors.size(); ++i)
 		{
-			cout << "BH: " << behaviors[i]->getName() << " con W: " << weights->getWeight(i,behaviors[i]->getName()) << endl;
+			w = weights->getWeights();
+			cout << "BH: " << behaviors[i]->getName() << " con W: " << w[i] << endl;
 		}
 		nbBehaviors = behaviors.size();
 	}
@@ -249,6 +250,7 @@ float Agent::pondSum()
 	float desiredW;
 	float behaviorDelta[nbBehaviors];
 	float tempW[nbBehaviors];
+	w = weights->getWeights();
 	float sum = 0;
 	float distribute = 0;								// de esto se tiene que encargar weights
 	int zeros = 0;										// de esto se tiene que encargar weights
@@ -260,7 +262,7 @@ float Agent::pondSum()
 		{
 			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
-			tempW[i] = weights->getWeight(i,behaviors[i]->getName());
+			tempW[i] = w[i];
 			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
 		else if (behaviors[i]->getName()=="avoidObstaclesReactive")
@@ -270,14 +272,14 @@ float Agent::pondSum()
 				behaviorDelta[i] = 0;													//obstacle avoidance no percibe un obstaculo no modifica el angulo actual
 				cout << "NO OBSTACLE" << endl << endl << endl;
 				tempW[i] = 0;
-				distribute += weights->getWeight(i,behaviors[i]->getName());	// de esto se tiene que encargar weights
+				distribute +=  w[i];	// de esto se tiene que encargar weights
 				zeros++;													// de esto se tiene que encargar weights
 			}
 			else 
 			{
 				cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
 				behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
-				tempW[i] = weights->getWeight(i,behaviors[i]->getName());	// de esto se tiene que encargar weights
+				tempW[i] = w[i];	// de esto se tiene que encargar weights
 			}
 		}
 		cout << endl;

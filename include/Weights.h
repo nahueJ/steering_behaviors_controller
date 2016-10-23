@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+#include "Critic.h"
+
 #include <libconfig.h++>
 using namespace libconfig;
 
@@ -20,11 +22,11 @@ public:
 	
 	~Weights();
 
-	float getWeight(int id, std::string name); //paso el nombre solo para verificar que estoy devolviendo el que corresponde, pero si han sido bien cargados, agente deberia tener en el mismo orden los comportamientos y los pesos
+	std::vector<float> getWeights(); //paso el nombre solo para verificar que estoy devolviendo el que corresponde, pero si han sido bien cargados, agente deberia tener en el mismo orden los comportamientos y los pesos
 
 	int addWeight(std::string name, float value);
 
-	int setCritic();//enviar aqui o en el constructor el puntero del critico
+	int setCritic(Critic* c);
 
 private: 
 
@@ -34,10 +36,9 @@ private:
 	
 	std::string optimization;
 
-	int update(int wid);
+	int update();
 
-	//puntero de la clase de critico
-
+	Critic* critic;
 };
 
 #endif //_WEIGHTS_H

@@ -38,6 +38,8 @@ public:
 	virtual void update() ; // función virtual pura
 	
 	virtual string getName();
+	virtual string getType();
+	virtual int getNbVbles();
 	virtual float getDesiredV();
 	virtual float getDesiredW(); 
 	
@@ -47,6 +49,8 @@ public:
 protected: 
 
 	string myName;
+	std::string myType;
+	int variables;
 	unsigned int robotId;
 
 	std::string pretopicname;

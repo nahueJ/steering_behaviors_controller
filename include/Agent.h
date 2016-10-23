@@ -50,6 +50,7 @@ private:
 	std::stringstream* pretopicname;
 	
 	std::vector<SteeringBehavior*> behaviors;
+	std::vector<float> w;
 	Weights* weights;
 	int nbBehaviors;
 
