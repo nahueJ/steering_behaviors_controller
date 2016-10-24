@@ -36,8 +36,6 @@ private:
 	
 	std::string optimization;
 
-	int update();
-
 	Critic* critic;
 };
 

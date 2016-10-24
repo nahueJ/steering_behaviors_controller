@@ -73,3 +73,30 @@ void SteeringBehavior::update(){
 
 }
 
+void SteeringBehavior::getVbles(std::vector<float>* v){
+	if (variables>0)
+	{
+		(*v)[0]=getVble1();
+		if (variables>1)
+		{
+			(*v)[1]=getVble2();
+			if (variables>2)
+			{
+				(*v)[2]=getVble3();
+			}
+		}
+	}
+}
+
+float SteeringBehavior::getVble1()
+{
+	return 0.0;
+}
+float SteeringBehavior::getVble2()
+{
+	return 0.0;
+}
+float SteeringBehavior::getVble3()
+{
+	return 0.0;
+}

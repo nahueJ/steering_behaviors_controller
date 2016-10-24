@@ -116,24 +116,9 @@ float Seek::wIdeal( float dx, float dy)
 	return wIdeal;
 }
 
-void Seek::getVbles(std::vector<float>* v){
-	if (variables>0)
-	{
-		(*v)[0]=getVble1();
-		if (variables>1)
-		{
-			(*v)[1]=getVble2();
-			if (variables>1)
-			{
-				(*v)[2]=getVble3();
-			}
-		}
-	}
-}
-
 float Seek::getVble1()
 {
-	return 0.0;
+	return sqrt(pow(errorx,2)+pow(errory,2)); //devuelve la dist al objetivo
 }
 float Seek::getVble2()
 {

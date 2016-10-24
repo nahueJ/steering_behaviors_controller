@@ -45,7 +45,6 @@ public:
 	 * @param myPose
 	 */
 	virtual void update();
-	virtual void getVbles(std::vector<float>* v) ;
 	virtual float getVble1() ;
 	virtual float getVble2() ;
 	virtual float getVble3() ;

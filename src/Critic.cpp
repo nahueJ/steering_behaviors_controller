@@ -8,9 +8,20 @@
 
 Critic::Critic(unsigned int id, Setting* configurationPtr,std::vector<SteeringBehavior*>* behaviorsPtr)
 {	
-	pesos = 0;
-	coeficientes = 0;
+	sets = configurationPtr;
 	behaviors = *behaviorsPtr;
+	pesos = behaviors.size();
+	coeficientes = 0;
+	for (int i = 0; i < pesos; ++i)
+	{
+		coeficientes += behaviors[i]->getNbVbles(); //cuento cuantas vlbes representativas del estado de cada behavior tengo
+	}
+	for (int i = 0; i < pesos; ++i)
+	{
+		std::vector<float> vAux = fillCoefsInit(i);	//cargo el vector con valores iniciales de coefs para calcular el peso de un comportamiento
+		weights.push_back(vAux);	//lo cargo a la lista de pesos		
+	}
+	showCoefsW();	//muestro el estado inicial
 }
 
 Critic::~Critic() 
@@ -18,20 +29,28 @@ Critic::~Critic()
 
 }
 
-float Critic::update(int wid,std::string type)
+std::vector<float> Critic::update()
 {
 	//verif 1ro si paso el tpo actualizar los coef segun los refuerzos
 
 	//actualizar todos las vbles
 	//seekVbles, oaVbles. etc
-
-	int bhIndex = getIndex(type);
-	float w = 0.0;
-
-	for (int i = 0; i < weights[bhIndex].size(); ++i)
+	std::vector<float> vbles;
+	for (int i = 0; i < behaviors.size(); ++i)
 	{
-		/* code */
-		//calc w como  sum pond del vect de coef por los del bhVbles
+		behaviors[i]->getVbles(&vbles);
+	}
+	//update coefs mat weights
+	updateCoefsW();
+	//calculo los w para el blend del agente
+	std::vector<float> w;
+	for (int i = 0; i < weights.size(); ++i)
+	{
+		w.push_back(0.0);
+		for (int j = 0; j < vbles.size(); ++i)
+		{
+			w[i] += weights[i][j] * vbles[j];
+		}
 	}
 	return w;
 }
@@ -54,35 +73,42 @@ int Critic::addW(std::string type, float value)
 	return 1;
 }
 
-int Critic::seekVbles(float* a, float* b)
+std::vector<float> Critic::fillCoefsInit(int b)
 {
-	//calcular las 2 bles para la actualizacion de pesos
-	//dist y delta ang
-	return 1;
-}
-
-int Critic::obstacleAvoidanceVbles(float* a, float* b)
-{
-	//calcular las 2 bles para la actualizacion de pesos
-	//area libre y dist mas cercana
-	return 1;
-}
-
-int Critic::fleeVbles(float* a, float* b)
-{
-	//calcular las 2 bles para la actualizacion de pesos
-	//dist y delta ang
-	return 1;
-}
-
-int Critic::getIndex(std::string type)
-{
-	for (int i = 0; i < weights.size(); ++i)
+	std::vector<float> vAux;
+	float aux;
+	for (int i = 0; i < coeficientes; ++i)
 	{
-		if (type==behaviors[i]->getType())
+		if (behaviors[b]->getType()=="seek")
 		{
-			return i;
+			vAux.push_back((*sets)["seekI"][i]);
+		}
+		else if (behaviors[b]->getType()=="avoidObstacles")
+		{
+			vAux.push_back((*sets)["oaI"][i]);
+		}
+		else if (behaviors[b]->getType()=="flee")
+		{
+			vAux.push_back((*sets)["fleeI"][i]);
 		}
 	}
-	return -1;
+	return vAux; 
+}
+
+void Critic::showCoefsW(){
+	for (int i = 0; i < pesos; ++i)
+	{
+		cout << "W" << i << ": " ;
+		for (int j = 0; j < coeficientes; ++j)
+		{
+			cout << weights[i][j] << "  ";
+		}
+		cout << endl;
+	}
+}
+
+void Critic::updateCoefsW(){
+	//como actualizo los coeficientes
+	//implementacion de la ec de q learning
+	//necesito la medida de la utilidad...
 }

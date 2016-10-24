@@ -39,7 +39,6 @@ class ObstacleAvoidance : public SteeringBehavior {
 		 * gets the last data and actualizes the desiredTwist
 		 */
 		virtual void update();
-		virtual void getVbles(std::vector<float>* v) ;
 		virtual float getVble1() ;
 		virtual float getVble2() ;
 		virtual float getVble3() ;
@@ -76,6 +75,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 		//distancia máxima a la que actua el comportamiento
 		float distMax;
 		float distMin;
+		float closestObstacle;
 
 		//Funciones privadas
 		float estimateLasers(float xnext, float ynext);

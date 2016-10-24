@@ -44,6 +44,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	haz = (*configurationPtr)["haz"];
 	prescicion = (*configurationPtr)["prescicion"];
 	sectores = (*configurationPtr)["sectores"];
+	closestObstacle = 8.0;
 	for (int i = 0; i < sectores; ++i)
 	{
 		zona.push_back(0.0);
@@ -124,6 +125,7 @@ void ObstacleAvoidance::updateAct()
 	float wideal;
 	int minArea;
 	int maxArea = updateZona(&minArea);
+	closestObstacle = zona[minArea];
 	int medio = (sectores + 1) / 2;
 	if (zonaSafe()){
 		wideal = -1;		//codigo de no hay obstaculo
@@ -360,24 +362,9 @@ void ObstacleAvoidance::printZona()
 	cout << ")D" << endl;
 }
 
-void ObstacleAvoidance::getVbles(std::vector<float>* v){
-	if (variables>0)
-	{
-		(*v)[0]=getVble1();
-		if (variables>1)
-		{
-			(*v)[1]=getVble2();
-			if (variables>1)
-			{
-				(*v)[2]=getVble3();
-			}
-		}
-	}
-}
-
 float ObstacleAvoidance::getVble1()
 {
-	return 0.0;
+	return closestObstacle;	//devuelve la dist al obstaculo mas cercano
 }
 float ObstacleAvoidance::getVble2()
 {

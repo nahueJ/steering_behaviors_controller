@@ -25,7 +25,7 @@ class Critic{
 		
 		~Critic();
 
-		float update(int wid,std::string type);
+		std::vector<float> update();
 
 		int addW(std::string type, float value); 
 
@@ -35,11 +35,12 @@ class Critic{
 		int pesos;
 		int coeficientes;
 
-		int seekVbles(float* a, float* b);
-		int obstacleAvoidanceVbles(float* a, float* b);
-		int fleeVbles(float* a, float* b);
+		Setting* sets;
 
-		int getIndex(std::string type);
+		std::vector<float> fillCoefsInit(int b);
+
+		void showCoefsW();
+		void updateCoefsW();
 };
 
 #endif //_CRITIC_H
