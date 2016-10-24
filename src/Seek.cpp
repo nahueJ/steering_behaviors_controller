@@ -115,3 +115,31 @@ float Seek::wIdeal( float dx, float dy)
 	float wIdeal = (2 * angulo / 360) -1;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
 	return wIdeal;
 }
+
+void Seek::getVbles(std::vector<float>* v){
+	if (variables>0)
+	{
+		(*v)[0]=getVble1();
+		if (variables>1)
+		{
+			(*v)[1]=getVble2();
+			if (variables>1)
+			{
+				(*v)[2]=getVble3();
+			}
+		}
+	}
+}
+
+float Seek::getVble1()
+{
+	return 0.0;
+}
+float Seek::getVble2()
+{
+	return 0.0;
+}
+float Seek::getVble3()
+{
+	return 0.0;
+}

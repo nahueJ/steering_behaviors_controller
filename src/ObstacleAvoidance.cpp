@@ -359,3 +359,31 @@ void ObstacleAvoidance::printZona()
 	}
 	cout << ")D" << endl;
 }
+
+void ObstacleAvoidance::getVbles(std::vector<float>* v){
+	if (variables>0)
+	{
+		(*v)[0]=getVble1();
+		if (variables>1)
+		{
+			(*v)[1]=getVble2();
+			if (variables>1)
+			{
+				(*v)[2]=getVble3();
+			}
+		}
+	}
+}
+
+float ObstacleAvoidance::getVble1()
+{
+	return 0.0;
+}
+float ObstacleAvoidance::getVble2()
+{
+	return 0.0;
+}
+float ObstacleAvoidance::getVble3()
+{
+	return 0.0;
+}
