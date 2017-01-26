@@ -14,7 +14,7 @@ Critic::Critic(unsigned int id, Setting* configurationPtr,std::vector<SteeringBe
 	coeficientes = 0;
 	for (int i = 0; i < pesos; ++i)
 	{
-		coeficientes += behaviors[i]->getNbVbles(); //cuento cuantas vlbes representativas del estado de cada behavior tengo
+		//coeficientes += behaviors[i]->getNbVbles(); //cuento cuantas vlbes representativas del estado de cada behavior tengo
 	}
 	for (int i = 0; i < pesos; ++i)
 	{
@@ -38,16 +38,16 @@ std::vector<float> Critic::update()
 	std::vector<float> vbles;
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
-		behaviors[i]->getVbles(&vbles);
+		//behaviors[i]->getVbles(&vbles);
 	}
 	//update coefs mat weights
-	updateCoefsW();
+		//updateCoefsW();
 	//calculo los w para el blend del agente
 	std::vector<float> w;
 	for (int i = 0; i < weights.size(); ++i)
 	{
 		w.push_back(0.0);
-		for (int j = 0; j < vbles.size(); ++i)
+		for (int j = 0; j < vbles.size(); ++j)
 		{
 			w[i] += weights[i][j] * vbles[j];
 		}

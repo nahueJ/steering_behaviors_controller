@@ -7,8 +7,8 @@
 #include "../include/Weights.h"
 
 
-Weights::Weights(std::string aprendizaje){
-	optimization = aprendizaje;
+Weights::Weights(std::string metodo){
+	seleccion = metodo;
 }
 
 Weights::~Weights(){
@@ -16,7 +16,7 @@ Weights::~Weights(){
 }
 
 std::vector<float> Weights::getWeights(){
-	if (optimization == "si")
+	if (seleccion == "si")
 	{
 		weights = critic->update();
 	}
@@ -26,7 +26,7 @@ std::vector<float> Weights::getWeights(){
 int Weights::addWeight(std::string name, float value){
 	names.push_back(name);
 	weights.push_back(value);
-	if (optimization == "si")
+	if (seleccion == "si")
 	{
 		//añadir al critico
 	}

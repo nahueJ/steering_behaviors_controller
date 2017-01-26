@@ -26,7 +26,27 @@ SteeringBehavior::SteeringBehavior(
 {
 	myName = (*configurationPtr)["name"].c_str();
 	myType = (*configurationPtr)["type"].c_str();
-	variables = (*configurationPtr)["variables"];
+
+	//Variables para la definicion de estado
+	int nbVar = (*configurationPtr)["variablesDeEstado"];
+
+	float minValState = (*configurationPtr)["minEstado"];
+	float maxValState = (*configurationPtr)["maxEstado"];	
+	float stepValState = (*configurationPtr)["paso"];
+
+	int nbVarPosibles = (maxValState-minValState)/stepValState;
+
+	//inicializo el array con los posibles valores para las variables de estado
+	for (int i = 0; i < nbVarPosibles; ++i)
+	{
+		valoresEstado.push_back(minValState+i*stepValState);
+	}
+
+	//inicializo el vector de estado con algun valor de los posibles valores
+	for (int i = 0; i < nbVar; ++i)
+	{
+		state.push_back(valoresEstado[valoresEstado.size()-1]);
+	}
 }
 
 SteeringBehavior::~SteeringBehavior() {
@@ -45,7 +65,12 @@ string SteeringBehavior::getType()
 
 int SteeringBehavior::getNbVbles() 
 {
-	return variables;
+	return state.size();
+}
+
+int SteeringBehavior::getNbPosibleValues() 
+{
+	return valoresEstado.size();
 }
 
 float SteeringBehavior::getDesiredV() 
@@ -73,30 +98,12 @@ void SteeringBehavior::update(){
 
 }
 
-void SteeringBehavior::getVbles(std::vector<float>* v){
-	if (variables>0)
-	{
-		(*v)[0]=getVble1();
-		if (variables>1)
-		{
-			(*v)[1]=getVble2();
-			if (variables>2)
-			{
-				(*v)[2]=getVble3();
-			}
-		}
-	}
+std::vector<float> SteeringBehavior::getState()
+{
+
 }
 
-float SteeringBehavior::getVble1()
+void SteeringBehavior::updateState()
 {
-	return 0.0;
-}
-float SteeringBehavior::getVble2()
-{
-	return 0.0;
-}
-float SteeringBehavior::getVble3()
-{
-	return 0.0;
+
 }

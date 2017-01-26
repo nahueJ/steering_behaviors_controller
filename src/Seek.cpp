@@ -82,6 +82,9 @@ void Seek::update() {
 	errorx = target.position.x - myData->pose.pose.position.x;
 	errory = target.position.y - myData->pose.pose.position.y;
 
+	//actualizar estado
+	updateState();
+
 	//calcular la orientacion ideal!
 	float wi = wIdeal(errorx,errory);
 
@@ -116,15 +119,23 @@ float Seek::wIdeal( float dx, float dy)
 	return wIdeal;
 }
 
-float Seek::getVble1()
+std::vector<float> Seek::getState()
 {
-	return sqrt(pow(errorx,2)+pow(errory,2)); //devuelve la dist al objetivo
+//El estado del comportamiento Seek es la distancia al objetivo, discretizada en los valores del vector valoresEstado
+	return state;
 }
-float Seek::getVble2()
+
+void Seek::updateState()
 {
-	return 0.0;
+	float continuousValState=sqrt(pow(errorx,2)+pow(errory,2));
+	//buscar dentro de los posibles valores aquel mas proximo al valor continuo
+	for (int i = 0; i < valoresEstado.size(); ++i)
+	{
+		if (valoresEstado[i]<=continuousValState)
+		{
+			state[0]=valoresEstado[i];
+			break;
+		}
+	}
 }
-float Seek::getVble3()
-{
-	return 0.0;
-}
+	

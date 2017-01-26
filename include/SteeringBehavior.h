@@ -14,6 +14,7 @@
 using namespace libconfig;
 
 #include <string>
+#include <vector>
 #include <iostream>
 using std::cout;
 using std::cin;
@@ -36,14 +37,13 @@ public:
 	~SteeringBehavior();
 	
 	virtual void update() ; // función virtual pura
-	virtual void getVbles(std::vector<float>* v) ;
-	virtual float getVble1() ;
-	virtual float getVble2() ;
-	virtual float getVble3() ;
-	
+	virtual std::vector<float> getState() ;
+	virtual void updateState() ;
+
 	virtual string getName();
 	virtual string getType();
 	virtual int getNbVbles();
+	virtual int getNbPosibleValues();
 	virtual float getDesiredV();
 	virtual float getDesiredW(); 
 	
@@ -54,8 +54,10 @@ protected:
 
 	string myName;
 	std::string myType;
-	int variables;
 	unsigned int robotId;
+
+	std::vector<float> state;
+	std::vector<float> valoresEstado; 
 
 	std::string pretopicname;
 

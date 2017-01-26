@@ -18,7 +18,7 @@ using namespace libconfig;
 class Weights {
 public: 
 
-	Weights(std::string aprendizaje); // y el tipo de critico
+	Weights(std::string metodo); // y el tipo de critico
 	
 	~Weights();
 
@@ -34,7 +34,7 @@ private:
 
 	std::vector<std::string> names;
 	
-	std::string optimization;
+	std::string seleccion;
 
 	Critic* critic;
 };

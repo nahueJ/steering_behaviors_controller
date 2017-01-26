@@ -68,7 +68,6 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		//*************************************//
 
 		//generar el nombre del topic a partir del robotId
-	
 		std::stringstream pubtopicname ;
 		pubtopicname << pretopicname->str() << "cmd_vel" ;
 		//Crear el publicador y apuntarlo con la variable de la clase
@@ -118,7 +117,7 @@ void Agent::update()
 	// cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
 
 	float totalDelta = pondSum();				//error definitivo = suma de los errores ponderada
-//	cout << "suma de errores ponderado: " << totalDelta << endl;
+	//	cout << "suma de errores ponderado: " << totalDelta << endl;
 	float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
 
 	cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -totalDelta << ")" << endl;
@@ -131,7 +130,6 @@ void Agent::update()
 	{
 	 	myTwist.linear.x = 0.2;
 	} 
-
     ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
 
@@ -254,7 +252,7 @@ float Agent::pondSum()
 	float sum = 0;
 	float distribute = 0;								// de esto se tiene que encargar weights
 	int zeros = 0;										// de esto se tiene que encargar weights
-	// recupero los W de cada comportamiento	
+	// recupero la orientación deseada de cada comportamiento	
 	for (int i = 0; i < nbBehaviors; ++i)
 	{
 		desiredW = behaviors[i]->getDesiredW();

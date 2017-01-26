@@ -107,24 +107,13 @@ ObstacleAvoidance::~ObstacleAvoidance()
 
 void ObstacleAvoidance::update() 
 {
-	if (myName == "avoidObstaclesReactive")
-	{
-		updateAct();
-	}
-	else if (myName == "avoidObstaclesFuture")
-	{
-		updateFut();
-	}
-	else{
-		cout << "Avoid Obstacles cant find update rules..." << endl;
-	}
-}
-
-void ObstacleAvoidance::updateAct() 
-{
 	float wideal;
 	int minArea;
+	//actualizar las medidas de los lasers
 	int maxArea = updateZona(&minArea);
+	//actualizar el estado
+	updateState();
+
 	closestObstacle = zona[minArea];
 	int medio = (sectores + 1) / 2;
 	if (zonaSafe()){
@@ -146,48 +135,6 @@ void ObstacleAvoidance::updateAct()
 		wideal = relativeToAbsolute(maxArea);
 	}
 	setDesiredW(wideal);
-}
-
-void ObstacleAvoidance::updateFut() 
-{
-	// esta es una idea de toma de decision alternativo, en vez de decidir en base a la informacion actual,
-	//a partir de la info actual, estimo la informacion que recibiría en un futuro si tomara cada una 
-	//de las diferentes opciones que dispongo (diferentes velocidades angulares). Finalmente tomo aquella que
-	//en un futuro me podría lle
-	/*discretizamos las posibles velocidades angulares (w) del robot cada 0.1 en el intervalo (-1;1)
-
-	para cada posible w
-
-	estimo tita, x, y para la velocidad v=0.1
-	
-	x(t+1)=x+v*dt*cos(tita+w*dt)
-	y(t+1)=y+v*dt*sen(tita+w*dt)
-
-	en ese punto futuro las distancias a los puntos definidos por el laser son otras
-
-	laser(t+1) = actualizarLaser()
-	
-	y el area libre que rodea al robot es otra
-	area libre t+1 = sumatoria(lasers(t+1))
-
-	El mejor w es aquel que promete mayor area libre*/
-
-	float areaMaxima = 0.0;
-	float wideal;
-	for (int i = -9; i < 10; ++i)
-	{
-		float w = float(i/10);
-		float xnext = x + 0.1 * 0.5 * cos(tita + w * 0.5);
-		float ynext = y + 0.1 * 0.5 * sin(tita + w * 0.5);
-
-		float area = estimateLasers(xnext, ynext);	// en vez de estimar la posicion futura de cada punto percibido, deberia estimar la minima que tendria cada zona del arco de lasers...lo que no se si 1)saco la minima de cada zona y estimo desde esos minimos,o 2) saco el futuro de cada uno de los lasers y estimo con esos lasers las minimas de cada zona
-
-		if (area > areaMaxima)
-		{
-			wideal = w;
-		}
- 	}
-	setDesiredW(wideal); // creo q falta unificar unidades estoy mandando un w en angulos, que deberia estar en radianes...o al revez
 }
 
 float ObstacleAvoidance::getDesiredW()
@@ -362,15 +309,23 @@ void ObstacleAvoidance::printZona()
 	cout << ")D" << endl;
 }
 
-float ObstacleAvoidance::getVble1()
+std::vector<float> ObstacleAvoidance::getState()
 {
-	return closestObstacle;	//devuelve la dist al obstaculo mas cercano
+	//El estado del comportamiento OA es la distancia medidas por los lasers, cada una discretizada en los valores del vector valoresEstado y discretizados los 270 lasers en grupos
+	return state;
 }
-float ObstacleAvoidance::getVble2()
+
+void ObstacleAvoidance::updateState()
 {
-	return 0.0;
-}
-float ObstacleAvoidance::getVble3()
-{
-	return 0.0;
+	for (int i = 0; i < state.size(); ++i)
+	{
+		for (int j = 0; j < valoresEstado.size(); ++j)
+		{
+			if (valoresEstado[j]<=zona[i])
+			{
+				state[i]=valoresEstado[j];
+				break;
+			}
+		}	
+	}
 }

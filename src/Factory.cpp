@@ -48,8 +48,8 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 				{
 					Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
 					Setting& weightsToCreate = cfg ->lookup("agents")[i]["weights"];
-					string learning = cfg->lookup("agents")[i]["learning"];
-					(*weights) = new Weights(learning);
+					string seleccionPesos = cfg->lookup("agents")[i]["seleccionPesos"];
+					(*weights) = new Weights(seleccionPesos);
 					//Instancio los comportamientos y cargo los pesos a la clase Weights correspondiente
 					for (int j = 0; j < nbBehaviorsType; ++j)
 					{
@@ -59,7 +59,7 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 						(*weights)->addWeight(behaviorsToCreate[j].c_str(),weightsToCreate[j]);
 					}
 					//si el agente se definio con aprendizaje, instancio el critico correspondiente y le paso el puntero a la clase pesos para que realize el update
-					if (learning != "no")
+					if (seleccionPesos != "no")
 					{
 						Setting& sets = cfg ->lookup("critics.criticQ");
 						Critic* criticPtr = new Critic(id,&sets, behaviors);
