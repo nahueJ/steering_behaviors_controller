@@ -9,34 +9,43 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Critic.h"
 
 #include <libconfig.h++>
 using namespace libconfig;
 
+struct ceroRuleStruct
+{
+	int behaviorNb;
+	float ceroOver;
+};
+
 class Weights {
 public: 
 
-	Weights(std::string metodo); // y el tipo de critico
+	Weights(std::vector<float>, Setting*); //constructor para pesos constantes contW
+
+	Weights(std::vector< std::vector<float> >, Setting*); //constructor para pesos segun qTable que se actualiza qvalueW
+
+//	Weights(); //constructor para pesos segun qTable constante constQvalueW	
+
+//	Weights(); //constructor para pesos constantes constAnnW
 	
 	~Weights();
 
-	std::vector<float> getWeights(); //paso el nombre solo para verificar que estoy devolviendo el que corresponde, pero si han sido bien cargados, agente deberia tener en el mismo orden los comportamientos y los pesos
-
-	int addWeight(std::string name, float value);
-
-	int setCritic(Critic* c);
+	std::vector<float> getWeights(std::vector< std::vector<float> >); //paso el nombre solo para verificar que estoy devolviendo el que corresponde, pero si han sido bien cargados, agente deberia tener en el mismo orden los comportamientos y los pesos
 
 private: 
 
-	std::vector<float> weights;
+	std::string myType;
 
-	std::vector<std::string> names;
-	
-	std::string seleccion;
+	//Vbles para pesos constantes
+	std::vector<float>* weights;
+	std::vector<ceroRuleStruct>* ceroRules;
+	std::vector<float> checkCeroRules(std::vector< std::vector<float> >);
 
-	Critic* critic;
 };
 
 #endif //_WEIGHTS_H

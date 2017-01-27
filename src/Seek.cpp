@@ -28,7 +28,7 @@ Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : Steeri
 	//Cargar Valores de configuracion 
 	target.position.x = (*configurationPtr)["targetX"];
 	target.position.y = (*configurationPtr)["targetY"];
-	float vel = (*configurationPtr)["desiredV"];
+	standardVel = (*configurationPtr)["desiredV"];
 	toleranceToTarget = (*configurationPtr)["toleranceToTarget"];
 
 	cout << "Instanciando Seek, objetivo (" << target.position.x << "," << target.position.y << ")" << endl;
@@ -64,7 +64,7 @@ Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : Steeri
 
 	myData = new nav_msgs::Odometry;
 
-	setDesiredV(vel);
+	setDesiredV(standardVel);
 }
 
 Seek::~Seek() {
@@ -93,16 +93,20 @@ void Seek::update() {
 	//verificar distancia al objetivo
 	float almost = sqrt(pow(errorx,2)+pow(errory,2));
 	cout << "ALMOST! " << almost << endl;
-	if (almost < toleranceToTarget*3)
-	{
-		setDesiredV(0.1);
-	}
 	if (toleranceToTarget>almost)
 	{
 		//si es menor que la tolerancia se detiene
 		cout << "OBJETIVO ALCANZADO" << endl;
 		setDesiredV(0.0);
 		setDesiredW(0.0);
+	}
+	else if (toleranceToTarget*3>almost)
+	{
+		setDesiredV(0.1);
+	}
+	else
+	{
+		setDesiredV(standardVel);
 	}
 }
 
@@ -127,15 +131,26 @@ std::vector<float> Seek::getState()
 
 void Seek::updateState()
 {
+	cout << "SState/cont: ";
 	float continuousValState=sqrt(pow(errorx,2)+pow(errory,2));
 	//buscar dentro de los posibles valores aquel mas proximo al valor continuo
-	for (int i = 0; i < valoresEstado.size(); ++i)
+	int indexMin = 0;
+	float min = continuousValState - valoresEstado[indexMin];
+	for (int i = 1; i < valoresEstado.size(); ++i)
 	{
-		if (valoresEstado[i]<=continuousValState)
+		if ((continuousValState - valoresEstado[i]) > 0)
 		{
-			state[0]=valoresEstado[i];
+			if ((continuousValState - valoresEstado[i])<min)
+			{
+				min = continuousValState - valoresEstado[i];
+				indexMin=i;
+			}
+		}
+		else{
 			break;
 		}
 	}
+	state[0]=valoresEstado[indexMin];
+	cout << continuousValState << "/" << state[0] << endl;
 }
 	

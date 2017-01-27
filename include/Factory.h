@@ -36,7 +36,8 @@ public:
 	int instanciateBehaviors(unsigned int id, std::string pre, 
 							std::vector<SteeringBehavior*>* behaviors, 
 							Weights** weights,
-							std::string* type);
+							std::string* type,
+							std::vector< std::vector<float> >* state);
 
 	int getAgents();
 
@@ -46,11 +47,12 @@ private:
 
 	int nbAgentsCfg;
 
-	// Setting& agentsType;
-
 	Config* cfg;
 
 	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
+
+	Weights* pickWeights(std::string, Setting&, std::vector<SteeringBehavior*>, std::vector< std::vector<float> >*);
+
 };
 
 #endif //_FACTORY_H

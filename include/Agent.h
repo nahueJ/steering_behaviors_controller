@@ -41,6 +41,7 @@ private:
 	//Id del robot del controlador
 	unsigned int robotId;
 	string myType;
+	std::vector< std::vector<float> > state;
 
 	//Variables para publicar por un topic
 	ros::NodeHandle* rosNode;
@@ -75,6 +76,10 @@ private:
 	float toScale(float);
 
 	float pondSum();
+
+	void updateState();
+
+	void printState();
 };
 
 #endif //_AGENT_H

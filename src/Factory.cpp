@@ -25,19 +25,21 @@ Factory::~Factory()
 int Factory::instanciateBehaviors(	unsigned int id, std::string pre, 
 									std::vector<SteeringBehavior*>* behaviors, 
 									Weights** weights,
-									std::string* type)
+									std::string* type,
+									std::vector< std::vector<float> >* state)
 {
 	//busco el tipo de agente
-	string agentType = 	cfg->lookup("simulationParams")["agentsOnSimulation"][id];
+	string agentType = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
+	*type = agentType;
 
-	if (!agentType.empty()){
-		cout << "the agent " << id << " is an " << agentType << endl;
+	if (!(*type).empty()){
+		cout << "the agent " << id << " is an " << *type << endl;
 		
 		//con el tipo de agente busco el elemento en el array de configuraciones de agentes correspondiente
 		for (int i = 0; i < nbAgentsCfg; ++i)
 		{
 			string typeCfg = cfg->lookup("agents")[i]["type"];
-			if (agentType == typeCfg)
+			if (*type == typeCfg)
 			{
 				//cuando encuetro el tipo correspondiente
 				cout << typeCfg << " -> FOUND" << endl;
@@ -49,23 +51,27 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 					Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
 					Setting& weightsToCreate = cfg ->lookup("agents")[i]["weights"];
 					string seleccionPesos = cfg->lookup("agents")[i]["seleccionPesos"];
-					(*weights) = new Weights(seleccionPesos);
-					//Instancio los comportamientos y cargo los pesos a la clase Weights correspondiente
-					for (int j = 0; j < nbBehaviorsType; ++j)
+					//****************************************//
+					//  Instanciación de los comportamientos  //
+					//****************************************//
+					for (int k = 0; k < nbBehaviorsType; ++k)
 					{
 						//cargar el vector de comportamiento con los que dice el array behaviorsToCreate
-						behaviors->push_back(pickBehavior(behaviorsToCreate[j].c_str() , id, pre));
-						cout << behaviorsToCreate[j].c_str() << " instantiated" << endl;
-						(*weights)->addWeight(behaviorsToCreate[j].c_str(),weightsToCreate[j]);
+						behaviors->push_back(pickBehavior(behaviorsToCreate[k].c_str() , id, pre));
 					}
-					//si el agente se definio con aprendizaje, instancio el critico correspondiente y le paso el puntero a la clase pesos para que realize el update
-					if (seleccionPesos != "no")
+					//*************************************************//
+					//Inicializacion de la estructura de Estado General//
+					//*************************************************//
+					(*state).clear();
+					for (int l = 0; l < behaviors->size(); ++l)
 					{
-						Setting& sets = cfg ->lookup("critics.criticQ");
-						Critic* criticPtr = new Critic(id,&sets, behaviors);
-						(*weights)->setCritic(criticPtr);
+						std::vector<float> auxVect = (*behaviors)[l]->getState();
+						(*state).push_back(auxVect);
 					}
-					*type = agentType;
+					//******************************//
+					//  Instanciación de los pesos  //
+					//******************************//
+					*weights = pickWeights(seleccionPesos, weightsToCreate, *behaviors, state);
 				}
 				break;
 			}
@@ -106,10 +112,27 @@ SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::s
 		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesRL");
 		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
 	}
-	else if (behaviorName == "avoidObstaclesRL")
-	{
-		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesRL");
-		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
-	}
 	return auxBhPtr;
+}
+
+Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std::vector<SteeringBehavior*> behaviors, std::vector< std::vector<float> >* state)
+{
+	Weights* auxWeights;
+	if (weightsType == "constW")
+	{
+		std::vector<float> auxW;
+		for (int j = 0; j < behaviors.size(); ++j)
+		{
+			auxW.push_back(weightsVect[j]);
+		}
+		Setting& sets = cfg ->lookup("weights.constW");
+		auxWeights = new Weights(auxW,&sets);
+	}
+	else if (weightsType == "qvalueW")
+	{
+		//generar el vector con los vectores de valores posibles para generar la tabla
+		// Setting& sets = cfg ->lookup("weights.qvalueW");
+		//auxWeights = new Weights();
+	}
+	return auxWeights;
 }

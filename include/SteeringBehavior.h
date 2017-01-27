@@ -57,7 +57,7 @@ protected:
 	unsigned int robotId;
 
 	std::vector<float> state;
-	std::vector<float> valoresEstado; 
+	std::vector<float> valoresEstado;
 
 	std::string pretopicname;
 

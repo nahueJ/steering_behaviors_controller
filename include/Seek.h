@@ -70,6 +70,7 @@ private:
 	float errorw;
 
 	float toleranceToTarget;
+	float standardVel;
 
 	float wIdeal( float, float);
 };

@@ -45,7 +45,7 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 
 	//Intento instanciar los comportamientos
 
-	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),&behaviors,&weights,&myType))
+	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),&behaviors,&weights,&myType,&state))
 	{
 		
 		//*****************//
@@ -84,12 +84,6 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		myData = new nav_msgs::Odometry;
 
 		cout << "Agent " << robotId << ": GOOD." << endl << "Recibi " << behaviors.size() << " comportamientos:" << endl;
-		for (int i = 0; i < behaviors.size(); ++i)
-		{
-			w = weights->getWeights();
-			cout << "BH: " << behaviors[i]->getName() << " con W: " << w[i] << endl;
-		}
-		nbBehaviors = behaviors.size();
 	}
 	else
 	{
@@ -114,18 +108,10 @@ Agent::~Agent() {
 
 void Agent::update() 
 {
-	// cout << "IN: " << myData->pose.pose.orientation.z << "R (" << myData->pose.pose.orientation.z*180 << "°)" << endl << endl;
-
-	float totalDelta = pondSum();				//error definitivo = suma de los errores ponderada
-	//	cout << "suma de errores ponderado: " << totalDelta << endl;
+	float totalDelta = pondSum();//error definitivo = suma de los errores ponderada
 	float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
-
 	cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -totalDelta << ")" << endl;
-
 	myTwist.angular.z = turningVel(totalDelta);		//para este error que velocidad corresponde
-
-	// cout << "velocidad publicada: R" << myTwist.angular.z << endl << endl;
-
 	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
 	 	myTwist.linear.x = 0.2;
@@ -181,7 +167,6 @@ float Agent::addAngle(float initialAngle, float error){	//angulo deseado = angul
 	{
 		cout << "ERROR1 ADDANGLE EN AGENT " << desiredAngle << endl ;
 	}
-
 	return desiredAngle;
 }
 
@@ -245,59 +230,67 @@ float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
 
 float Agent::pondSum()
 {
+	/**********************************************************/
+	/* Recupero la orientación deseada de cada comportamiento */	
+	/**********************************************************/
 	float desiredW;
-	float behaviorDelta[nbBehaviors];
-	float tempW[nbBehaviors];
-	w = weights->getWeights();
-	float sum = 0;
-	float distribute = 0;								// de esto se tiene que encargar weights
-	int zeros = 0;										// de esto se tiene que encargar weights
-	// recupero la orientación deseada de cada comportamiento	
-	for (int i = 0; i < nbBehaviors; ++i)
+	float behaviorDelta[behaviors.size()];
+	for (int i = 0; i < behaviors.size(); ++i)
 	{
 		desiredW = behaviors[i]->getDesiredW();
 		if (behaviors[i]->getName()=="seekReactive")
 		{
 			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
-			tempW[i] = w[i];
 			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
 		else if (behaviors[i]->getName()=="avoidObstaclesReactive")
 		{
-			if (desiredW == -1.0)
-			{
-				behaviorDelta[i] = 0;													//obstacle avoidance no percibe un obstaculo no modifica el angulo actual
-				cout << "NO OBSTACLE" << endl << endl << endl;
-				tempW[i] = 0;
-				distribute +=  w[i];	// de esto se tiene que encargar weights
-				zeros++;													// de esto se tiene que encargar weights
-			}
-			else 
-			{
-				cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
-				behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
-				tempW[i] = w[i];	// de esto se tiene que encargar weights
-			}
+			cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
+			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
 		}
 		cout << endl;
 	}
-
-	//redistribuyo los pesos que no se utilizan		// de esto se tiene que encargar weights
-	distribute = distribute / (nbBehaviors - zeros); //distribuyo equitativamente entre los comportamientos que estan activos
-	for (int i = 0; i < nbBehaviors; ++i)
+	/*****************************************************************************************************************************/
+	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */	
+	/*****************************************************************************************************************************/
+	//Actualizo el estado
+	updateState();
+    printState();
+	w = weights->getWeights(state);
+	/*************************************************************************/
+	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */	
+	/*************************************************************************/
+	float sum = 0;
+	cout << "SUMA=";
+	for (int i = 0; i < behaviors.size(); ++i)
 	{
-		if (tempW[i] != 0)
-		{
-			tempW[i] += distribute;
-		}
+		sum += w[i]*behaviorDelta[i];
+		cout << w[i] <<"*"<<behaviorDelta[i]<<"+" ;
 	}
-
-	//ya los pesos distribuidos, hago la suma ponderada
-	for (int i = 0; i < nbBehaviors; ++i)
-	{
-		sum += tempW[i]*behaviorDelta[i];
-	}
-	
+	cout << "=" << sum << endl;
 	return sum;
+}
+
+void Agent::updateState() 
+{
+	state.clear();
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		std::vector<float> auxVect = behaviors[i]->getState();
+		state.push_back(auxVect);
+	}
+}
+
+void Agent::printState()
+{
+	cout << "PS: ";
+	for (std::vector< std::vector<float> >::iterator ita = state.begin(); ita < state.end(); ++ita)
+	{
+		for (std::vector<float>::iterator itb = (*ita).begin(); itb < (*ita).end(); ++itb)
+		{
+			cout << *itb << " ";
+		}		
+	}
+	cout << endl;
 }

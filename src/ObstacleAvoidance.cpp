@@ -116,10 +116,10 @@ void ObstacleAvoidance::update()
 
 	closestObstacle = zona[minArea];
 	int medio = (sectores + 1) / 2;
-	if (zonaSafe()){
-		wideal = -1;		//codigo de no hay obstaculo
-	}
-	else if (zona[medio]<distMin)
+	// if (zonaSafe()){
+	// 	wideal = -1;		//codigo de no hay obstaculo
+	// }
+	if (zona[medio]<distMin)
 	{
 		wideal = emergencia();
 		cout << "EMERGENCIA " ;
@@ -317,15 +317,27 @@ std::vector<float> ObstacleAvoidance::getState()
 
 void ObstacleAvoidance::updateState()
 {
+	cout << "OAState:";
 	for (int i = 0; i < state.size(); ++i)
 	{
-		for (int j = 0; j < valoresEstado.size(); ++j)
+		int indexMin = 0;
+		float min = zona[i] - valoresEstado[indexMin];
+		for (int j = 1; j < valoresEstado.size(); ++j)
 		{
-			if (valoresEstado[j]<=zona[i])
+			if ((zona[i] - valoresEstado[j]) > 0)
 			{
-				state[i]=valoresEstado[j];
+				if ((zona[i] - valoresEstado[j]) < min)
+				{
+					min = zona[i] - valoresEstado[j];
+					indexMin=j;
+				}
+			}
+			else{
 				break;
 			}
-		}	
+		}
+		state[i]=valoresEstado[indexMin];
+		cout << " " << state[i];
 	}
+	cout << endl;
 }

@@ -34,14 +34,15 @@ SteeringBehavior::SteeringBehavior(
 	float maxValState = (*configurationPtr)["maxEstado"];	
 	float stepValState = (*configurationPtr)["paso"];
 
-	int nbVarPosibles = (maxValState-minValState)/stepValState;
+	int nbVarPosibles = ((maxValState-minValState)/stepValState)+1;
 
 	//inicializo el array con los posibles valores para las variables de estado
 	for (int i = 0; i < nbVarPosibles; ++i)
 	{
 		valoresEstado.push_back(minValState+i*stepValState);
+		cout << valoresEstado[i] << " ";
 	}
-
+	cout << endl;
 	//inicializo el vector de estado con algun valor de los posibles valores
 	for (int i = 0; i < nbVar; ++i)
 	{
