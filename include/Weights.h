@@ -11,8 +11,6 @@
 #include <vector>
 #include <map>
 
-#include "Critic.h"
-
 #include <libconfig.h++>
 using namespace libconfig;
 

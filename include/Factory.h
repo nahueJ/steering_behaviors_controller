@@ -12,7 +12,6 @@
 #include "Seek.h"
 
 #include "Weights.h"
-#include "Critic.h"
 
 #include <string>
 #include <vector>
