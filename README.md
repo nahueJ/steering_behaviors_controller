@@ -28,4 +28,5 @@ $ roscore
 $ rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/willow-four-erratics.world 
 
 #### run the controller
+$. ~/catkin_ws/devel/setup.bash 
 $ rosrun steering_behaviors_controller steering_behaviors_controller 
