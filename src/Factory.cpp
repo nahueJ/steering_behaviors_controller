@@ -31,10 +31,8 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 	//busco el tipo de agente
 	string agentType = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
 	*type = agentType;
-
 	if (!(*type).empty()){
 		cout << "the agent " << id << " is an " << *type << endl;
-		
 		//con el tipo de agente busco el elemento en el array de configuraciones de agentes correspondiente
 		for (int i = 0; i < nbAgentsCfg; ++i)
 		{
@@ -43,6 +41,7 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 			{
 				//cuando encuetro el tipo correspondiente
 				cout << typeCfg << " -> FOUND" << endl;
+
 				//verifico que la cantidad de comportamientos es igual que la cantidad de pesos
 				int nbBehaviorsType = cfg->lookup("agents")[i]["behaviors"].getLength();
 				int nbWeightsType = cfg->lookup("agents")[i]["weights"].getLength();
@@ -71,7 +70,11 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 					//******************************//
 					//  Instanciación de los pesos  //
 					//******************************//
+					cout << "Flag1";
 					*weights = pickWeights(seleccionPesos, weightsToCreate, *behaviors, state);
+				}
+				else{
+					cout << "Missing weights for behaviors..." << endl;
 				}
 				break;
 			}
@@ -126,6 +129,27 @@ Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std
 			auxW.push_back(weightsVect[j]);
 		}
 		Setting& sets = cfg ->lookup("weights.constW");
+		auxWeights = new Weights(auxW,&sets);
+	}
+	else if (weightsType == "constWOnlySeek")
+	{
+		std::vector<float> auxW;
+		for (int j = 0; j < behaviors.size(); ++j)
+		{
+			auxW.push_back(weightsVect[j]);
+		}
+		cout << "Flag2";
+		Setting& sets = cfg ->lookup("weights.constWOnlySeek");
+		auxWeights = new Weights(auxW,&sets);
+	}
+	else if (weightsType == "constWOnlyAO")
+	{
+		std::vector<float> auxW;
+		for (int j = 0; j < behaviors.size(); ++j)
+		{
+			auxW.push_back(weightsVect[j]);
+		}
+		Setting& sets = cfg ->lookup("weights.constWOnlyAO");
 		auxWeights = new Weights(auxW,&sets);
 	}
 	else if (weightsType == "qvalueW")

@@ -41,7 +41,7 @@ private:
 
 	//Vbles para pesos constantes
 	std::vector<float>* weights;
-	std::vector<ceroRuleStruct>* ceroRules;
+	std::vector<ceroRuleStruct> ceroRules;
 	std::vector<float> checkCeroRules(std::vector< std::vector<float> >);
 
 };

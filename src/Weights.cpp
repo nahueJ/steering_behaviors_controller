@@ -12,24 +12,23 @@ Weights::Weights(std::vector<float> w, Setting* configurationPtr)
 	myType = (*configurationPtr)["type"].c_str();
 	weights = new std::vector<float>;
 	*weights = w;
-
+	ceroRules.clear();
 	int nbRules = (*configurationPtr)["ceroRules"].getLength();
 	if (nbRules>0)
 	{
-		ceroRules = new std::vector<ceroRuleStruct>;
 		Setting& rules =(*configurationPtr)["ceroRules"];
 		for (int i = 0; i < nbRules; ++i)
 		{
 			ceroRuleStruct auxRule;
 			auxRule.behaviorNb = rules[i][0];
 			auxRule.ceroOver = rules[i][1];
-			(*ceroRules).push_back(auxRule);
+			ceroRules.push_back(auxRule);
 		}
 	}
 }
 
 Weights::Weights(std::vector< std::vector<float> > v, Setting* configurationPtr){
-
+	myType = (*configurationPtr)["type"].c_str();
 }
 
 
@@ -40,7 +39,7 @@ Weights::~Weights(){
 std::vector<float> Weights::getWeights(std::vector< std::vector<float> > state){
 	if (myType == "constW")
 	{
-		if (!(*ceroRules).empty())
+		if (!ceroRules.empty())
 		{
 			return checkCeroRules(state);
 		}
@@ -52,7 +51,7 @@ std::vector<float> Weights::checkCeroRules(std::vector< std::vector<float> > sta
 	std::vector<float> wAux = (*weights);
 	float amountToDistribute = 0;
 	int wToDistribute = 0;
-	for (std::vector<ceroRuleStruct>::iterator irule = (*ceroRules).begin(); irule != (*ceroRules).end(); ++irule)
+	for (std::vector<ceroRuleStruct>::iterator irule = ceroRules.begin(); irule != ceroRules.end(); ++irule)
 	{
 		bool flag = true;
 		for (std::vector<float>::iterator istate = (state[(*irule).behaviorNb]).begin(); istate != (state[(*irule).behaviorNb]).end(); ++istate)
