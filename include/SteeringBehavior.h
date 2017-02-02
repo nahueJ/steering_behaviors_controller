@@ -43,7 +43,7 @@ public:
 	virtual string getName();
 	virtual string getType();
 	virtual int getNbVbles();
-	virtual int getNbPosibleValues();
+	virtual std::vector<float> getPosibleValues();
 	virtual float getDesiredV();
 	virtual float getDesiredW(); 
 	

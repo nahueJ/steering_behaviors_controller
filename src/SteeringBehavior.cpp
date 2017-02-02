@@ -46,7 +46,7 @@ SteeringBehavior::SteeringBehavior(
 	//inicializo el vector de estado con algun valor de los posibles valores
 	for (int i = 0; i < nbVar; ++i)
 	{
-		state.push_back(valoresEstado[valoresEstado.size()-1]);
+		state.push_back(valoresEstado.back());
 	}
 }
 
@@ -69,9 +69,9 @@ int SteeringBehavior::getNbVbles()
 	return state.size();
 }
 
-int SteeringBehavior::getNbPosibleValues() 
+std::vector<float> SteeringBehavior::getPosibleValues() 
 {
-	return valoresEstado.size();
+	return valoresEstado;
 }
 
 float SteeringBehavior::getDesiredV() 

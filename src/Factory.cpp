@@ -70,7 +70,6 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 					//******************************//
 					//  Instanciación de los pesos  //
 					//******************************//
-					cout << "Flag1";
 					*weights = pickWeights(seleccionPesos, weightsToCreate, *behaviors, state);
 				}
 				else{
@@ -138,7 +137,6 @@ Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std
 		{
 			auxW.push_back(weightsVect[j]);
 		}
-		cout << "Flag2";
 		Setting& sets = cfg ->lookup("weights.constWOnlySeek");
 		auxWeights = new Weights(auxW,&sets);
 	}
@@ -155,8 +153,19 @@ Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std
 	else if (weightsType == "qvalueW")
 	{
 		//generar el vector con los vectores de valores posibles para generar la tabla
-		// Setting& sets = cfg ->lookup("weights.qvalueW");
-		//auxWeights = new Weights();
+		Setting& sets = cfg ->lookup("weights.qvalueW");
+		//Genero un vector con los posibles valores para cada elemento del vector de estado, asi es posible generar las combinaciones para la qTable
+		std::vector< std::vector< std::vector<float> > > statePosibilities;
+		for (int i = 0; i < (*state).size(); ++i)
+		{
+			std::vector< std::vector<float> > auxv;
+			for (int j = 0; j < (*state)[i].size(); ++j)
+			{
+				auxv.push_back(behaviors[i]->getPosibleValues());
+			}
+			statePosibilities.push_back(auxv);
+		}
+		auxWeights = new Weights(statePosibilities, &sets);
 	}
 	return auxWeights;
 }

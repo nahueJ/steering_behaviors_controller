@@ -42,6 +42,7 @@ private:
 	unsigned int robotId;
 	string myType;
 	std::vector< std::vector<float> > state;
+	std::vector< std::vector<float> > ansState;
 
 	//Variables para publicar por un topic
 	ros::NodeHandle* rosNode;

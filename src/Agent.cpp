@@ -116,6 +116,7 @@ void Agent::update()
 	{
 	 	myTwist.linear.x = 0.2;
 	} 
+	cout << "V:" << myTwist.linear.x << endl;
     ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
 
@@ -238,13 +239,13 @@ float Agent::pondSum()
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
 		desiredW = behaviors[i]->getDesiredW();
-		if (behaviors[i]->getName()=="seekReactive")
+		if (behaviors[i]->getType()=="seek")
 		{
 			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
-		else if (behaviors[i]->getName()=="avoidObstaclesReactive")
+		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
 			cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
@@ -252,12 +253,16 @@ float Agent::pondSum()
 		cout << endl;
 	}
 	/*****************************************************************************************************************************/
-	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */	
+	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */
 	/*****************************************************************************************************************************/
 	//Actualizo el estado
 	updateState();
     printState();
-	w = weights->getWeights(state);
+    //Si el estado no cambia, los pesos son los mismos
+    if (state != ansState)
+    {
+		w = weights->getWeights(state);
+    }
 	/*************************************************************************/
 	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */	
 	/*************************************************************************/
@@ -274,6 +279,7 @@ float Agent::pondSum()
 
 void Agent::updateState() 
 {
+	ansState = state;
 	state.clear();
 	for (int i = 0; i < behaviors.size(); ++i)
 	{

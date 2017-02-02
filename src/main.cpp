@@ -36,7 +36,6 @@ int main(int argc, char **argv)
 {
 
 	//Inicializa el nodo de ros
-
 	ros::init(argc, argv, "controllersHandler");
 	ros::NodeHandle n;
 	ros::Rate loop_rate(10);
