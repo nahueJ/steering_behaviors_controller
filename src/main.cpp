@@ -34,6 +34,10 @@ unsigned int getNumberOfRobots()
 
 int main(int argc, char **argv)
 {
+	//Iniciar el simulador
+	system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/willow-four-erratics.world &");
+
+	sleep(1);
 
 	//Inicializa el nodo de ros
 	ros::init(argc, argv, "controllersHandler");
@@ -74,6 +78,5 @@ int main(int argc, char **argv)
 	else{
 		cout << "Faltan/Sobran configuraciones para algunos robots." << endl;
 	}
-
 	return 0;
 }

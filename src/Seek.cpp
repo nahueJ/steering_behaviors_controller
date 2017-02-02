@@ -99,6 +99,7 @@ void Seek::update() {
 		cout << "OBJETIVO ALCANZADO" << endl;
 		setDesiredV(0.0);
 		setDesiredW(0.0);
+		system("killall stageros &");
 	}
 	else if (toleranceToTarget*3>almost)
 	{
