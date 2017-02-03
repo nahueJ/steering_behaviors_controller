@@ -47,7 +47,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	closestObstacle = 8.0;
 	for (int i = 0; i < sectores; ++i)
 	{
-		zona.push_back(0.0);
+		zona.push_back(3.0);
 	}
 	div = haz/sectores;
 	abanico = prescicion*haz;
@@ -84,6 +84,10 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 
 	//inicializo el puntero con las variables para almacenar los valores de los lasers
 	laser = new float[haz];	//almacena base_scan
+	for (int i = 0; i < haz; ++i)
+	{
+		laser[i]=5.000;
+	}
 
 	std::stringstream* lasertopicname;
 	

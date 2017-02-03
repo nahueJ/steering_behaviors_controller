@@ -14,7 +14,7 @@
 #include "../include/Factory.h"
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> //for system use
 #include <string>
 
 unsigned int getNumberOfRobots()
@@ -62,7 +62,6 @@ int main(int argc, char **argv)
 		}
 
 		//rutina de trabajo
-
 		while(ros::ok())
 		{
 			system("clear"); //limpia la consola

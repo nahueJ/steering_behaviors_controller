@@ -87,7 +87,7 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 	}
 	else
 	{
-	    cout << "Agent " << robotId << ": Missing parameter in configuration file." << endl;
+		cout << "Agent " << robotId << ": Missing parameter in configuration file." << endl;
 	}
 }
 
@@ -114,10 +114,10 @@ void Agent::update()
 	myTwist.angular.z = turningVel(totalDelta);		//para este error que velocidad corresponde
 	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
-	 	myTwist.linear.x = 0.2;
+		myTwist.linear.x = 0.2;
 	} 
 	cout << "V:" << myTwist.linear.x << endl;
-    ctrlPublisher->publish(myTwist);				//envío la velocidad
+	ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
 
 int Agent::imAlone(){
@@ -257,12 +257,13 @@ float Agent::pondSum()
 	/*****************************************************************************************************************************/
 	//Actualizo el estado
 	updateState();
-    printState();
-    //Si el estado no cambia, los pesos son los mismos
-    if (state != ansState)
-    {
+	printState();
+
+	//Si el estado no cambia, los pesos son los mismos
+	if ((state != ansState) or (w.empty()))
+	{
 		w = weights->getWeights(state);
-    }
+	}
 	/*************************************************************************/
 	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */	
 	/*************************************************************************/

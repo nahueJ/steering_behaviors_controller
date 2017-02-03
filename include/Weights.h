@@ -16,6 +16,8 @@
 #include <libconfig.h++>
 using namespace libconfig;
 
+#include <stdlib.h>	//for system use
+#include "ros/ros.h"	// for sleep use
 #include <iostream>
 using std::cout;
 using std::cin;
@@ -33,6 +35,14 @@ struct qTableOutput
 {
 	int visits;
 	float qValue;
+};
+
+struct reinforcement
+{
+	int behaviorNb;
+	float reinforcementState;
+	float reinforcementValue;
+	std::string message;
 };
 
 class Weights {
@@ -66,8 +76,11 @@ private:
 	std::map<std::vector<float> , qTableOutput> qTable;
 	int writeQTableToFile(std::string fname);
 	std::vector< std::vector<float> > wCombinacionesPosibles;
-	std::vector<float> updateQTableW(std::vector<float>);
-	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;	
+	std::vector<float> getWfromQTable(std::vector<float>);
+	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
+	std::vector<reinforcement> critic;
+	int criticCheck(std::vector< std::vector<float> >);
+	void actualizarQTable(int);
 };
 
 #endif //_WEIGHTS_H
