@@ -18,8 +18,8 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 
 /*--------------------------- Constructor -----------------------------------
  *	segun la cantidad de comportamientos solicitados en la variable behaviors
- *	inicializa el vector de comportamientos steering_behavior* behaviors[] 
- *	luego instancia un objeto de cada uno de los comportamientos, enviandoles 
+ *	inicializa el vector de comportamientos steering_behavior* behaviors[]
+ *	luego instancia un objeto de cada uno de los comportamientos, enviandoles
  *	una ponderacion por defecto
  *	A continuacion inicializa la conexion por el topic del robot_id
  *
@@ -47,7 +47,7 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 
 	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),&behaviors,&weights,&myType,&state))
 	{
-		
+
 		//*****************//
 		//Creacion del Nodo//
 		//*****************//
@@ -80,7 +80,7 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 		odomSubscriber = new ros::Subscriber;
 		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
-		
+
 		myData = new nav_msgs::Odometry;
 
 		cout << "Agent " << robotId << ": GOOD." << endl << "Recibi " << behaviors.size() << " comportamientos:" << endl;
@@ -106,7 +106,7 @@ Agent::~Agent() {
  *	robot
  ----------------------------------------------------------------------*/
 
-void Agent::update() 
+void Agent::update()
 {
 	float totalDelta = pondSum();//error definitivo = suma de los errores ponderada
 	float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
@@ -115,7 +115,7 @@ void Agent::update()
 	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
 		myTwist.linear.x = 0.2;
-	} 
+	}
 	cout << "V:" << myTwist.linear.x << endl;
 	ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
@@ -142,10 +142,10 @@ int Agent::imAlone(){
 }
 
 float Agent::addAngle(float initialAngle, float error){	//angulo deseado = angulo + error
-	
+
 	//cout << "ADDANGLE" <<endl;
-	//cout << initialAngle << "R (" << initialAngle*180 << "°) - " << error << "R (" << error*180 << "°)" << endl; 
-	
+	//cout << initialAngle << "R (" << initialAngle*180 << "°) - " << error << "R (" << error*180 << "°)" << endl;
+
 	//paso todo a angulos [0,360) (esta en la medida de orientacion de ros [-1,1) )
 	//escala = 2/360 = 1/180
 
@@ -184,7 +184,7 @@ float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del ang
 	{
 		if(deltaAng < 0)
 		{
-			deltaAng = 360 + deltaAng ;			
+			deltaAng = 360 + deltaAng ;
 		}
 		else if (deltaAng > 0)
 		{
@@ -224,7 +224,7 @@ float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
 	}
 	else if (angle > 360)
 	{
-		angle = angle - 360; 
+		angle = angle - 360;
 	}
 	return angle;
 }
@@ -232,7 +232,7 @@ float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
 float Agent::pondSum()
 {
 	/**********************************************************/
-	/* Recupero la orientación deseada de cada comportamiento */	
+	/* Recupero la orientación deseada de cada comportamiento */
 	/**********************************************************/
 	float desiredW;
 	float behaviorDelta[behaviors.size()];
@@ -248,7 +248,7 @@ float Agent::pondSum()
 		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
 			cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
-			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek									
+			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 		}
 		cout << endl;
 	}
@@ -265,7 +265,7 @@ float Agent::pondSum()
 		w = weights->getWeights(state);
 	}
 	/*************************************************************************/
-	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */	
+	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */
 	/*************************************************************************/
 	float sum = 0;
 	cout << "SUMA=";
@@ -278,7 +278,7 @@ float Agent::pondSum()
 	return sum;
 }
 
-void Agent::updateState() 
+void Agent::updateState()
 {
 	ansState = state;
 	state.clear();
@@ -297,7 +297,7 @@ void Agent::printState()
 		for (std::vector<float>::iterator itb = (*ita).begin(); itb < (*ita).end(); ++itb)
 		{
 			cout << *itb << " ";
-		}		
+		}
 	}
 	cout << endl;
 }

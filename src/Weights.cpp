@@ -30,6 +30,7 @@ Weights::Weights(std::vector<float> w, Setting* configurationPtr)
 //constructor para qTableW
 Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles, Setting* configurationPtr){
 	myType = (*configurationPtr)["type"].c_str();
+	gamma = (*configurationPtr)["relativeValue"];
 	/**************************************************************************************/
 	/*	Instanciacion del vector de posibles outputs / decisiones (combinaciones de pesos)*/
 	/*	sagun la discretizacion tomada de la configuracion								  */
@@ -84,6 +85,9 @@ Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles,
 	out.visits = 0;
 	out.qValue = (*configurationPtr)["qValInit"];
 	//Carga de la qTable
+	int numberOfNodes = inputs.size();
+	int nodeSize = sizeof(std::map<std::vector<float> , qTableOutput>::value_type);
+	qTable.get_allocator().allocate( nodeSize * numberOfNodes );
 	for (std::vector< std::vector<float> >::iterator i = inputs.begin(); i != inputs.end(); ++i)
 	{
 		qTable[*i] = out;
@@ -125,21 +129,19 @@ std::vector<float> Weights::getWeights(std::vector< std::vector<float> > state){
 		return *weights;
 	}else if (myType == "qvalueW")
 	{
+		std::vector<float> statePart;
+		for (std::vector< std::vector< float > >::iterator ita = state.begin(); ita != state.end(); ++ita)
+		{
+			for (std::vector<float>::iterator itb = ita->begin(); itb != ita->end(); ++itb)
+			{
+				statePart.push_back(*itb);
+			}
+		}
+		std::vector<float> wAux = getWfromQTable(statePart);
+
 		//Verifico que el estado no corresponde a ningun refuerzo
 		int testigo = criticCheck(state);
-		if (testigo==(-1))
-		{
-			//Si no hay refuerzo, busco los pesos en la tabla
-			std::vector<float> statePart;
-			for (std::vector< std::vector< float > >::iterator ita = state.begin(); ita != state.end(); ++ita)
-			{
-				for (std::vector<float>::iterator itb = ita->begin(); itb != ita->end(); ++itb)
-				{
-					statePart.push_back(*itb);
-				}
-			}
-			return getWfromQTable(statePart);
-		}else{
+		if (testigo != -1) {
 			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
 			actualizarQTable(testigo);
 			//se limpia la memoria,
@@ -155,8 +157,9 @@ std::vector<float> Weights::getWeights(std::vector< std::vector<float> > state){
 			{
 				wNull.push_back(0.000);
 			}
-			return wNull;
+			wAux = wNull;
 		}
+		return wAux;
 	}
 }
 
@@ -281,15 +284,17 @@ std::vector<float> Weights::getWfromQTable(std::vector<float> state){
 		outputs.push_back(qTable[*iti]);
 	}
 	//Evaluando las salidas elijo la mejor opcion para el estado actual
-	int best = 0;
-	int index = 0;
-	for (std::vector<qTableOutput>::iterator ito = outputs.begin(); ito != outputs.end(); ++ito, index++)
-	{
-		if ((ito->qValue)>(outputs[best].qValue))
-		{
-			best = index;
-		}
-	}
+	// int best = 0;
+	// int index = 0;
+	// for (std::vector<qTableOutput>::iterator ito = outputs.begin(); ito != outputs.end(); ++ito, index++)
+	// {
+	// 	if ((ito->qValue)>(outputs[best].qValue))
+	// 	{
+	// 		best = index;
+	// 	}
+	// }
+	//Eleccion aleatoria
+	int best = rand()% outputs.size();
 	//Agrego el mejor elegido a la lista de estados visitados, para la posterior actualizacion de los qValues correspondientes en funcion de los refuerzos recibidos en un futuro
 	std::map<std::vector<float> , qTableOutput>::iterator itaux = qTable.find(options[best]);
 	memoria.push_back(itaux);
@@ -332,24 +337,53 @@ int Weights::criticCheck(std::vector< std::vector<float> > state){
 	return -1;
 }
 
+// void Weights::actualizarQTable(int refuerzo){
+// 	std::string mensaje = critic[refuerzo].message;
+// 	cout << "Aplicando refuerzo " << mensaje << " a " << memoria.size() << " estados" << endl;
+// 	//a cada elemento del mapa en la memoria hacer visitas++ y cambiar el qval segun lo q diga el refuerzo
+// 	int index = 0;
+// 	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::iterator itmem = memoria.end(); itmem != memoria.begin(); --itmem, index++)
+// 	{
+// 		std::vector<float> printv = (*itmem)->first;
+// 		cout << "actualizando " << index << "estado: ";
+// 		for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++) {
+// 			cout << *itv << " ";
+// 		}
+// 		if (itmem == memoria.end()) {
+// 			(*itmem)->second.qValue = critic[refuerzo].reinforcementValue;
+// 		} else {
+// 			(*itmem)->second.qValue += gamma*(*(itmem+1))->second.qValue;
+// 		}
+// 		(*itmem)->second.visits++;
+// 		cout << "qVal = " << (*itmem)->second.qValue << endl;
+// 	}
+// 	memoria.clear();
+// 	int aux = writeQTableToFile(QTABLEFILE);
+// 	cout << "Se almaceno en " << QTABLEFILE << " " << aux << " entradas." << endl;
+// }
+
 void Weights::actualizarQTable(int refuerzo){
 	std::string mensaje = critic[refuerzo].message;
 	cout << "Aplicando refuerzo " << mensaje << " a " << memoria.size() << " estados" << endl;
+
+	//Al ultimo estado le asigno el valor de la recompensa
+	(*(memoria.back())).second.qValue += critic[refuerzo].reinforcementValue;
+	(*(memoria.back())).second.visits++;
+	//los estados anteriores se actualizan en funcion de este refuerzo recibido
 	//a cada elemento del mapa en la memoria hacer visitas++ y cambiar el qval segun lo q diga el refuerzo
 	int index = 0;
-	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::iterator itmem = memoria.begin(); itmem != memoria.end(); ++itmem, index++)
+	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::iterator itmem = memoria.begin(); itmem != (memoria.end()-1); ++itmem, index++)
 	{
 		std::vector<float> printv = (*itmem)->first;
-		cout << "actualizando " << index << "estado: ";
+		cout << "actualizando " << index << " estado: ";
 		for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++) {
 			cout << *itv << " ";
 		}
-		cout << endl;
+		(*itmem)->second.qValue += gamma*(*(itmem+1))->second.qValue;
 		(*itmem)->second.visits++;
-		(*itmem)->second.qValue += critic[refuerzo].reinforcementValue;
+		cout << "qVal = " << (*itmem)->second.qValue << endl;
 	}
 	memoria.clear();
-
 	int aux = writeQTableToFile(QTABLEFILE);
 	cout << "Se almaceno en " << QTABLEFILE << " " << aux << " entradas." << endl;
 }
