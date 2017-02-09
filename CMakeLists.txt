@@ -136,10 +136,11 @@ add_executable(steering_behaviors_controller src/main.cpp src/Agent.cpp src/Stee
 #add_dependencies(steering_behaviors_controller steering_behaviors_controller_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(steering_behaviors_controller_node
-#   ${catkin_LIBRARIES}
-# )
-target_link_libraries(steering_behaviors_controller ${catkin_LIBRARIES} -lconfig++)
+target_link_libraries(steering_behaviors_controller
+	${catkin_LIBRARIES}
+	-lconfig++
+	-lfann
+)
 
 #############
 ## Install ##

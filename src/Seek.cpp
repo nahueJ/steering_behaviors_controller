@@ -9,7 +9,7 @@
 
 /**
  * Seek implementation
- * 
+ *
  * The seek steering behavior returns a force that directs an agent toward a
  * target position.
  */
@@ -25,7 +25,7 @@ void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  */
 Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : SteeringBehavior(id, pre, configurationPtr)
 {
-	//Cargar Valores de configuracion 
+	//Cargar Valores de configuracion
 	target.position.x = (*configurationPtr)["targetX"];
 	target.position.y = (*configurationPtr)["targetY"];
 	standardVel = (*configurationPtr)["desiredV"];
@@ -92,7 +92,7 @@ void Seek::update() {
 
 	//verificar distancia al objetivo
 	float almost = sqrt(pow(errorx,2)+pow(errory,2));
-	cout << "ALMOST! " << almost << endl;
+	// cout << "ALMOST! " << almost << endl;
 	if (toleranceToTarget>almost)
 	{
 		//si es menor que la tolerancia se detiene
@@ -111,7 +111,7 @@ void Seek::update() {
 	}
 }
 
-float Seek::getDesiredW() 
+float Seek::getDesiredW()
 {
 	update();
 	return desiredW;
@@ -132,7 +132,7 @@ std::vector<float> Seek::getState()
 
 void Seek::updateState()
 {
-	cout << "SState/cont: ";
+	// cout << "SState/cont: ";
 	float continuousValState=sqrt(pow(errorx,2)+pow(errory,2));
 	//buscar dentro de los posibles valores aquel mas proximo al valor continuo
 	int indexMin = 0;
@@ -152,6 +152,5 @@ void Seek::updateState()
 		}
 	}
 	state[0]=valoresEstado[indexMin];
-	cout << continuousValState << "/" << state[0] << endl;
+	// cout << continuousValState << "/" << state[0] << endl;
 }
-	

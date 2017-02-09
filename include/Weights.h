@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 
+#include <fstream>
 #include <errno.h>
 
 #include <libconfig.h++>
@@ -22,6 +23,11 @@ using namespace libconfig;
 using std::cout;
 using std::cin;
 using std::endl;
+
+#include <iomanip>
+
+#include <floatfann.h>
+#include <fann.h>
 
 #define QTABLEFILE "./src/steering_behaviors_controller/qTable.txt"
 
@@ -52,7 +58,7 @@ public:
 
 	Weights(std::vector< std::vector< std::vector<float> > >, Setting*); //constructor para pesos segun qTable que se actualiza qvalueW
 
-//	Weights(); //constructor para pesos segun qTable constante constQvalueW
+	Weights(Setting*); //constructor para pesos segun qTable constante constQvalueW
 
 //	Weights(); //constructor para pesos constantes constAnnW
 
@@ -70,18 +76,30 @@ private:
 	std::vector<float> updateConstW(std::vector< std::vector<float> >);
 
 	//Vbles para pesos qTable
+	//Vbles
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
+	std::vector< std::vector<float> > wCombinacionesPosibles;
+	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
+	std::vector<reinforcement> critic;
+	float gamma;
+	int allocateNb;
+	std::pair< std::vector<float> , qTableOutput>* allocP;
+	std::string comm;
+	//Fcs
 	void wPermutaciones(std::vector<float>, std::vector<float>, int, std::vector< std::vector<float> >*);
 	void sPermutaciones(std::vector< std::vector<float> >, std::vector<float>, int, std::vector< std::vector<float> >*);
 	void printPerm(std::vector< std::vector<float> >);
-	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
 	int writeQTableToFile(std::string fname);
-	std::vector< std::vector<float> > wCombinacionesPosibles;
-	std::vector<float> getWfromQTable(std::vector<float>);
-	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
-	std::vector<reinforcement> critic;
+	std::vector<float> getRandomWfromQTable(std::vector<float>);
 	int criticCheck(std::vector< std::vector<float> >);
 	void actualizarQTable(int);
-	float gamma;
+	void instanciarWcombinaciones(int, int);
+
+
+	//Vbles para probar pesos qTable
+	void loadQTable(std::string, int);
+	std::vector<float> getBestWfromQTable(std::vector<float>);
+	void printQTable();
 };
 
 #endif //_WEIGHTS_H

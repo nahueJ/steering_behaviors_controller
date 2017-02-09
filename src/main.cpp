@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 		//rutina de trabajo
 		while(ros::ok())
 		{
-			system("clear"); //limpia la consola
+			// system("clear"); //limpia la consola
 			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
 			for (int i = 0; i < robots; ++i)
 			{

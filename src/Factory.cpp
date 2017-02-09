@@ -13,17 +13,17 @@ Factory::Factory()
 	//Cargo los valores en el archivo de configuracion
 	cfg->readFile(CONFIGFILE);
 	//inicializo la variable
-	nbAgents = cfg->lookup("simulationParams")["agentsOnSimulation"].getLength();	
+	nbAgents = cfg->lookup("simulationParams")["agentsOnSimulation"].getLength();
 	//cantidad de definiciones de agentes en la conf
 	nbAgentsCfg = cfg->lookup("agents").getLength();
 }
-	
+
 Factory::~Factory()
 {
 }
 
-int Factory::instanciateBehaviors(	unsigned int id, std::string pre, 
-									std::vector<SteeringBehavior*>* behaviors, 
+int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
+									std::vector<SteeringBehavior*>* behaviors,
 									Weights** weights,
 									std::string* type,
 									std::vector< std::vector<float> >* state)
@@ -102,7 +102,7 @@ SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::s
 	else if (behaviorName == "seekRL" )
 	{
 		Setting& sets = cfg ->lookup("seekBehaviors.seekRL");
-		auxBhPtr = new Seek (id,pre,&sets);		
+		auxBhPtr = new Seek (id,pre,&sets);
 	}
 	else if (behaviorName == "avoidObstaclesReactive")
 	{
@@ -166,6 +166,13 @@ Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std
 			statePosibilities.push_back(auxv);
 		}
 		auxWeights = new Weights(statePosibilities, &sets);
+	}
+	else if (weightsType == "constQvalueW")
+	{
+		//generar el vector con los vectores de valores posibles para generar la tabla
+		Setting& sets = cfg ->lookup("weights.constQvalueW");
+
+		auxWeights = new Weights(&sets);
 	}
 	return auxWeights;
 }

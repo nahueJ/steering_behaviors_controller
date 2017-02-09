@@ -110,13 +110,13 @@ void Agent::update()
 {
 	float totalDelta = pondSum();//error definitivo = suma de los errores ponderada
 	float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
-	cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -totalDelta << ")" << endl;
+	// cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -totalDelta << ")" << endl;
 	myTwist.angular.z = turningVel(totalDelta);		//para este error que velocidad corresponde
 	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
 		myTwist.linear.x = 0.2;
 	}
-	cout << "V:" << myTwist.linear.x << endl;
+	// cout << "V:" << myTwist.linear.x << endl;
 	ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
 
@@ -192,7 +192,7 @@ float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del ang
 		}
 	}
 
-	cout << "deltaAng( " << deltaAng << "° ) = " << "initialAngle( " << initialAngle << "° ) - " << "desiredAngle( " << desiredAngle << "° ) " << endl ;
+	// cout << "deltaAng( " << deltaAng << "° ) = " << "initialAngle( " << initialAngle << "° ) - " << "desiredAngle( " << desiredAngle << "° ) " << endl ;
 
 	//vuelvo a la escala de ROS
 	deltaAng = deltaAng / 180;
@@ -241,23 +241,23 @@ float Agent::pondSum()
 		desiredW = behaviors[i]->getDesiredW();
 		if (behaviors[i]->getType()=="seek")
 		{
-			cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
+			// cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
 		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
-			cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
+			// cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 		}
-		cout << endl;
+		// cout << endl;
 	}
 	/*****************************************************************************************************************************/
 	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */
 	/*****************************************************************************************************************************/
 	//Actualizo el estado
 	updateState();
-	printState();
+	// printState();
 
 	//Si el estado no cambia, los pesos son los mismos
 	if ((state != ansState) or (w.empty()))
@@ -268,13 +268,13 @@ float Agent::pondSum()
 	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */
 	/*************************************************************************/
 	float sum = 0;
-	cout << "SUMA=";
+	// cout << "SUMA=";
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
 		sum += w[i]*behaviorDelta[i];
-		cout << w[i] <<"*"<<behaviorDelta[i]<<"+" ;
+		// cout << w[i] <<"*"<<behaviorDelta[i]<<"+" ;
 	}
-	cout << "=" << sum << endl;
+	// cout << "=" << sum << endl;
 	return sum;
 }
 

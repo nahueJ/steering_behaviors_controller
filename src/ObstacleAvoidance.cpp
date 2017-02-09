@@ -8,7 +8,7 @@
 
 /**
  * ObstacleAvoidance implementation
- * 
+ *
  * Wall avoidance steers to avoid potential collisions
  * with a wall.
  */
@@ -17,7 +17,7 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 {
 	sensor_msgs::LaserScan tmpLaser = *scan;
 	std::string tmpFrameId = tmpLaser.header.frame_id;	//separo el miembro frame_id para analizar de que laser viene la medicion
-	
+
 	for (int i = 0; i < haz; ++i)
 	{
 		laser[i]=scan->ranges[i];
@@ -37,8 +37,8 @@ void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  * @param mySensor
  */
 ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* configurationPtr) : SteeringBehavior(id, pre, configurationPtr)
-{	
-	//Cargar Valores de configuracion 
+{
+	//Cargar Valores de configuracion
 	distMax = (*configurationPtr)["distMax"];
 	distMin = (*configurationPtr)["distMin"];
 	haz = (*configurationPtr)["haz"];
@@ -79,7 +79,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	odomSubscriber = new ros::Subscriber;
 	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(odomtopicname.str(), 1000, &ObstacleAvoidance::odomCallback,this);
-	
+
 	myData = new nav_msgs::Odometry;
 
 	//inicializo el puntero con las variables para almacenar los valores de los lasers
@@ -90,7 +90,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	}
 
 	std::stringstream* lasertopicname;
-	
+
 	//generar el nombre del topic a partir del robotId
 	lasertopicname = new std::stringstream ;
 	*lasertopicname << pretopicname << "base_scan";
@@ -101,7 +101,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	delete lasertopicname;
 }
 
-ObstacleAvoidance::~ObstacleAvoidance() 
+ObstacleAvoidance::~ObstacleAvoidance()
 {
 	delete rosNode;
 	delete [] laser;
@@ -109,7 +109,7 @@ ObstacleAvoidance::~ObstacleAvoidance()
 	delete sensorSubscriber;
 }
 
-void ObstacleAvoidance::update() 
+void ObstacleAvoidance::update()
 {
 	float wideal;
 	int minArea;
@@ -126,14 +126,14 @@ void ObstacleAvoidance::update()
 	if (zona[medio]<distMin)
 	{
 		wideal = emergencia();
-		cout << "EMERGENCIA " ;
-		printZona(); 
+		// cout << "EMERGENCIA " ;
+		// printZona();
 	}
-	else if (zona[minArea] < distMin/2)	
+	else if (zona[minArea] < distMin/2)
 	{
 		wideal = escapeTo(minArea);
-		cout << "ESCAPANDO " ;
-		printZona();
+		// cout << "ESCAPANDO " ;
+		// printZona();
 	}
 	else{
 		wideal = relativeToAbsolute(maxArea);
@@ -195,7 +195,7 @@ int ObstacleAvoidance::updateZona(int* min)
 		float* smallest = first;
 
 		while (++first!=last)
-		{	
+		{
 			if (*first<*smallest)    // or: if (comp(*first,*smallest)) for version (2)
 			{
 				smallest=first;
@@ -260,7 +260,7 @@ float ObstacleAvoidance::emergencia()
 	{
 		anguloRelativo = -90;
 	}
-	
+
 	float test = anguloRelativo;
 	anguloRelativo = anguloRelativo / 180;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
 	float wi = tita + anguloRelativo;	//angulo actual + angulo relativo deseado
@@ -296,7 +296,7 @@ float ObstacleAvoidance::escapeTo(int minArea)
 	{
 		anguloRelativo += 180;
 	}
-	cout << "Angulo relativo del OBS: " << test << "Angulo relativo de ESC: " << anguloRelativo << endl;
+	// cout << "Angulo relativo del OBS: " << test << "Angulo relativo de ESC: " << anguloRelativo << endl;
 	anguloRelativo = anguloRelativo / 180;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
 	float wi = tita + anguloRelativo;	//angulo actual + angulo relativo deseado
 //	cout << "AO AbsDes(" << wi << " " << wi*180 << "°) = AbsAct(" << tita << " " << tita*180 << "°) + RelDes("  << anguloRelativo << " " << anguloRelativo*180 << "°) " << relativeIndex << " -> " << test << endl;
@@ -321,7 +321,7 @@ std::vector<float> ObstacleAvoidance::getState()
 
 void ObstacleAvoidance::updateState()
 {
-	cout << "OAState:";
+	// cout << "OAState:";
 	for (int i = 0; i < state.size(); ++i)
 	{
 		int indexMin = 0;
@@ -341,7 +341,7 @@ void ObstacleAvoidance::updateState()
 			}
 		}
 		state[i]=valoresEstado[indexMin];
-		cout << " " << state[i];
+		// cout << " " << state[i];
 	}
-	cout << endl;
+	// cout << endl;
 }
