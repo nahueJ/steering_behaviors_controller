@@ -174,5 +174,12 @@ Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std
 
 		auxWeights = new Weights(&sets);
 	}
+	else if (weightsType == "qvalueWFile")
+	{
+		//generar el vector con los vectores de valores posibles para generar la tabla
+		Setting& sets = cfg ->lookup("weights.qvalueWFile");
+
+		auxWeights = new Weights(&sets);
+	}
 	return auxWeights;
 }

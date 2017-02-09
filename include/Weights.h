@@ -75,7 +75,7 @@ private:
 	std::vector<ceroRuleStruct> ceroRules;
 	std::vector<float> updateConstW(std::vector< std::vector<float> >);
 
-	//Vbles para pesos qTable
+	//Vbles para aprendizaje de pesos qTable
 	//Vbles
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
 	std::vector< std::vector<float> > wCombinacionesPosibles;
@@ -100,6 +100,8 @@ private:
 	void loadQTable(std::string, int);
 	std::vector<float> getBestWfromQTable(std::vector<float>);
 	void printQTable();
+
+	//Vbles para continuar el aprendizaje
 };
 
 #endif //_WEIGHTS_H

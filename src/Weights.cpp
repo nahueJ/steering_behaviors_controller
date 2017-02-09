@@ -82,8 +82,6 @@ Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles,
 	}
 	//Se guarda en un archivo
 	int aux = writeQTableToFile(QTABLEFILE);
-	cout << "Se almaceno en " << QTABLEFILE << " " << aux << " entradas." << endl;
-
 	//se cargan los estados a los que corresponden los refuerzos
 	critic.clear();
 	int nbReinforcements = (*configurationPtr)["refuerzos"].getLength();
@@ -113,8 +111,28 @@ Weights::Weights(Setting* configurationPtr){
 	int weightSize = (*configurationPtr)["wSize"];
 	int inputSize = stateSize + weightSize;
 	loadQTable(file,inputSize);
-	int aux = writeQTableToFile("./src/steering_behaviors_controller/qTableTest.txt");
-	cout << "Se almaceno en " << QTABLEFILE << " " << aux << " entradas." << endl;
+	// int aux = writeQTableToFile("./src/steering_behaviors_controller/qTableTest.txt");
+	// cout << "Se almaceno en " << QTABLEFILE << " " << aux << " entradas." << endl;
+	if (myType == "qvalueW") {
+		comm = (*configurationPtr)["command"].c_str();
+		gamma = (*configurationPtr)["relativeValue"];
+		//se cargan los estados a los que corresponden los refuerzos
+		critic.clear();
+		int nbReinforcements = (*configurationPtr)["refuerzos"].getLength();
+		if (nbReinforcements>0)
+		{
+			Setting& reinf =(*configurationPtr)["refuerzos"];
+			for (int i = 0; i < nbReinforcements; ++i)
+			{
+				reinforcement auxReinf;
+				auxReinf.behaviorNb = reinf[i][0];
+				auxReinf.reinforcementState = reinf[i][1];
+				auxReinf.reinforcementValue = reinf[i][2];
+				auxReinf.message = reinf[i][3].c_str();
+				critic.push_back(auxReinf);
+			}
+		}
+	}
 }
 
 Weights::~Weights(){
@@ -291,7 +309,7 @@ std::vector<float> Weights::getRandomWfromQTable(std::vector<float> state){
 	//Eleccion aleatoria
 	int aleatorio = rand()% outputs.size();
 	//Agrego el mejor elegido a la lista de estados visitados, para la posterior actualizacion de los qValues correspondientes en funcion de los refuerzos recibidos en un futuro
-	std::map<std::vector<float> , qTableOutput>::iterator itaux = qTable.find(options[aleatorio]);
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(options[aleatorio]);
 	memoria.push_back(itaux);
 	return wCombinacionesPosibles[aleatorio];
 }
@@ -350,26 +368,21 @@ void Weights::actualizarQTable(int refuerzo){
 	std::string mensaje = critic[refuerzo].message;
 	cout << "Aplicando refuerzo " << mensaje << " a " << memoria.size() << " estados" << endl;
 
-	//Al ultimo estado le asigno el valor de la recompensa
-	(*(memoria.back())).second.qValue = critic[refuerzo].reinforcementValue;
-	(*(memoria.back())).second.visits++;
-	cout << endl;
-	//los estados anteriores se actualizan en funcion de este refuerzo recibido
-	std::vector<float> printv = (*(memoria.back())).first;
-	for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++){
-		cout << std::fixed << std::setprecision(3) << *itv << " ";
-	}
-	cout << "\t REFUERZO = " << (*(memoria.back())).second.qValue << endl;
-	if (memoria.size() > 1) {
-		for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::iterator itmem = (memoria.end()-1) ; itmem != memoria.begin(); --itmem)
-		{
-			std::vector<float> printv = (*itmem)->first;
-			for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++){
-				cout << std::fixed << std::setprecision(3) << *itv << " ";
-			}
-			cout << "\t qValProm = " << (*itmem)->second.qValue << " qvalAdd= " << gamma << " * " << (*(itmem+1))->second.qValue;
+	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::reverse_iterator itmem = memoria.rbegin() ; itmem != memoria.rend(); itmem++)
+	{
+		std::vector<float> printv = (*itmem)->first;
+		for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++){
+			cout << std::fixed << std::setprecision(3) << *itv << " ";
+		}
+		if (itmem == memoria.rbegin()) {
+				//Al ultimo estado le asigno el valor de la recompensa los estados anteriores se actualizan en funcion de este refuerzo recibido
+			(*itmem)->second.qValue = critic[refuerzo].reinforcementValue;
+			(*itmem)->second.visits++;
+			cout << "\t REFUERZO = " << (*itmem)->second.qValue << endl;
+		} else {
+			cout << "\t qValProm = " << (*itmem)->second.qValue << " qvalAdd= " << gamma << " * " << (*(itmem-1))->second.qValue;
 			//Como la sucesión de estados no es estocastica, se promedia el qvalue
-			(*itmem)->second.qValue = (((*itmem)->second.qValue * (*itmem)->second.visits) +gamma*(*(itmem+1))->second.qValue)/((*itmem)->second.visits + 1);
+			(*itmem)->second.qValue = (((*itmem)->second.qValue * (*itmem)->second.visits) +gamma*(*(itmem-1))->second.qValue)/((*itmem)->second.visits + 1);
 			(*itmem)->second.visits++;
 			cout << " -> " << (*itmem)->second.qValue << endl;
 		}
@@ -404,7 +417,7 @@ void Weights::loadQTable(std::string file, int inputSize){
 		qTable[inV] = outAux;
 	}
 	cout << "Se copiaron a la tabla final " << qTable.size() << endl;
-	printQTable();
+	// printQTable();
 }
 
 void Weights::instanciarWcombinaciones(int wCantDiscretizacion, int size){
