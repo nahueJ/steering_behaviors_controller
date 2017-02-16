@@ -30,7 +30,7 @@ SteeringBehavior::SteeringBehavior(
 	//Variables para la definicion de estado
 	int nbVar = (*configurationPtr)["variablesDeEstado"];
 	std::string discret = (*configurationPtr)["discret"].c_str();
-	cout << "discret READ: " << discret << endl;
+
 	if (discret == "iregular") {
 		int nbVarPosibles = (*configurationPtr)["vectorEstados"].getLength();
 		//inicializo el array con los posibles valores para las variables de estado
@@ -115,5 +115,9 @@ std::vector<float> SteeringBehavior::getState()
 
 void SteeringBehavior::updateState()
 {
+
+}
+
+void SteeringBehavior::setGoal(float xg, float yg){
 
 }

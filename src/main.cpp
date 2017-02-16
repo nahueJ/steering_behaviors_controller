@@ -35,7 +35,7 @@ unsigned int getNumberOfRobots()
 int main(int argc, char **argv)
 {
 	//Iniciar el simulador
-	system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/willow-four-erratics.world &");
+	system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
 
 	sleep(1);
 

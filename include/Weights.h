@@ -29,8 +29,6 @@ using std::endl;
 #include <floatfann.h>
 #include <fann.h>
 
-#define QTABLEFILE "./src/steering_behaviors_controller/qTable.txt"
-
 struct ceroRuleStruct
 {
 	int behaviorNb;
@@ -64,11 +62,12 @@ public:
 
 	~Weights();
 
-	std::vector<float> getWeights(std::vector< std::vector<float> >); //paso el nombre solo para verificar que estoy devolviendo el que corresponde, pero si han sido bien cargados, agente deberia tener en el mismo orden los comportamientos y los pesos
+	int getWeights(std::vector< std::vector<float> >, std::vector<float>*); //paso el nombre solo para verificar que estoy devolviendo el que corresponde, pero si han sido bien cargados, agente deberia tener en el mismo orden los comportamientos y los pesos
 
 private:
 
 	std::string myType;
+	std::string file;
 
 	//Vbles para pesos constantes
 	std::vector<float>* weights;
@@ -84,7 +83,8 @@ private:
 	float gamma;
 	int allocateNb;
 	std::pair< std::vector<float> , qTableOutput>* allocP;
-	std::string comm;
+
+	int maxVisitasDif;
 	//Fcs
 	void wPermutaciones(std::vector<float>, std::vector<float>, int, std::vector< std::vector<float> >*);
 	void sPermutaciones(std::vector< std::vector<float> >, std::vector<float>, int, std::vector< std::vector<float> >*);
@@ -94,7 +94,7 @@ private:
 	int criticCheck(std::vector< std::vector<float> >);
 	void actualizarQTable(int);
 	void instanciarWcombinaciones(int, int);
-
+	int checkVisits(std::vector<float>);
 
 	//Vbles para probar pesos qTable
 	void loadQTable(std::string, int);
@@ -102,6 +102,10 @@ private:
 	void printQTable();
 
 	//Vbles para continuar el aprendizaje
+
+	int missStartFlag;
+	std::vector<float> wNull;
+
 };
 
 #endif //_WEIGHTS_H

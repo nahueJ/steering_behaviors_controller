@@ -52,7 +52,6 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	div = haz/sectores;
 	abanico = prescicion*haz;
 
-	cout << "Instanciando Obstacle Avoidance" << endl;
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
 	ros::M_string remappingsArgs;
 

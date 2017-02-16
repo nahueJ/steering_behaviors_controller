@@ -28,14 +28,14 @@ using std::string;
 //#include "WallAvoidance.h"
 
 //#include <geometry_msgs/Twist.h>
- 
+
 class SteeringBehavior {
-public: 
+public:
 
 	SteeringBehavior(unsigned int id, std::string pre, Setting* configurationPtr);
-	
+
 	~SteeringBehavior();
-	
+
 	virtual void update() ; // función virtual pura
 	virtual std::vector<float> getState() ;
 	virtual void updateState() ;
@@ -45,12 +45,13 @@ public:
 	virtual int getNbVbles();
 	virtual std::vector<float> getPosibleValues();
 	virtual float getDesiredV();
-	virtual float getDesiredW(); 
-	
+	virtual float getDesiredW();
+	virtual void setGoal(float, float); //only for seek
+
 	void setDesiredV(float y);
 	void setDesiredW(float z);
 
-protected: 
+protected:
 
 	string myName;
 	std::string myType;
@@ -63,7 +64,7 @@ protected:
 
 	float desiredV;
 	float desiredW;
-	
+
 	//Clase para el ingreso de parametros de configuración
 	Setting* config;
 };

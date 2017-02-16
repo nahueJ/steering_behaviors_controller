@@ -32,16 +32,12 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 	string agentType = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
 	*type = agentType;
 	if (!(*type).empty()){
-		cout << "the agent " << id << " is an " << *type << endl;
 		//con el tipo de agente busco el elemento en el array de configuraciones de agentes correspondiente
 		for (int i = 0; i < nbAgentsCfg; ++i)
 		{
 			string typeCfg = cfg->lookup("agents")[i]["type"];
 			if (*type == typeCfg)
 			{
-				//cuando encuetro el tipo correspondiente
-				cout << typeCfg << " -> FOUND" << endl;
-
 				//verifico que la cantidad de comportamientos es igual que la cantidad de pesos
 				int nbBehaviorsType = cfg->lookup("agents")[i]["behaviors"].getLength();
 				int nbWeightsType = cfg->lookup("agents")[i]["weights"].getLength();

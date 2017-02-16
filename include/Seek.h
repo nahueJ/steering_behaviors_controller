@@ -29,7 +29,7 @@ using std::endl;
 using namespace libconfig;
 
 class Seek: public SteeringBehavior {
-public: 
+public:
 
 	/**
 	 * @param objective
@@ -37,9 +37,9 @@ public:
 	 * @param weight
 	 */
 	Seek(unsigned int id, std::string pre, Setting* configurationPtr);
-	
+
 	~Seek();
-	
+
 	/**
 	 * gets the last data and actualizes the desiredTwist
 	 * @param myPose
@@ -48,9 +48,11 @@ public:
 	virtual std::vector<float> getState();
 	virtual void updateState() ;
 
-	virtual float getDesiredW(); 
+	virtual float getDesiredW();
 
-private: 
+	virtual void setGoal(float, float);
+
+private:
 	geometry_msgs::Pose target;
 
 	//Variables para suscribirse a un topic

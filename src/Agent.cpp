@@ -29,6 +29,7 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 Agent::Agent(unsigned int id, Factory* factoryPtr)
 {
 	robotId = id;
+	roundCounter = 0;
 	std::stringstream name;
 	name << "agent" << robotId;
 
@@ -83,7 +84,49 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 
 		myData = new nav_msgs::Odometry;
 
-		cout << "Agent " << robotId << ": GOOD." << endl << "Recibi " << behaviors.size() << " comportamientos:" << endl;
+		//Simulation parameters
+		sets.push_back("bitmap \"setA.png\"");
+		sets.push_back("bitmap \"setB.png\"");
+		sets.push_back("bitmap \"setC.png\"");
+
+		std::vector<string> robotPoseAux;
+		robotPoseAux.push_back("pose [-6.25 -6.25 0 ");
+		robotPoseAux.push_back("pose [-1.25 -6.25 0 ");
+		robotPoseAux.push_back("pose [6.25 -6.25 0 ");
+		robotPoseAux.push_back("pose [6.25 -1.25 0 ");
+		robotPoseAux.push_back("pose [6.25 6.25 0 ");
+		robotPoseAux.push_back("pose [1.25 6.25 0 ");
+		robotPoseAux.push_back("pose [-6.25 6.25 0 ");
+		robotPoseAux.push_back("pose [-6.25 1.25 0 ");
+		//el vector de posiciones se almacena en el mismo orden!
+		initPosition.push_back(std::make_pair(-6.25, -6.25));
+		initPosition.push_back(std::make_pair(-1.25, -6.25));
+		initPosition.push_back(std::make_pair(6.25 , -6.25));
+		initPosition.push_back(std::make_pair(6.25 , -1.25));
+		initPosition.push_back(std::make_pair(6.25 , 6.25));
+		initPosition.push_back(std::make_pair(1.25 , 6.25));
+		initPosition.push_back(std::make_pair(-6.25, 6.25));
+		initPosition.push_back(std::make_pair(-6.25, 1.25));
+
+		std::vector<string> robotOrientationAux;
+		robotOrientationAux.push_back("0]");
+		robotOrientationAux.push_back("45]");
+		robotOrientationAux.push_back("90]");
+		robotOrientationAux.push_back("135]");
+		robotOrientationAux.push_back("180]");
+		robotOrientationAux.push_back("225]");
+		robotOrientationAux.push_back("270]");
+		robotOrientationAux.push_back("315]");
+		for (std::vector< std::string >::iterator itp = robotPoseAux.begin(); itp != robotPoseAux.end(); ++itp)
+		{
+			for (std::vector< std::string >::iterator ito = robotOrientationAux.begin(); ito != robotOrientationAux.end(); ++ito)
+			{
+				std::string auxStrP = *itp;
+				std::string auxStrO = *ito;
+				auxStrP.insert( auxStrP.end(), auxStrO.begin(), auxStrO.end() );
+				robotPose.push_back(auxStrP);
+			}
+		}
 	}
 	else
 	{
@@ -109,14 +152,12 @@ Agent::~Agent() {
 void Agent::update()
 {
 	float totalDelta = pondSum();//error definitivo = suma de los errores ponderada
-	float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
-	// cout << "GLOBAL: " << endl << "DESIRED(R" << desiredAngle << ") = " << "INIT(R" << myData->pose.pose.orientation.z << ") + DELTA(R" << -totalDelta << ")" << endl;
+	//float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
 	myTwist.angular.z = turningVel(totalDelta);		//para este error que velocidad corresponde
 	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
 		myTwist.linear.x = 0.2;
 	}
-	// cout << "V:" << myTwist.linear.x << endl;
 	ctrlPublisher->publish(myTwist);				//envío la velocidad
 }
 
@@ -191,9 +232,6 @@ float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del ang
 			deltaAng = deltaAng - 360 ;
 		}
 	}
-
-	// cout << "deltaAng( " << deltaAng << "° ) = " << "initialAngle( " << initialAngle << "° ) - " << "desiredAngle( " << desiredAngle << "° ) " << endl ;
-
 	//vuelvo a la escala de ROS
 	deltaAng = deltaAng / 180;
 
@@ -241,40 +279,37 @@ float Agent::pondSum()
 		desiredW = behaviors[i]->getDesiredW();
 		if (behaviors[i]->getType()=="seek")
 		{
-			// cout << "SEEK:" << endl << "desiredW " << desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 			myTwist.linear.x = behaviors[i]->getDesiredV();
 		}
 		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
-			// cout << "OBSAV:" << endl << "desiredW "<< desiredW << "R (" << desiredW*180 << "°)" << endl;
 			behaviorDelta[i] = deltaAngle(myData->pose.pose.orientation.z, desiredW);	//error del angulo segun seek
 		}
-		// cout << endl;
 	}
-	/*****************************************************************************************************************************/
+	/**************************************************************************************************************/
 	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */
-	/*****************************************************************************************************************************/
+	/**************************************************************************************************************/
 	//Actualizo el estado
 	updateState();
-	// printState();
-
 	//Si el estado no cambia, los pesos son los mismos
+	int restart = 0;
 	if ((state != ansState) or (w.empty()))
 	{
-		w = weights->getWeights(state);
+		restart = weights->getWeights(state,&w);
 	}
 	/*************************************************************************/
 	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */
 	/*************************************************************************/
 	float sum = 0;
-	// cout << "SUMA=";
-	for (int i = 0; i < behaviors.size(); ++i)
-	{
-		sum += w[i]*behaviorDelta[i];
-		// cout << w[i] <<"*"<<behaviorDelta[i]<<"+" ;
+	if (restart == 0) {
+		for (int i = 0; i < behaviors.size(); ++i)
+		{
+			sum += w[i]*behaviorDelta[i];
+		}
+	} else if (restart == 1) {	//Se ha recibido un refuerzo y hay que lanzar una nueva simulacion
+		restartRoutine();
 	}
-	// cout << "=" << sum << endl;
 	return sum;
 }
 
@@ -300,4 +335,72 @@ void Agent::printState()
 		}
 	}
 	cout << endl;
+}
+
+void Agent::restartRoutine(){
+	system("killall stageros &");
+	sleep(1);
+	roundCounter++;
+	cout << "Round: " << roundCounter << endl;
+	//las strings que hay que reemplazar
+	string strReplaceS = "bitmap";
+	string strReplaceP = "robotPose";
+	//eleccion aleatoria del mapa
+	int randnro = rand()% sets.size();
+	string strNewS = sets[randnro];
+	//eleccion aleatoria de posicion
+	randnro = rand()% robotPose.size();
+	string strNewP = robotPose[randnro];
+	//set objetivo aleatorio
+	setSeekObjective(randnro/8);
+	//Abrimos el archivo base y el que se usará para la simulacion
+	std::ifstream filein("./src/steering_behaviors_controller/world/setBase.world"); //File to read from
+	std::ofstream fileout("./src/steering_behaviors_controller/world/set.world"); //Temporary file
+	if(!filein || !fileout)
+	{
+		cout << "Error opening files!" << endl;
+	} else {
+		//buscamos las lineas a reemplazar (mapa y posicion) y las ocupamos con un mapa y una posicion aleatoria (x,y, orientacion)
+		string strTemp;
+		while(std::getline(filein, strTemp))
+		{
+			if(strTemp == strReplaceS){
+				strTemp = strNewS;
+			} else if (strTemp == strReplaceP){
+				strTemp = strNewP;
+			}
+			strTemp += "\n";
+			fileout << strTemp;
+		}
+		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
+		filein.close();
+		fileout.close();
+	}
+}
+
+void Agent::setSeekObjective(int randpos){
+	//separar los puntos alejados del objetivo
+	std::vector< std::pair<float, float> > auxObj;
+
+	std::pair<float, float> auxP = initPosition[randpos];
+
+	for (std::vector< std::pair<float, float> >::iterator itp = initPosition.begin(); itp != initPosition.end(); ++itp)
+	{
+		float dx= auxP.first - itp->first;
+		float dy= auxP.second - itp->second;
+		float dist = sqrt(pow(dx,2.0)+pow(dy,2.0));
+		if (dist>12.0) {
+			auxObj.push_back(*itp);
+		}
+	}
+	//elegir uno aleatorio
+	int randnro = rand()% auxObj.size();
+	//buscar el behavior seek y setear el objetivo
+	for (std::vector<SteeringBehavior*>::iterator itb = behaviors.begin(); itb != behaviors.end(); ++itb)
+	{
+		if ((*itb)->getType() =="seek")
+		{
+			(*itb)->setGoal(auxObj[randnro].first, auxObj[randnro].second);
+		}
+	}
 }

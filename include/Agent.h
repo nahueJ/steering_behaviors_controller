@@ -23,26 +23,29 @@
 #include <vector>
 #include <sstream>
 
+#include <iostream>
+#include <fstream>
+#include <errno.h>
+
 class Agent {
-public: 
-	
+public:
+
 	/**
 	 * @param unsigned int id
 	 */
 	Agent(unsigned int id, Factory* factoryPtr);
-	
+
 	~Agent();
-	
+
 	void update();
 
-
-	
-private: 
+private:
 	//Id del robot del controlador
 	unsigned int robotId;
 	string myType;
 	std::vector< std::vector<float> > state;
 	std::vector< std::vector<float> > ansState;
+	int roundCounter;
 
 	//Variables para publicar por un topic
 	ros::NodeHandle* rosNode;
@@ -50,22 +53,22 @@ private:
 	ros::Publisher* ctrlPublisher;
 	//ros::Subscriber* ctrlSubscriber;
 	std::stringstream* pretopicname;
-	
+
 	std::vector<SteeringBehavior*> behaviors;
 	std::vector<float> w;
 	Weights* weights;
 	int nbBehaviors;
 
 	geometry_msgs::Pose target;
-	
+
 	geometry_msgs::Pose myPosition;
 	geometry_msgs::Twist myTwist;
 
-	//Funciones de Callback para las suscripciones al odometro 
+	//Funciones de Callback para las suscripciones al odometro
 	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
 	nav_msgs::Odometry*	myData;
-	
+
 	int imAlone();
 
 	float addAngle(float, float);
@@ -81,6 +84,15 @@ private:
 	void updateState();
 
 	void printState();
+
+	void restartRoutine();
+
+	void setSeekObjective(int);
+
+	//Simulation variables
+	std::vector<string> sets;
+	std::vector<string> robotPose;
+	std::vector< std::pair<float, float> > initPosition;
 };
 
 #endif //_AGENT_H

@@ -31,8 +31,6 @@ Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : Steeri
 	standardVel = (*configurationPtr)["desiredV"];
 	toleranceToTarget = (*configurationPtr)["toleranceToTarget"];
 
-	cout << "Instanciando Seek, objetivo (" << target.position.x << "," << target.position.y << ")" << endl;
-
 	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
 	ros::M_string remappingsArgs;
 
@@ -153,4 +151,9 @@ void Seek::updateState()
 	}
 	state[0]=valoresEstado[indexMin];
 	// cout << continuousValState << "/" << state[0] << endl;
+}
+void Seek::setGoal(float xg, float yg){
+	target.position.x = xg;
+	target.position.y = yg;
+	cout << "NEW OBJ:(" << xg << "," << yg << ")" << endl;
 }

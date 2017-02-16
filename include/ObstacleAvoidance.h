@@ -29,10 +29,10 @@ using namespace libconfig;
 
 class ObstacleAvoidance : public SteeringBehavior {
 
-	public: 
-		
+	public:
+
 		ObstacleAvoidance(unsigned int id, std::string pre, Setting* configurationPtr);
-		
+
 		~ObstacleAvoidance();
 
 		/**
@@ -42,9 +42,9 @@ class ObstacleAvoidance : public SteeringBehavior {
 		virtual std::vector<float> getState() ;
 		virtual void updateState() ;
 
-		virtual float getDesiredW(); 
+		virtual float getDesiredW();
 
-	private: 
+	private:
 
 		//Variables para suscribirse a un topic
 		ros::NodeHandle* rosNode;
@@ -64,7 +64,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 
 		//Funcion de Callback y variables para la suscripcion al topic del odometro (posicion y twist)
 		ros::Subscriber* odomSubscriber;
-		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);		
+		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 		nav_msgs::Odometry*	myData;
 		//variables para almacenar los datos del odometro
 		float x;
@@ -82,7 +82,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 		int updateZona(int* min);
 		float relativeToAbsolute(int relativeIndex);
 		float escapeTo(int minArea);
-		
+
 		void updateAct();
 		void updateFut();
 		float emergencia();
