@@ -90,14 +90,14 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		sets.push_back("bitmap \"setC.png\"");
 
 		std::vector<string> robotPoseAux;
-		robotPoseAux.push_back("pose [-6.25 -6.25 0 ");
-		robotPoseAux.push_back("pose [-1.25 -6.25 0 ");
-		robotPoseAux.push_back("pose [6.25 -6.25 0 ");
-		robotPoseAux.push_back("pose [6.25 -1.25 0 ");
-		robotPoseAux.push_back("pose [6.25 6.25 0 ");
-		robotPoseAux.push_back("pose [1.25 6.25 0 ");
-		robotPoseAux.push_back("pose [-6.25 6.25 0 ");
-		robotPoseAux.push_back("pose [-6.25 1.25 0 ");
+		robotPoseAux.push_back("-6.25 -6.25 0 ");
+		robotPoseAux.push_back("-1.25 -6.25 0 ");
+		robotPoseAux.push_back("6.25 -6.25 0 ");
+		robotPoseAux.push_back("6.25 -1.25 0 ");
+		robotPoseAux.push_back("6.25 6.25 0 ");
+		robotPoseAux.push_back("1.25 6.25 0 ");
+		robotPoseAux.push_back("-6.25 6.25 0 ");
+		robotPoseAux.push_back("-6.25 1.25 0 ");
 		//el vector de posiciones se almacena en el mismo orden!
 		initPosition.push_back(std::make_pair(-6.25, -6.25));
 		initPosition.push_back(std::make_pair(-1.25, -6.25));
@@ -109,14 +109,14 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		initPosition.push_back(std::make_pair(-6.25, 1.25));
 
 		std::vector<string> robotOrientationAux;
-		robotOrientationAux.push_back("0]");
-		robotOrientationAux.push_back("45]");
-		robotOrientationAux.push_back("90]");
-		robotOrientationAux.push_back("135]");
-		robotOrientationAux.push_back("180]");
-		robotOrientationAux.push_back("225]");
-		robotOrientationAux.push_back("270]");
-		robotOrientationAux.push_back("315]");
+		robotOrientationAux.push_back("0");
+		robotOrientationAux.push_back("45");
+		robotOrientationAux.push_back("90");
+		robotOrientationAux.push_back("135");
+		robotOrientationAux.push_back("180");
+		robotOrientationAux.push_back("225");
+		robotOrientationAux.push_back("270");
+		robotOrientationAux.push_back("315");
 		for (std::vector< std::string >::iterator itp = robotPoseAux.begin(); itp != robotPoseAux.end(); ++itp)
 		{
 			for (std::vector< std::string >::iterator ito = robotOrientationAux.begin(); ito != robotOrientationAux.end(); ++ito)
@@ -296,7 +296,16 @@ float Agent::pondSum()
 	int restart = 0;
 	if ((state != ansState) or (w.empty()))
 	{
+		printState();
 		restart = weights->getWeights(state,&w);
+		for (std::vector<float>::iterator itw = w.begin(); itw != w.end(); itw++) {
+			cout << *itw << " ";
+		}
+		for (int i = 0; i < behaviors.size(); ++i)
+		{
+			cout << behaviorDelta[i] << " ";
+		}
+		cout << endl;
 	}
 	/*************************************************************************/
 	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */
@@ -334,7 +343,7 @@ void Agent::printState()
 			cout << *itb << " ";
 		}
 	}
-	cout << endl;
+	// cout << endl;
 }
 
 void Agent::restartRoutine(){
@@ -350,9 +359,13 @@ void Agent::restartRoutine(){
 	string strNewS = sets[randnro];
 	//eleccion aleatoria de posicion
 	randnro = rand()% robotPose.size();
-	string strNewP = robotPose[randnro];
+	string strNewP = "pose [";
+	string strNewPend = "]";
+	strNewP.insert( strNewP.end(), robotPose[randnro].begin(), robotPose[randnro].end() );
+	strNewP.insert( strNewP.end(), strNewPend.begin(), strNewPend.end() );
 	//set objetivo aleatorio
-	setSeekObjective(randnro/8);
+	//setSeekObjective(randnro/8);
+	setSeekObjective(robotPose[randnro]);
 	//Abrimos el archivo base y el que se usará para la simulacion
 	std::ifstream filein("./src/steering_behaviors_controller/world/setBase.world"); //File to read from
 	std::ofstream fileout("./src/steering_behaviors_controller/world/set.world"); //Temporary file
@@ -378,12 +391,17 @@ void Agent::restartRoutine(){
 	}
 }
 
-void Agent::setSeekObjective(int randpos){
+
+void Agent::setSeekObjective(string strPos){
+	std::stringstream pos(strPos);
+	float data[4];
+	//extraigo de la cadena x, y y el angulo de inicio
+	for(int i=0;i<4;i++){
+	  pos >> data[i];
+	}
 	//separar los puntos alejados del objetivo
 	std::vector< std::pair<float, float> > auxObj;
-
-	std::pair<float, float> auxP = initPosition[randpos];
-
+	std::pair<float, float> auxP = std::make_pair(data[0], data[1]);
 	for (std::vector< std::pair<float, float> >::iterator itp = initPosition.begin(); itp != initPosition.end(); ++itp)
 	{
 		float dx= auxP.first - itp->first;
@@ -395,12 +413,21 @@ void Agent::setSeekObjective(int randpos){
 	}
 	//elegir uno aleatorio
 	int randnro = rand()% auxObj.size();
+	//cout << "I from string: " << strPos << endl;
+	//cout << "I:" << data[0] << " " << data[1] << " " << data[3] << " Obj:" << auxObj[randnro].first << " " << auxObj[randnro].second << endl;
+	//Convertir a coordenadas odometricas la posicion final
+	float angCoordOdom = data[3]*PI/180; //en el que esta orientado el robot
+	//Traslacion de centro del sist de coordenadas
+	std::pair<float, float> auxIntermedio = std::make_pair(auxObj[randnro].first-data[0], auxObj[randnro].second-data[1]);
+	//Rotación del sist de coordenadas
+	auxP.first = cos(angCoordOdom) * auxIntermedio.first + sin(angCoordOdom) * auxIntermedio.second;
+	auxP.second = cos(angCoordOdom) * auxIntermedio.second - sin(angCoordOdom) * auxIntermedio.first;
 	//buscar el behavior seek y setear el objetivo
 	for (std::vector<SteeringBehavior*>::iterator itb = behaviors.begin(); itb != behaviors.end(); ++itb)
 	{
 		if ((*itb)->getType() =="seek")
 		{
-			(*itb)->setGoal(auxObj[randnro].first, auxObj[randnro].second);
+			(*itb)->setGoal(auxP.first, auxP.second);
 		}
 	}
 }

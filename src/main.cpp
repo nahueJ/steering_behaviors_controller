@@ -34,11 +34,6 @@ unsigned int getNumberOfRobots()
 
 int main(int argc, char **argv)
 {
-	//Iniciar el simulador
-	system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
-
-	sleep(1);
-
 	//Inicializa el nodo de ros
 	ros::init(argc, argv, "controllersHandler");
 	ros::NodeHandle n;
@@ -47,6 +42,13 @@ int main(int argc, char **argv)
 	// Instanciar la clase factory que genera los bh para la clase agente segun el archivo de conf
 	Factory* factoryPtr;
 	factoryPtr = new Factory(); //pasar direccion de un archivo de conf?
+
+	if (factoryPtr->learningSession()) {
+		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
+	} else {
+		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/setExam.world &");
+	}
+	sleep(1);
 
 	int robots = getNumberOfRobots();
 

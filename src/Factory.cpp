@@ -16,6 +16,11 @@ Factory::Factory()
 	nbAgents = cfg->lookup("simulationParams")["agentsOnSimulation"].getLength();
 	//cantidad de definiciones de agentes en la conf
 	nbAgentsCfg = cfg->lookup("agents").getLength();
+	string typeCfg = cfg->lookup("simulationParams")["agentsOnSimulation"][0];
+	learningFlag = 0;
+	if ((typeCfg == "agenteAprendiendo") or (typeCfg == "agentePruebaAprendizaje")) {
+		learningFlag = 1;
+	}
 }
 
 Factory::~Factory()
@@ -178,4 +183,8 @@ Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std
 		auxWeights = new Weights(&sets);
 	}
 	return auxWeights;
+}
+
+int Factory::learningSession(){
+	return learningFlag;
 }

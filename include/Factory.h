@@ -23,30 +23,34 @@ using namespace libconfig;
 #define CONFIGFILE "./src/steering_behaviors_controller/simulation.cfg"
 
 class Factory {
-public: 
+public:
 
 	/**
 	 * @param unsigned int id
 	 */
 	Factory();
-	
+
 	~Factory();
 
-	int instanciateBehaviors(unsigned int id, std::string pre, 
-							std::vector<SteeringBehavior*>* behaviors, 
+	int instanciateBehaviors(unsigned int id, std::string pre,
+							std::vector<SteeringBehavior*>* behaviors,
 							Weights** weights,
 							std::string* type,
 							std::vector< std::vector<float> >* state);
 
 	int getAgents();
 
-private: 
+	int learningSession();
+
+private:
 
 	int nbAgents;
 
 	int nbAgentsCfg;
 
 	Config* cfg;
+
+	int learningFlag;
 
 	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
 

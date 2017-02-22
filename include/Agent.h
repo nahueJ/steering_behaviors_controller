@@ -30,9 +30,6 @@
 class Agent {
 public:
 
-	/**
-	 * @param unsigned int id
-	 */
 	Agent(unsigned int id, Factory* factoryPtr);
 
 	~Agent();
@@ -87,12 +84,13 @@ private:
 
 	void restartRoutine();
 
-	void setSeekObjective(int);
+	void setSeekObjective(string);
 
 	//Simulation variables
 	std::vector<string> sets;
 	std::vector<string> robotPose;
 	std::vector< std::pair<float, float> > initPosition;
+
 };
 
 #endif //_AGENT_H

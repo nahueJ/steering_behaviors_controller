@@ -320,18 +320,43 @@ std::vector<float> ObstacleAvoidance::getState()
 
 void ObstacleAvoidance::updateState()
 {
-	// cout << "OAState:";
-	for (int i = 0; i < state.size(); ++i)
-	{
+	if (zona.size() == state.size()) {	//En el caso de que a cada valor de estado le corresponde el valor de una de las zonas observadas por el laser
+		for (int i = 0; i < state.size(); ++i)
+		{
+			int indexMin = 0;
+			float min = zona[i] - valoresEstado[indexMin];
+			for (int j = 1; j < valoresEstado.size(); ++j)
+			{
+				if ((zona[i] - valoresEstado[j]) > 0)
+				{
+					if ((zona[i] - valoresEstado[j]) < min)
+					{
+						min = zona[i] - valoresEstado[j];
+						indexMin=j;
+					}
+				}
+				else{
+					break;
+				}
+			}
+			state[i]=valoresEstado[indexMin];
+		}
+	} else if (state.size()==1) {	//si el valor de estado es 1, solo tomo el menor valor medido
+		float comp = zona.front();
+		for (std::vector<float>::iterator itv=zona.begin(); itv != zona.end() ; itv++) {
+			if (*itv < comp) {
+				comp = *itv;
+			}
+		}
 		int indexMin = 0;
-		float min = zona[i] - valoresEstado[indexMin];
+		float min = comp - valoresEstado[indexMin];
 		for (int j = 1; j < valoresEstado.size(); ++j)
 		{
-			if ((zona[i] - valoresEstado[j]) > 0)
+			if ((comp - valoresEstado[j]) > 0)
 			{
-				if ((zona[i] - valoresEstado[j]) < min)
+				if ((comp - valoresEstado[j]) < min)
 				{
-					min = zona[i] - valoresEstado[j];
+					min = comp - valoresEstado[j];
 					indexMin=j;
 				}
 			}
@@ -339,8 +364,6 @@ void ObstacleAvoidance::updateState()
 				break;
 			}
 		}
-		state[i]=valoresEstado[indexMin];
-		// cout << " " << state[i];
+		state[0] = valoresEstado[indexMin];
 	}
-	// cout << endl;
 }

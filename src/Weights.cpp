@@ -383,7 +383,6 @@ void Weights::loadQTable(std::string file, int inputSize){
 	int nodeSize = sizeof(std::map<std::vector<float> , qTableOutput>::value_type);
 	allocateNb = nodeSize * numberOfNodes;
 	allocP = qTable.get_allocator().allocate( allocateNb );
-	cout << allocateNb << "=" << nodeSize << "*" << numberOfNodes << endl;
 	//para cada linea
 	aFile.seekg(0);
 	for (size_t line = 0; line < numberOfNodes; line++) {
@@ -401,7 +400,7 @@ void Weights::loadQTable(std::string file, int inputSize){
 		//lo cargo al mapa
 		qTable[inV] = outAux;
 	}
-	cout << "Se copiaron a la tabla final " << qTable.size() << endl;
+	cout << "QTable inputs: " << qTable.size() << endl;
 	// printQTable();
 }
 
