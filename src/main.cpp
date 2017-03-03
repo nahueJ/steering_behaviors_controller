@@ -43,9 +43,10 @@ int main(int argc, char **argv)
 	Factory* factoryPtr;
 	factoryPtr = new Factory(); //pasar direccion de un archivo de conf?
 
-	if (factoryPtr->learningSession()) {
+	if (factoryPtr->learningSession() == 1) {
 		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
 	} else {
+		cout << "simulacion de evaluacion" << endl;
 		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/setExam.world &");
 	}
 	sleep(1);

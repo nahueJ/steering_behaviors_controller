@@ -85,9 +85,8 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		myData = new nav_msgs::Odometry;
 
 		//Simulation parameters
-		sets.push_back("bitmap \"setA.png\"");
-		sets.push_back("bitmap \"setB.png\"");
-		sets.push_back("bitmap \"setC.png\"");
+		sets.push_back("bitmap \"setD.png\"");
+		sets.push_back("bitmap \"setE.png\"");
 
 		std::vector<string> robotPoseAux;
 		robotPoseAux.push_back("-6.25 -6.25 0 ");
@@ -414,7 +413,8 @@ void Agent::setSeekObjective(string strPos){
 	//elegir uno aleatorio
 	int randnro = rand()% auxObj.size();
 	//cout << "I from string: " << strPos << endl;
-	//cout << "I:" << data[0] << " " << data[1] << " " << data[3] << " Obj:" << auxObj[randnro].first << " " << auxObj[randnro].second << endl;
+	//cout << "I:" << data[0] << " " << data[1] << " " << data[3] << " Obj:"
+	cout << "NEW OBJ:(" << auxObj[randnro].first << "," << auxObj[randnro].second << ")" << endl;
 	//Convertir a coordenadas odometricas la posicion final
 	float angCoordOdom = data[3]*PI/180; //en el que esta orientado el robot
 	//Traslacion de centro del sist de coordenadas

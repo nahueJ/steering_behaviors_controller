@@ -40,7 +40,7 @@ floorplan
   name "FGH"
   size [20 20 1]
   #seleccion del mapa
-bitmap "setC.png"
+bitmap "setF.png"
 )
 
 pioneer3dx

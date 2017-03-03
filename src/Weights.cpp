@@ -409,11 +409,11 @@ void Weights::instanciarWcombinaciones(int wCantDiscretizacion, int size){
 	/*	Instanciacion del vector de posibles outputs / decisiones (combinaciones de pesos)*/
 	/*	sagun la discretizacion tomada de la configuracion								  */
 	/**************************************************************************************/
-	float step = 1.0 / (wCantDiscretizacion-1);
+	float step = 0.8 / (wCantDiscretizacion-1);
 	std::vector<float> wValPosibles;
 	for (int i = 0; i < wCantDiscretizacion; ++i)
 	{
-		wValPosibles.push_back(step * i);
+		wValPosibles.push_back(step * i + 0.1);
 	}
 	//la suma de los pesos (en primera instancia) debe ser 1. La estrategia es hacer todas las combinaciones posibles de valores
 	//multiplos del step entre 0 y 1 (para step 0.2 [0.0 0.2 0.4 0.6 0.8 1.0]) y almacenar aquellas combinaciones donde la suma sea 1

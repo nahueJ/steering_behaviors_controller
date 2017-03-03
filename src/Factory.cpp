@@ -18,7 +18,7 @@ Factory::Factory()
 	nbAgentsCfg = cfg->lookup("agents").getLength();
 	string typeCfg = cfg->lookup("simulationParams")["agentsOnSimulation"][0];
 	learningFlag = 0;
-	if ((typeCfg == "agenteAprendiendo") or (typeCfg == "agentePruebaAprendizaje")) {
+	if ((typeCfg == "agenteAprendiendo") or (typeCfg == "agenteContinuaAprendizaje")) {
 		learningFlag = 1;
 	}
 }

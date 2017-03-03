@@ -155,5 +155,4 @@ void Seek::updateState()
 void Seek::setGoal(float xg, float yg){
 	target.position.x = xg;
 	target.position.y = yg;
-	cout << "NEW OBJ:(" << xg << "," << yg << ")" << endl;
 }
