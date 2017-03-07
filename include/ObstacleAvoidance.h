@@ -27,6 +27,8 @@ using std::endl;
 #include <libconfig.h++>
 using namespace libconfig;
 
+#define PI 3.14159265
+
 class ObstacleAvoidance : public SteeringBehavior {
 
 	public:

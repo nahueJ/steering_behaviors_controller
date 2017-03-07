@@ -111,32 +111,68 @@ ObstacleAvoidance::~ObstacleAvoidance()
 void ObstacleAvoidance::update()
 {
 	float wideal;
-	int minArea;
-	//actualizar las medidas de los lasers
-	int maxArea = updateZona(&minArea);
+	// int minArea;
+	// //actualizar las medidas de los lasers
+	// int maxArea = updateZona(&minArea);
 	//actualizar el estado
 	updateState();
 
-	closestObstacle = zona[minArea];
-	int medio = (sectores + 1) / 2;
-	// if (zonaSafe()){
-	// 	wideal = -1;		//codigo de no hay obstaculo
+	// closestObstacle = zona[minArea];
+	// int medio = (sectores + 1) / 2;
+	// // if (zonaSafe()){
+	// // 	wideal = -1;		//codigo de no hay obstaculo
+	// // }
+	// if (zona[medio]<distMin)
+	// {
+	// 	wideal = emergencia();
+	// 	// cout << "EMERGENCIA " ;
+	// 	// printZona();
 	// }
-	if (zona[medio]<distMin)
+	// else if (zona[minArea] < distMin/2)
+	// {
+	// 	wideal = escapeTo(minArea);
+	// 	// cout << "ESCAPANDO " ;
+	// 	// printZona();
+	// }
+	// else{
+	// 	wideal = relativeToAbsolute(maxArea);
+	// }
+	//sacar el indice del laser minimo
+	int minIndex = 0;
+	for (int i = 0; i < haz; ++i)
 	{
-		wideal = emergencia();
-		// cout << "EMERGENCIA " ;
-		// printZona();
+		if (laser[i] < laser[minIndex]) {
+			minIndex = i;
+		}
 	}
-	else if (zona[minArea] < distMin/2)
-	{
-		wideal = escapeTo(minArea);
-		// cout << "ESCAPANDO " ;
-		// printZona();
+	if (minIndex==269) {	//si el obstaculo esta en el primer laser tomo como minimo el siguiente así laser[minIndex-1] no da error
+		minIndex = 268;
 	}
-	else{
-		wideal = relativeToAbsolute(maxArea);
+	float distUno = laser[minIndex];
+	float distDos = laser[minIndex+1];
+	float alphaUno = (minIndex - 135) * PI /180;
+	float alphaDos = (minIndex + 1 - 135) * PI /180;
+	float distUnoX = distUno * cos(alphaUno);
+	float distUnoY = distUno * sin(alphaUno);
+	float distDosX = distDos * cos(alphaDos);
+	float distDosY = distDos * sin(alphaDos);
+	float obsAng;
+	if (distUnoX == distDosX) {
+		obsAng = PI/2;	//Si el obstaculo esta enfrente del agente, las distancias en x son iguales, y la inclinacion se hace infinita...equivalente a una linea vertical
+	} else {
+		obsAng = atan2((distDosY - distUnoY),(distDosX - distUnoX));
 	}
+	//calcularl el error respecto a la orientacion actual
+	float angRespuesta = (obsAng+(PI/2));
+	if (angRespuesta > PI) {
+		angRespuesta = angRespuesta - 2 * PI;
+	}
+	if (angRespuesta > 0) {		//correspondencia a la escala de orientaciones de ROS
+		wideal = -angRespuesta/PI +1;
+	} else {
+		wideal = -angRespuesta/PI-1;
+	}
+	//cout << "obs: L " << minIndex  << " ObstAng: " << obsAng*180/PI << " AOForce: " << angRespuesta*180/PI << " ROS" << wideal << endl;
 	setDesiredW(wideal);
 }
 

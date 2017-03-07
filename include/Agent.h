@@ -27,6 +27,8 @@
 #include <fstream>
 #include <errno.h>
 
+#define PI 3.14159265
+
 class Agent {
 public:
 
@@ -34,7 +36,9 @@ public:
 
 	~Agent();
 
-	void update();
+	int update();
+
+	void setNewObjective(string);
 
 private:
 	//Id del robot del controlador
@@ -56,6 +60,8 @@ private:
 	Weights* weights;
 	int nbBehaviors;
 
+	int restartFlag;
+
 	geometry_msgs::Pose target;
 
 	geometry_msgs::Pose myPosition;
@@ -76,19 +82,13 @@ private:
 
 	float toScale(float);
 
-	float pondSum();
-
 	void updateState();
 
 	void printState();
 
 	void restartRoutine();
-
-	void setSeekObjective(string);
-
+	
 	//Simulation variables
-	std::vector<string> sets;
-	std::vector<string> robotPose;
 	std::vector< std::pair<float, float> > initPosition;
 
 };

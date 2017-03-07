@@ -117,8 +117,22 @@ float Seek::getDesiredW()
 
 float Seek::wIdeal( float dx, float dy)
 {
-	float angulo = (atan2(dy,dx) * 180 / PI) + 180;
-	float wIdeal = (2 * angulo / 360) -1;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
+	float ObjAng;
+	float wIdeal;
+	if (dx == 0) {
+		ObjAng = PI/2;	//Si el obstaculo esta enfrente del agente, las distancias en x son iguales, y la inclinacion se hace infinita...equivalente a una linea vertical
+	} else {
+		ObjAng = atan2(dy,dx);
+	}
+	if (ObjAng > PI) {
+		ObjAng = ObjAng - 2 * PI;
+	}
+	if (ObjAng > 0) {		//correspondencia a la escala de orientaciones de ROS
+		wIdeal = -ObjAng/PI +1;
+	} else {
+		wIdeal = -ObjAng/PI-1;
+	}
+	cout << "ObjAng: " << ObjAng*180/PI << " ROS" << wIdeal << endl;
 	return wIdeal;
 }
 
