@@ -83,17 +83,6 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
 
 		myData = new nav_msgs::Odometry;
-
-		//el vector de posiciones se almacena en el mismo orden!
-		initPosition.push_back(std::make_pair(-6.25, -6.25));
-		initPosition.push_back(std::make_pair(-1.25, -6.25));
-		initPosition.push_back(std::make_pair(6.25 , -6.25));
-		initPosition.push_back(std::make_pair(6.25 , -1.25));
-		initPosition.push_back(std::make_pair(6.25 , 6.25));
-		initPosition.push_back(std::make_pair(1.25 , 6.25));
-		initPosition.push_back(std::make_pair(-6.25, 6.25));
-		initPosition.push_back(std::make_pair(-6.25, 1.25));
-
 	}
 	else
 	{
@@ -121,9 +110,7 @@ int Agent::update()
 	if (restartFlag == 1) {
 		restartFlag == 0;
 	}
-	/**********************************************************/
 	/* Recupero la orientación deseada de cada comportamiento */
-	/**********************************************************/
 	float desiredW;
 	float behaviorDelta[behaviors.size()];
 	for (int i = 0; i < behaviors.size(); ++i)
@@ -138,26 +125,28 @@ int Agent::update()
 		{
 			behaviorDelta[i] = desiredW;//error del angulo segun obstacle avoidance
 		}
+		behaviorDelta[i] = 1- fabs(behaviorDelta[i]);
 	}
-	/********************************************************************************************************/
 	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */
-	/********************************************************************************************************/
 	//Actualizo el estado
 	updateState();
 	//Si el estado no cambia, los pesos son los mismos
-
+	printState();
+	cout << endl;
 	if ((state != ansState) or (w.empty()))
 	{
-		//printState();
 		restartFlag = weights->getWeights(state,&w);
-		/*for (std::vector<float>::iterator itw = w.begin(); itw != w.end(); itw++) {
+		//print de la nueva elección de la tabla
+
+		for (std::vector<float>::iterator itw = w.begin(); itw != w.end(); itw++) {
 			cout << *itw << " ";
 		}
 		for (int i = 0; i < behaviors.size(); ++i)
 		{
 			cout << behaviorDelta[i]*180 << " ";
 		}
-		cout << endl;*/
+		cout << endl;
+
 	}
 	/*************************************************************************/
 	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */
@@ -174,7 +163,7 @@ int Agent::update()
 
 	//float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
 
-	myTwist.angular.z = turningVel(totalDelta);		//para este error que velocidad corresponde
+	myTwist.angular.z = totalDelta;		//para este error que velocidad corresponde
 	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
 		myTwist.linear.x = 0.2;
@@ -306,37 +295,7 @@ void Agent::printState()
 	// cout << endl;
 }
 
-void Agent::setNewObjective(string strPos){
-	std::stringstream pos(strPos);
-	float data[4];
-	//extraigo de la cadena x, y y el angulo de inicio
-	for(int i=0;i<4;i++){
-	  pos >> data[i];
-	}
-	//separar los puntos alejados del objetivo
-	std::vector< std::pair<float, float> > auxObj;
-	std::pair<float, float> auxP = std::make_pair(data[0], data[1]);
-	for (std::vector< std::pair<float, float> >::iterator itp = initPosition.begin(); itp != initPosition.end(); ++itp)
-	{
-		float dx= auxP.first - itp->first;
-		float dy= auxP.second - itp->second;
-		float dist = sqrt(pow(dx,2.0)+pow(dy,2.0));
-		if (dist>12.0) {
-			auxObj.push_back(*itp);
-		}
-	}
-	//elegir uno aleatorio
-	int randnro = rand()% auxObj.size();
-	//cout << "I from string: " << strPos << endl;
-	//cout << "I:" << data[0] << " " << data[1] << " " << data[3] << " Obj:"
-	cout << "NEW OBJ:(" << auxObj[randnro].first << "," << auxObj[randnro].second << ")" << endl;
-	//Convertir a coordenadas odometricas la posicion final
-	float angCoordOdom = data[3]*PI/180; //en el que esta orientado el robot
-	//Traslacion de centro del sist de coordenadas
-	std::pair<float, float> auxIntermedio = std::make_pair(auxObj[randnro].first-data[0], auxObj[randnro].second-data[1]);
-	//Rotación del sist de coordenadas
-	auxP.first = cos(angCoordOdom) * auxIntermedio.first + sin(angCoordOdom) * auxIntermedio.second;
-	auxP.second = cos(angCoordOdom) * auxIntermedio.second - sin(angCoordOdom) * auxIntermedio.first;
+void Agent::setNewObjective(std::pair<float, float> auxP){
 	//buscar el behavior seek y setear el objetivo
 	for (std::vector<SteeringBehavior*>::iterator itb = behaviors.begin(); itb != behaviors.end(); ++itb)
 	{

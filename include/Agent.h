@@ -38,7 +38,7 @@ public:
 
 	int update();
 
-	void setNewObjective(string);
+	void setNewObjective(std::pair<float, float>);
 
 private:
 	//Id del robot del controlador
@@ -87,9 +87,6 @@ private:
 	void printState();
 
 	void restartRoutine();
-	
-	//Simulation variables
-	std::vector< std::pair<float, float> > initPosition;
 
 };
 

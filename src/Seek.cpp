@@ -117,22 +117,25 @@ float Seek::getDesiredW()
 
 float Seek::wIdeal( float dx, float dy)
 {
-	float ObjAng;
-	float wIdeal;
+	float objAng;	//angulo al objetivo
+	float wIdeal;	//orientación ideal del vehículo.
 	if (dx == 0) {
-		ObjAng = PI/2;	//Si el obstaculo esta enfrente del agente, las distancias en x son iguales, y la inclinacion se hace infinita...equivalente a una linea vertical
+		objAng = PI/2;	//Si el obstaculo esta enfrente del agente, las distancias en x son iguales, y la inclinacion se hace infinita...equivalente a una linea vertical
 	} else {
-		ObjAng = atan2(dy,dx);
+		objAng = atan2(dy,dx);
 	}
-	if (ObjAng > PI) {
-		ObjAng = ObjAng - 2 * PI;
+	if (objAng > PI) {
+		objAng = objAng - 2 * PI;
 	}
-	if (ObjAng > 0) {		//correspondencia a la escala de orientaciones de ROS
-		wIdeal = -ObjAng/PI +1;
+
+	cout << "objAngC " << objAng*180/PI << " myAng "<< (acos(myData->pose.pose.orientation.z)*2-PI)*180/PI<< endl;
+	objAng = objAng - ((acos(myData->pose.pose.orientation.z)*2) - PI);
+	if (objAng > 0) {		//correspondencia a la escala de orientaciones de ROS
+		wIdeal = -objAng/PI +1;
 	} else {
-		wIdeal = -ObjAng/PI-1;
+		wIdeal = -objAng/PI-1;
 	}
-	cout << "ObjAng: " << ObjAng*180/PI << " ROS" << wIdeal << endl;
+	cout << " objAng: " << objAng*180/PI << " ROS" << wIdeal << " To:" << target.position.x << " , " << target.position.y << endl;
 	return wIdeal;
 }
 

@@ -32,6 +32,38 @@
 // 	return atoi(robotsChar);
 // }
 
+std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<float, float> > initPosition){
+	std::stringstream pos(strPos);
+	float data[4];
+	//extraigo de la cadena x, y y el angulo de inicio
+	for(int i=0;i<4;i++){
+	  pos >> data[i];
+	}
+	//separar los puntos alejados del objetivo
+	std::vector< std::pair<float, float> > auxObj;
+	std::pair<float, float> auxP = std::make_pair(data[0], data[1]);
+	for (std::vector< std::pair<float, float> >::iterator itp = initPosition.begin(); itp != initPosition.end(); ++itp)
+	{
+		float dx= auxP.first - itp->first;
+		float dy= auxP.second - itp->second;
+		float dist = sqrt(pow(dx,2.0)+pow(dy,2.0));
+		if (dist>12.0) {
+			auxObj.push_back(*itp);
+		}
+	}
+	//elegir uno aleatorio
+	int randnro = rand()% auxObj.size();
+	cout << "NEW OBJ:(" << auxObj[randnro].first << "," << auxObj[randnro].second << ")" << endl;
+	//Convertir a coordenadas odometricas la posicion final
+	float angCoordOdom = data[3]*PI/180; //en el que esta orientado el robot
+	//Traslacion de centro del sist de coordenadas
+	std::pair<float, float> auxIntermedio = std::make_pair(auxObj[randnro].first-data[0], auxObj[randnro].second-data[1]);
+	//Rotación del sist de coordenadas
+	auxP.first = cos(angCoordOdom) * auxIntermedio.first + sin(angCoordOdom) * auxIntermedio.second;
+	auxP.second = cos(angCoordOdom) * auxIntermedio.second - sin(angCoordOdom) * auxIntermedio.first;
+	return auxP;
+}
+
 void newSession(string strNewS, string strNewPose){
 	system("killall stageros &");
 	sleep(1);
@@ -80,6 +112,8 @@ int main(int argc, char **argv)
 	//Simulation variables
 	std::vector<string> sets;
 	std::vector<string> robotPose;
+	std::vector< std::pair<float, float> > initPosition;
+	std::pair<float, float> auxPair;
 
 	//Simulation parameters
 	sets.push_back("bitmap \"setD.png\"");
@@ -94,6 +128,16 @@ int main(int argc, char **argv)
 	robotPoseAux.push_back("1.25 6.25 0 ");
 	robotPoseAux.push_back("-6.25 6.25 0 ");
 	robotPoseAux.push_back("-6.25 1.25 0 ");
+
+	//el vector de posiciones se almacena en el mismo orden!
+	initPosition.push_back(std::make_pair(-6.25, -6.25));
+	initPosition.push_back(std::make_pair(-1.25, -6.25));
+	initPosition.push_back(std::make_pair(6.25 , -6.25));
+	initPosition.push_back(std::make_pair(6.25 , -1.25));
+	initPosition.push_back(std::make_pair(6.25 , 6.25));
+	initPosition.push_back(std::make_pair(1.25 , 6.25));
+	initPosition.push_back(std::make_pair(-6.25, 6.25));
+	initPosition.push_back(std::make_pair(-6.25, 1.25));
 
 	std::vector<string> robotOrientationAux;
 	robotOrientationAux.push_back("0");
@@ -126,13 +170,15 @@ int main(int argc, char **argv)
 	int randnroP = rand()% robotPose.size();
 
 	newSession(sets[randnroS], robotPose[randnroP]);
+
 	sleep(1);
 
 	if (factoryPtr->getAgents()==1)	//Si los hay definicion para todos los agentes en el simulador
 	{
 		//controlador para el robot
 		Agent* agent = new Agent(0,factoryPtr);
-		agent->setNewObjective(robotPose[randnroP]);
+		auxPair = calcObjective(robotPose[randnroP], initPosition);
+		agent->setNewObjective(auxPair);
 		int flag;
 		int roundCounter = 0;
 		//rutina de trabajo
@@ -150,7 +196,8 @@ int main(int argc, char **argv)
 				roundCounter++;
 				cout << "Round: " << roundCounter << endl;
 				//set objetivo aleatorio
-				agent->setNewObjective(robotPose[randnroP]);
+				auxPair = calcObjective(robotPose[randnroP], initPosition);
+				agent->setNewObjective(auxPair);
 			}
 			ros::spinOnce();
 			loop_rate.sleep(); //sleep por el resto del ciclo

@@ -29,7 +29,11 @@ void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 	*myData = *odom;		//almaceno en la variable correspondiente los ultimos valores recibidos
 	x = myData->pose.pose.position.x;
 	y = myData->pose.pose.position.y;
-	tita = myData->pose.pose.orientation.z;
+	tita = myData->pose.pose.orientation.z; //CORREGIR!!!
+	tf::Pose pose;
+	tf::poseMsgToTF(odom->pose.pose, pose);
+	tita = tf::getYaw(pose.getRotation());	//tita: orientación en radianes para el marco coordenadas 2D, transformado a partir del marco de referencia 3D expresado por el quaternion (x,y,z,w) de la estructura orientation.
+	//a partir de la posición inicial (0rad) tiene un rango (-PI/2 ; +PI/2] siendo el giro positivo hacia la izquierda del vehículo
 }
 
 /**			CONSTRUCTOR
@@ -111,32 +115,8 @@ ObstacleAvoidance::~ObstacleAvoidance()
 void ObstacleAvoidance::update()
 {
 	float wideal;
-	// int minArea;
-	// //actualizar las medidas de los lasers
-	// int maxArea = updateZona(&minArea);
 	//actualizar el estado
 	updateState();
-
-	// closestObstacle = zona[minArea];
-	// int medio = (sectores + 1) / 2;
-	// // if (zonaSafe()){
-	// // 	wideal = -1;		//codigo de no hay obstaculo
-	// // }
-	// if (zona[medio]<distMin)
-	// {
-	// 	wideal = emergencia();
-	// 	// cout << "EMERGENCIA " ;
-	// 	// printZona();
-	// }
-	// else if (zona[minArea] < distMin/2)
-	// {
-	// 	wideal = escapeTo(minArea);
-	// 	// cout << "ESCAPANDO " ;
-	// 	// printZona();
-	// }
-	// else{
-	// 	wideal = relativeToAbsolute(maxArea);
-	// }
 	//sacar el indice del laser minimo
 	int minIndex = 0;
 	for (int i = 0; i < haz; ++i)
@@ -172,7 +152,7 @@ void ObstacleAvoidance::update()
 	} else {
 		wideal = -angRespuesta/PI-1;
 	}
-	//cout << "obs: L " << minIndex  << " ObstAng: " << obsAng*180/PI << " AOForce: " << angRespuesta*180/PI << " ROS" << wideal << endl;
+	cout << "obs: L " << minIndex  << " ObstAng: " << obsAng*180/PI << " AOForce: " << angRespuesta*180/PI << " ROS" << wideal << endl;
 	setDesiredW(wideal);
 }
 
@@ -209,9 +189,7 @@ y tengo mi posicion actual x, y, tita
 // y el espacio libre que rodea al laser es proporcional a la suma de las distancias del laser
 // area actual = sumatoria(lasers)
 
-Vamos a analizar las secciones de arco como una sola, entonces, el obstaculo va a estar representado por el
-laser que devuelva la menor medida, es decir, tengo 270 haces, divididos en 3 sectores de 90 laseres cada uno,
-si uno de los 90 haces de un sector devuelve una medida de x metros, se contabiliza como si los 90 ubiesen percibido esa minima
+Vamos a analizar las secciones de arco como una sola, entonces, el obstaculo va a estar representado por el laser que devuelva la menor medida, es decir, tengo 270 haces, divididos en n sectores de 270/n laseres cada uno, si uno de los haces de un sector devuelve una medida de x metros, se contabiliza como si todos ubiesen percibido esa minima medida
 */
 
 int ObstacleAvoidance::updateZona(int* min)
