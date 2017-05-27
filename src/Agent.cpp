@@ -41,9 +41,9 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 	pretopicname = new std::stringstream;
 	*pretopicname << "/" ;
 	//Intento instanciar los comportamientos
-	if ( factoryPtr->instanciateSeekBehavior( robotId, pretopicname->str(), &behaviors, &myType) )
+	// if ( factoryPtr->instanciateSeekBehavior( robotId, pretopicname->str(), &behaviors, &myType) )
+	if ( factoryPtr->instanciateOABehavior( robotId, pretopicname->str(), &behaviors, &myType) )
 	{
-		cout << "Agent instanciando nodo" << endl;
 		//*****************//
 		//Creacion del Nodo//
 		//*****************//
@@ -72,7 +72,6 @@ Agent::Agent(unsigned int id, Factory* factoryPtr)
 	{
 		cout << "Agent " << robotId << ": Missing parameter in configuration file." << endl;
 	}
-	cout << "Agent OK" << endl;
 }
 
 Agent::~Agent()
@@ -102,10 +101,28 @@ int Agent::update()
 		if (behaviors[i]->getType()=="seek")
 		{
 			switch (behaviorFlag[i]) {
-				case 0:
+				case 0:	//obj alcanzado
 					return 0;
 					break;
-				case 1:
+				case 1: //seek normal
+					myTwist.angular.z = behaviors[i]->getDesiredW();
+					myTwist.linear.x = behaviors[i]->getDesiredV();
+					ctrlPublisher->publish(myTwist);
+					break;
+			}
+		}
+		else if (behaviors[i]->getType()=="avoidObstacles")
+		{
+			switch (behaviorFlag[i]) {
+				case 0:
+					cout << "AO nada para hacer. Solo seek." << endl;
+					break;
+				case 1: //AO normal
+					myTwist.angular.z = behaviors[i]->getDesiredW();
+					myTwist.linear.x = behaviors[i]->getDesiredV();
+					ctrlPublisher->publish(myTwist);
+					break;
+				case -1: //solo AO, peligro de colision
 					myTwist.angular.z = behaviors[i]->getDesiredW();
 					myTwist.linear.x = behaviors[i]->getDesiredV();
 					ctrlPublisher->publish(myTwist);
@@ -275,7 +292,6 @@ int Agent::update()
 
 void Agent::setNewObjective(std::pair<float, float> auxP)
 {
-	cout << "flag1" << endl;
 	//buscar el behavior seek y setear el objetivo
 	for (std::vector<SteeringBehavior*>::iterator itb = behaviors.begin(); itb != behaviors.end(); ++itb)
 	{

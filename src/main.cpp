@@ -171,9 +171,8 @@ int main(int argc, char **argv)
 	{
 		//controlador para el robot
 		Agent* agent = new Agent(0,factoryPtr);
-		auxPair = calcObjective(robotPose[randnroP], initPosition);
-		agent->setNewObjective(auxPair);
-		cout << "flag1" << endl;
+		//auxPair = calcObjective(robotPose[randnroP], initPosition);
+		//agent->setNewObjective(auxPair);
 		int roundCounter = 0;
 		//rutina de trabajo
 		while(ros::ok())

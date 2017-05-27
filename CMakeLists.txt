@@ -126,8 +126,8 @@ include_directories(include /usr/include/ ${catkin_INCLUDE_DIRS})
 
 ## Declare a C++ executable
 # add_executable(steering_behaviors_controller_node src/steering_behaviors_controller_node.cpp)
-add_executable(steering_behaviors_controller src/main.cpp src/Agent.cpp src/SteeringBehavior.cpp src/Seek.cpp src/Factory.cpp )
-#src/Weights.cpp src/ObstacleAvoidance.cpp
+add_executable(steering_behaviors_controller src/main.cpp src/Agent.cpp src/SteeringBehavior.cpp src/Seek.cpp src/Factory.cpp src/ObstacleAvoidance.cpp)
+#src/Weights.cpp
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(steering_behaviors_controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

@@ -41,6 +41,10 @@ public:
 	int instanciateSeekBehavior(	unsigned int id, std::string pre,
 										std::vector<SteeringBehavior*>* behaviors,
 										std::string* type);
+	int instanciateOABehavior(	unsigned int id, std::string pre,
+									std::vector<SteeringBehavior*>* behaviors,
+									std::string* type);
+
 
 	int getAgents();
 

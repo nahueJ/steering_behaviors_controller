@@ -69,20 +69,12 @@ class ObstacleAvoidance : public SteeringBehavior {
 		//distancia máxima a la que actua el comportamiento
 		float distMax;
 		float distMin;
-		float closestObstacle;
+		float minLaser;
+		int minLaserIndex;
 
 		//Funciones privadas
-		float estimateLasers(float xnext, float ynext);
-		float nextDist( float dist, float angulo);
-		int updateZona(int* min);
-		float relativeToAbsolute(int relativeIndex);
-		float escapeTo(int minArea);
-
-		void updateAct();
-		void updateFut();
-		float emergencia();
-		int zonaSafe();
-		void printZona();
+		void oIdeal();
+		int vIdeal();
 };
 
 #endif //_OBSTACLEAVOIDANCE_H

@@ -16,8 +16,6 @@
 void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& scan)
 {
 	sensor_msgs::LaserScan tmpLaser = *scan;
-	std::string tmpFrameId = tmpLaser.header.frame_id;	//separo el miembro frame_id para analizar de que laser viene la medicion
-
 	for (int i = 0; i < haz; ++i)
 	{
 		laser[i]=scan->ranges[i];
@@ -26,19 +24,14 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 
 void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
-	nav_msgs::Odometry* myData = *odom;		//almaceno en la variable correspondiente los ultimos valores recibidos
-	x = myData->pose.pose.position.x;
-	y = myData->pose.pose.position.y;
+	x = odom->pose.pose.position.x;
+	y = odom->pose.pose.position.y;
 	tf::Pose pose;
 	tf::poseMsgToTF(odom->pose.pose, pose);
 	tita = tf::getYaw(pose.getRotation());	//tita: orientación en radianes para el marco coordenadas 2D, transformado a partir del marco de referencia 3D expresado por el quaternion (x,y,z,w) de la estructura orientation.
 	//a partir de la posición inicial (0rad) tiene un rango (-PI/2 ; +PI/2] siendo el giro positivo hacia la izquierda del vehículo
 }
 
-/**			CONSTRUCTOR
- * @param unsigned int id
- * @param mySensor
- */
 ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* configurationPtr) : SteeringBehavior(id, pre, configurationPtr)
 {
 	//Cargar Valores de configuracion
@@ -47,7 +40,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	haz = (*configurationPtr)["haz"];
 	prescicion = (*configurationPtr)["prescicion"];
 	sectores = (*configurationPtr)["sectores"];
-	closestObstacle = 8.0;
+
 	for (int i = 0; i < sectores; ++i)
 	{
 		zona.push_back(3.0);
@@ -55,30 +48,20 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	div = haz/sectores;
 	abanico = prescicion*haz;
 
-	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+	//generar el nombre del nodo con el robotId, inicializa el nodo
+	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	ros::M_string remappingsArgs;
-
-	//generar el nombre del nodo con el robotId
 	std::stringstream nameMaster;
 	nameMaster << "controller_" << robotId;
-
-	remappingsArgs.insert(ros::M_string::value_type( "__master", nameMaster.str()));
-
-	//generar el nombre del nodo con el robotId
+	remappingsArgs.insert(ros::M_string::value_type( "aoBh", nameMaster.str()));
 	std::stringstream name;
 	name << "obstacleavoidance_" << robotId;
-
-	//inicializa el nodo
 	ros::init(remappingsArgs, name.str());
-
-	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	rosNode = new ros::NodeHandle;
 
-	/* Subscripcion al topic odometro de este robot*/
-	//generar el nombre del topic a partir del robotId
+	// Subscripcion al topic odom, crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	std::stringstream odomtopicname;
 	odomtopicname << pretopicname << "odom" ;
-	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	odomSubscriber = new ros::Subscriber;
 	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(odomtopicname.str(), 1000, &ObstacleAvoidance::odomCallback,this);
 
@@ -89,17 +72,12 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 		laser[i]=5.000;
 	}
 
-	std::stringstream* lasertopicname;
-
-	//generar el nombre del topic a partir del robotId
-	lasertopicname = new std::stringstream ;
-	*lasertopicname << pretopicname << "base_scan";
-
-	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+	// Subscripcion al topic base_scan, crear el suscriptor en la variable de la clase y ejecutar la suscripcion
+	std::stringstream lasertopicname;
+	lasertopicname << pretopicname << "base_scan";
 	sensorSubscriber = new ros::Subscriber;
-	*sensorSubscriber = (*rosNode).subscribe<sensor_msgs::LaserScan>(lasertopicname->str(), 1000, &ObstacleAvoidance::sensorCallback,this);
-	delete lasertopicname;
-}
+	*sensorSubscriber = (*rosNode).subscribe<sensor_msgs::LaserScan>(lasertopicname.str(), 1000, &ObstacleAvoidance::sensorCallback,this);
+	}
 
 ObstacleAvoidance::~ObstacleAvoidance()
 {
@@ -111,10 +89,15 @@ ObstacleAvoidance::~ObstacleAvoidance()
 
 int ObstacleAvoidance::update()
 {
-	float wideal;
-	//actualizar el estado
 	updateState();
-	//sacar el indice del laser minimo
+	oIdeal();//calcular la orientacion ideal
+	int flag = vIdeal();//calcular la velocidad ideal
+	return flag;
+}
+
+void ObstacleAvoidance::updateState()
+{
+	//indice de la medida del obstaculo mas cercano
 	int minIndex = 0;
 	for (int i = 0; i < haz; ++i)
 	{
@@ -122,7 +105,20 @@ int ObstacleAvoidance::update()
 			minIndex = i;
 		}
 	}
-	if (minIndex==269) {	//si el obstaculo esta en el primer laser tomo como minimo el siguiente así laser[minIndex-1] no da error
+	//actualizo valores de estado
+	minLaserIndex = minIndex;
+	stateContinuous = laser[minLaserIndex];
+	cout << stateContinuous << endl;
+	//discretizo el valor de estado continuo
+	discretizarEstado();
+}
+
+void ObstacleAvoidance::oIdeal()
+{
+	int minIndex = minLaserIndex;
+	if (minIndex==269)
+	{
+		//si el obstaculo esta en el primer laser tomo como minimo el siguiente así laser[minIndex-1] no da error
 		minIndex = 268;
 	}
 	float distUno = laser[minIndex];
@@ -144,191 +140,26 @@ int ObstacleAvoidance::update()
 	if (angRespuesta > PI) {
 		angRespuesta = angRespuesta - 2 * PI;
 	}
-	if (angRespuesta > 0) {		//correspondencia a la escala de orientaciones de ROS
-		wideal = -angRespuesta/PI +1;
-	} else {
-		wideal = -angRespuesta/PI-1;
+	setDesiredW(angRespuesta);
+}
+
+int ObstacleAvoidance::vIdeal()
+{
+	float vmax = 0.5;
+	if (stateContinuous>distMax) {
+		setDesiredV(0.0);
+		return 0;
 	}
-	cout << "obs: L " << minIndex  << " ObstAng: " << obsAng*180/PI << " AOForce: " << angRespuesta*180/PI << " ROS" << wideal << endl;
-	setDesiredW(wideal);
-}
-
-float ObstacleAvoidance::estimateLasers(float xnext, float ynext)
-{
-	float sum = 0;
-	for (int i = 0; i < haz; ++i)
-	{
-		float angulo = tita + i - haz/2; //angulo en el que se emitio el laser
-		sum += nextDist(laser[i],angulo);
-	}
-}
-
-float ObstacleAvoidance::nextDist( float dist, float angulo)
-{
-	//estima la posicion del punto percibido partiendo de la posicion del robot
-	float xnext= x + dist * cos(angulo);
-	float ynext = y + dist * sin(angulo);
-	//la distancia en la siguiente posicion del robot sera
-	float dnext = sqrt(pow(x-xnext,2.0) + pow(y-ynext,2.0));
-}
-
-int ObstacleAvoidance::updateZona(int* min)
-{
-	int indexMax = 0;
-	int indexMin = 0;
-	for (int i = 0; i < zona.size(); ++i)
-	{
-		float* first = &laser[div*i];
-		float* last = &laser[div*(i+1)-1];
-		if (first==last)
-		{
-			zona[i] = *last;
-		}
-
-		float* smallest = first;
-
-		while (++first!=last)
-		{
-			if (*first<*smallest)    // or: if (comp(*first,*smallest)) for version (2)
-			{
-				smallest=first;
-			}
-		}
-		zona[i] = *smallest;
-		if (i == 0)
-		{
-			indexMax = i;
-			indexMin = i;
-		}
-		else{
-			if (zona[i] > zona[indexMax])
-			{
-				indexMax = i;
-			}
-			if (zona[i] < zona[indexMin])
-			{
-				indexMin = i;
-			}
-		}
-	}
-
-	*min = indexMin;
-	return indexMax;
-}
-
-//determinar de manera generica, en funcion del indice, la cantidad de sectores y el angulo del barrido,
-//a partir de la orientacion leida del odometro, cual es la orientacion deseada
-float ObstacleAvoidance::relativeToAbsolute(int relativeIndex)
-{
-	//el sensor devuelve las medidas de derecha a izq, pero como los calculos los hice al reves por ser mas
-	//intuitivo, "doy vuelta" el indice y menos uno por que los indices empiezan de 0
-	//relativeIndex = sectores - relativeIndex - 1;
-	float resolucion = haz / sectores;
-	float regla = relativeIndex - ( sectores - 1) / 2;
-	float anguloRelativo = resolucion * regla;
-	float test = anguloRelativo;
-	anguloRelativo = anguloRelativo / 180;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
-	float wi = tita + anguloRelativo;	//angulo actual + angulo relativo deseado
-	//	cout << "AO AbsDes(" << wi << " " << wi*180 << "°) = AbsAct(" << tita << " " << tita*180 << "°) + RelDes("  << anguloRelativo << " " << anguloRelativo*180 << "°) " << relativeIndex << " -> " << test << endl;
-	return wi;
-}
-
-float ObstacleAvoidance::emergencia()
-{
-	//sumar los valores de las zonas a la izq y a la derecha y ordenar doblar hacia la que haya mas espacio abierto
-	int cantidad = sectores / 2 ;
-	float izquierda = 0 ;
-	float derecha = 0 ;
-	float anguloRelativo = 90;
-	for (int i = 0; i < cantidad; ++i)
-	{
-		derecha += zona[i];
-		izquierda += zona[sectores - i];
-	}
-	if (derecha <= izquierda)
-	{
-		anguloRelativo = 90;
+	else if (stateContinuous<distMin) {
+		setDesiredV(vmax);
+		return (-1);
 	}
 	else
 	{
-		anguloRelativo = -90;
+		float m =(vmax-0)/(distMin-distMax);
+		float b = -m*distMax;
+		float desiredV = (m*stateContinuous)+b;
+		setDesiredV(desiredV);
+		return 1;
 	}
-
-	float test = anguloRelativo;
-	anguloRelativo = anguloRelativo / 180;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
-	float wi = tita + anguloRelativo;	//angulo actual + angulo relativo deseado
-	//	cout << "AO EMERGENCIA AbsDes(" << wi << " " << wi*180 << "°) = AbsAct(" << tita << " " << tita*180 << "°) + RelDes("  << anguloRelativo << " " << anguloRelativo*180 << "°) " << test << endl;
-	return wi;
-}
-
-//verifica que todas las areas de la zona no detecten obstaculos a dist menores que distMax
-int ObstacleAvoidance::zonaSafe()
-{
-	for (int i = 0; i < sectores; ++i)
-	{
-		if (zona[i]<distMax)
-		{
-			return 0;
-		}
-	}
-	return 1;
-}
-
-// en base al indice del area donde se encuentra el obstaculo mas peligroso, determino el angulo opuesto hacia el cual escapar
-float ObstacleAvoidance::escapeTo(int minArea)
-{
-	float resolucion = haz / sectores;
-	float regla = minArea - ( sectores - 1) / 2;
-	float anguloRelativo = resolucion * regla;	//angulo en el que se ubica el obstaculo
-	float test = anguloRelativo;
-	if (anguloRelativo >= 180)
-	{
-		anguloRelativo -= 180;
-	}
-	else
-	{
-		anguloRelativo += 180;
-	}
-	// cout << "Angulo relativo del OBS: " << test << "Angulo relativo de ESC: " << anguloRelativo << endl;
-	anguloRelativo = anguloRelativo / 180;	 //graficar la recta para corroborar que angulo 0->1,90->0.5,180->0,270->-0.5,360->-1
-	float wi = tita + anguloRelativo;	//angulo actual + angulo relativo deseado
-	//	cout << "AO AbsDes(" << wi << " " << wi*180 << "°) = AbsAct(" << tita << " " << tita*180 << "°) + RelDes("  << anguloRelativo << " " << anguloRelativo*180 << "°) " << relativeIndex << " -> " << test << endl;
-	return wi;
-}
-
-void ObstacleAvoidance::printZona()
-{
-	cout << "Zona: I( ";
-	for (int i = 0; i < zona.size(); ++i)
-	{
-		cout << zona[sectores-1-i] << " ";
-	}
-	cout << ")D" << endl;
-}
-
-void ObstacleAvoidance::updateState()
-{
-	float comp = zona.front();
-	for (std::vector<float>::iterator itv=zona.begin(); itv != zona.end() ; itv++) {
-		if (*itv < comp) {
-			comp = *itv;
-		}
-	}
-	int indexMin = 0;
-	float min = comp - valoresEstado[indexMin];
-	for (int j = 1; j < valoresEstado.size(); ++j)
-	{
-		if ((comp - valoresEstado[j]) > 0)
-		{
-			if ((comp - valoresEstado[j]) < min)
-			{
-				min = comp - valoresEstado[j];
-				indexMin=j;
-			}
-		}
-		else{
-			break;
-		}
-	}
-	stateDiscrete = valoresEstado[indexMin];
 }

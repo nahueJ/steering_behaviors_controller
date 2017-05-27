@@ -23,16 +23,9 @@ void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 	//a partir de la posición inicial (0rad) tiene un rango (-PI/2 ; +PI/2] siendo el giro positivo hacia la izquierda del vehículo
 }
 
-/**
- * @param objective
- * @param id
- * @param weight
- */
 Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : SteeringBehavior(id, pre, configurationPtr)
 {
 	//Cargar Valores de configuracion
-	target.position.x = (*configurationPtr)["targetX"];
-	target.position.y = (*configurationPtr)["targetY"];
 	standardVel = (*configurationPtr)["desiredV"];
 	toleranceToTarget = (*configurationPtr)["toleranceToTarget"];
 
@@ -94,6 +87,7 @@ int Seek::vIdeal()
 	}
 	return 1;
 }
+
 void Seek::oIdeal()
 {
 	float objAng = atan2(errory,errorx);	//este es el angulo en el q se encuentra el objetivo relativo a las coords del robot (odom). El angulo de la fuerza del comportamiento es la diferencia con la orientacion actual
