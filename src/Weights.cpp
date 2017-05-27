@@ -12,23 +12,10 @@ Weights::Weights(std::vector<float> w, Setting* configurationPtr)
 	myType = (*configurationPtr)["type"].c_str();
 	weights = new std::vector<float>;
 	*weights = w;
-	ceroRules.clear();
-	int nbRules = (*configurationPtr)["ceroRules"].getLength();
-	if (nbRules>0)
-	{
-		Setting& rules =(*configurationPtr)["ceroRules"];
-		for (int i = 0; i < nbRules; ++i)
-		{
-			ceroRuleStruct auxRule;
-			auxRule.behaviorNb = rules[i][0];
-			auxRule.ceroOver = rules[i][1];
-			ceroRules.push_back(auxRule);
-		}
-	}
 }
 
 //constructor para qTableW
-Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles, Setting* configurationPtr){
+/*Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles, Setting* configurationPtr){
 	// struct fann *ann = fann_create_standard(4, 2, 8, 9, 1);
 	myType = (*configurationPtr)["type"].c_str();
 	gamma = (*configurationPtr)["relativeValue"];
@@ -37,7 +24,7 @@ Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles,
 	maxVisitasDif = (*configurationPtr)["minDeltaVisitas"];
 
 	instanciarWcombinaciones(wCantDiscretizacion, statePosibles.size());
-	/*	posibles estados */
+	//	posibles estados
 	std::vector< std::vector<float> > sCombinacionesPosibles;
 	std::vector< std::vector<float> > sValPosibles;
 	for (std::vector< std::vector< std::vector< float > > >::iterator ita = statePosibles.begin(); ita != statePosibles.end(); ++ita)
@@ -49,9 +36,8 @@ Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles,
 	}
 	std::vector<float> individuo;
 	sPermutaciones(sValPosibles, individuo, sValPosibles.size(), &sCombinacionesPosibles);
-	/****************************************************************/
-	/*	Instanciación de la estructura map para almacenar la qTable */
-	/****************************************************************/
+	//	Instanciación de la estructura map para almacenar la qTable
+
 	//Lista de inputs para la qTable
 	std::vector<std::vector<float> > inputs;
 	for (std::vector< std::vector<float> >::iterator its = sCombinacionesPosibles.begin(); its != sCombinacionesPosibles.end(); ++its)
@@ -99,10 +85,10 @@ Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles,
 	{
 		wNull.push_back(0.000);
 	}
-}
+}*/
 
 //constructor para qTableW
-Weights::Weights(Setting* configurationPtr){
+/*Weights::Weights(Setting* configurationPtr){
 	myType = (*configurationPtr)["type"].c_str();
 	int wCantDiscretizacion = (*configurationPtr)["wPosibles"];
 	int wSize = (*configurationPtr)["wSize"];
@@ -132,7 +118,7 @@ Weights::Weights(Setting* configurationPtr){
 			}
 		}
 	}
-}
+}*/
 
 Weights::~Weights(){
 	qTable.get_allocator().deallocate(allocP,allocateNb);
@@ -141,14 +127,9 @@ Weights::~Weights(){
 int Weights::getWeights(std::vector< std::vector<float> > state, std::vector<float>* wOut){
 	if (myType == "constW")
 	{
-		if (!ceroRules.empty())
-		{
-			*wOut = updateConstW(state);
-			return 0;
-		}
 		*wOut = *weights;
-		return 0;
-	} else {
+		return 1;
+	} /*else {
 		std::vector<float> statePart;
 		std::vector<float> wAux;
 		for (std::vector< std::vector< float > >::iterator ita = state.begin(); ita != state.end(); ++ita)
@@ -181,49 +162,11 @@ int Weights::getWeights(std::vector< std::vector<float> > state, std::vector<flo
 			wAux = getBestWfromQTable(statePart);
 		}
 		*wOut = wAux;
-		return 0;
-	}
+		return 1;
+	}*/
 }
 
-std::vector<float> Weights::updateConstW(std::vector< std::vector<float> > state){
-	std::vector<float> wAux = (*weights);
-	float amountToDistribute = 0;
-	int wToDistribute = 0;
-	for (std::vector<ceroRuleStruct>::iterator irule = ceroRules.begin(); irule != ceroRules.end(); ++irule)
-	{
-		bool flag = true;
-		for (std::vector<float>::iterator istate = (state[(*irule).behaviorNb]).begin(); istate != (state[(*irule).behaviorNb]).end(); ++istate)
-		{
-			if (*istate < (*irule).ceroOver)
-			{
-				//si se rompe la regla
-				flag = false;
-			}
-		}
-		//si la regla nunca se rompio
-		if (flag)
-		{
-			amountToDistribute = wAux[(*irule).behaviorNb];
-			wAux[(*irule).behaviorNb] = 0.000;
-			wToDistribute++;
-		}
-	}
-	//si se cumplio alguna regla para obviar un comportamiento, distribuyo el peso en los demas comportamientos
-	if (wToDistribute > 0)
-	{
-		float added = amountToDistribute/(state.size()-wToDistribute);
-		for (std::vector<float>::iterator i = wAux.begin(); i != wAux.end(); ++i)
-		{
-			if (*i != 0.000)
-			{
-				*i += added;
-			}
-		}
-	}
-	return wAux;
-}
-
-void Weights::wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
+/*void Weights::wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
 	if (longitud == 0) {
 		float add = 0;
 		for (std::vector<float>::iterator ii = individuo.begin(); ii != individuo.end(); ++ii)
@@ -241,9 +184,9 @@ void Weights::wPermutaciones(std::vector<float> valores, std::vector<float> indi
 			wPermutaciones(valores, variante, (longitud - 1), contenedor);
 		}
 	}
-}
+}*/
 
-void Weights::sPermutaciones(std::vector< std::vector<float> > valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
+/*void Weights::sPermutaciones(std::vector< std::vector<float> > valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
 	if (longitud == 0) {
 		(*contenedor).push_back(individuo);
 	} else {
@@ -254,9 +197,9 @@ void Weights::sPermutaciones(std::vector< std::vector<float> > valores, std::vec
 			sPermutaciones(valores, variante, (longitud - 1), contenedor);
 		}
 	}
-}
+}*/
 
-void Weights::printPerm(std::vector< std::vector<float> > perm )
+/*void Weights::printPerm(std::vector< std::vector<float> > perm )
 {
 	cout << "Combinaciones posibles: " << endl;
 	for (std::vector< std::vector<float> >::iterator ita = perm.begin(); ita < perm.end(); ++ita)
@@ -268,9 +211,9 @@ void Weights::printPerm(std::vector< std::vector<float> > perm )
 		cout << endl;
 	}
 	cout << endl;
-}
+}*/
 
-int Weights::writeQTableToFile(std::string fname) {
+/*int Weights::writeQTableToFile(std::string fname) {
 	int count = 0;
 	if (qTable.empty())
 			return 0;
@@ -288,9 +231,10 @@ int Weights::writeQTableToFile(std::string fname) {
 	}
 	fclose(fp);
 	return count;
-}
+}*/
 
-std::vector<float> Weights::getRandomWfromQTable(std::vector<float> state){
+/*std::vector<float> Weights::getRandomWfromQTable(std::vector<float> state)
+{
 	//Eleccion: si la diferencia de visitas a diferentes acciones en el mismo estado es mayor q la dada en la configuracion, se elije la menos visitada, si no se elije aleatoriamente
 	int eleccion = checkVisits(state);
 	//Genero el input para la qTable
@@ -299,9 +243,10 @@ std::vector<float> Weights::getRandomWfromQTable(std::vector<float> state){
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
 	memoria.push_back(itaux);
 	return wCombinacionesPosibles[eleccion];
-}
+}*/
 
-std::vector<float> Weights::getBestWfromQTable(std::vector<float> state){
+/*std::vector<float> Weights::getBestWfromQTable(std::vector<float> state)
+{
 	//Genero todos los posibles inputs estado/pesos, correspondientes al estado actual
 	std::vector< std::vector<float> > options;
 	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles.begin(); itw != wCombinacionesPosibles.end(); ++itw)
@@ -330,9 +275,10 @@ std::vector<float> Weights::getBestWfromQTable(std::vector<float> state){
 	}
 	cout<< "lo mejor que habia " << bestQval<< endl;
 	return wCombinacionesPosibles[best];
-}
+}*/
 
-int Weights::criticCheck(std::vector< std::vector<float> > state){
+/*int Weights::criticCheck(std::vector< std::vector<float> > state)
+{
 	int index = 0;
 	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
 	{
@@ -349,9 +295,10 @@ int Weights::criticCheck(std::vector< std::vector<float> > state){
 	}
 	//si no se aplica ningun refuerzo se envia -1
 	return -1;
-}
+}*/
 
-void Weights::actualizarQTable(int refuerzo){
+/*void Weights::actualizarQTable(int refuerzo)
+{
 	std::string mensaje = critic[refuerzo].message;
 	cout << "Aplicando refuerzo " << mensaje << " a " << memoria.size() << " estados" << endl;
 	int count = 0;
@@ -375,9 +322,10 @@ void Weights::actualizarQTable(int refuerzo){
 	}
 	memoria.clear();
 	int aux = writeQTableToFile(file);
-}
+}*/
 
-void Weights::loadQTable(std::string file, int inputSize){
+/*void Weights::loadQTable(std::string file, int inputSize)
+{
 	std::ifstream aFile (file.c_str());
 	int numberOfNodes=std::count(std::istreambuf_iterator<char>(aFile), std::istreambuf_iterator<char>(), '\n');
 	int nodeSize = sizeof(std::map<std::vector<float> , qTableOutput>::value_type);
@@ -402,13 +350,12 @@ void Weights::loadQTable(std::string file, int inputSize){
 	}
 	cout << "QTable inputs: " << qTable.size() << endl;
 	// printQTable();
-}
+}*/
 
-void Weights::instanciarWcombinaciones(int wCantDiscretizacion, int size){
-	/**************************************************************************************/
-	/*	Instanciacion del vector de posibles outputs / decisiones (combinaciones de pesos)*/
-	/*	sagun la discretizacion tomada de la configuracion								  */
-	/**************************************************************************************/
+/*void Weights::instanciarWcombinaciones(int wCantDiscretizacion, int size)
+{
+	//	Instanciacion del vector de posibles outputs / decisiones (combinaciones de pesos)
+	//	sagun la discretizacion tomada de la configuracion
 	float step = 0.8 / (wCantDiscretizacion-1);
 	std::vector<float> wValPosibles;
 	for (int i = 0; i < wCantDiscretizacion; ++i)
@@ -419,9 +366,10 @@ void Weights::instanciarWcombinaciones(int wCantDiscretizacion, int size){
 	//multiplos del step entre 0 y 1 (para step 0.2 [0.0 0.2 0.4 0.6 0.8 1.0]) y almacenar aquellas combinaciones donde la suma sea 1
 	std::vector<float> individuo;
 	wPermutaciones(wValPosibles, individuo, size, &wCombinacionesPosibles);
-}
+}*/
 
-void Weights::printQTable(){
+/*void Weights::printQTable()
+{
 	for(std::map<std::vector<float> , qTableOutput>::iterator itm = qTable.begin(); itm != qTable.end(); itm++) {
 		std::vector<float> auxv = itm->first;
 		for (std::vector<float>::iterator itv = auxv.begin(); itv != auxv.end(); ++itv)
@@ -430,9 +378,10 @@ void Weights::printQTable(){
 		}
 		cout << "=" << itm->second.visits << " " << itm->second.qValue << endl;
 	}
-}
+}*/
 
-int Weights::checkVisits(std::vector<float> state){
+/*int Weights::checkVisits(std::vector<float> state)
+{
 	//Genero todos los posibles inputs estado/pesos, correspondientes al estado actual
 	std::vector< std::vector<float> > options;
 	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles.begin(); itw != wCombinacionesPosibles.end(); ++itw){
@@ -463,4 +412,4 @@ int Weights::checkVisits(std::vector<float> state){
 	} else{
 		return rand()% wCombinacionesPosibles.size();
 	}
-}
+}*/

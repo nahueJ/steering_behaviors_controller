@@ -32,15 +32,19 @@ public:
 
 	~Factory();
 
-	int instanciateBehaviors(unsigned int id, std::string pre,
+	/*int instanciateBehaviors(unsigned int id, std::string pre,
 							std::vector<SteeringBehavior*>* behaviors,
 							Weights** weights,
 							std::string* type,
-							std::vector< std::vector<float> >* state);
+							std::vector< std::vector<float> >* state);*/
+
+	int instanciateSeekBehavior(	unsigned int id, std::string pre,
+										std::vector<SteeringBehavior*>* behaviors,
+										std::string* type);
 
 	int getAgents();
 
-	int learningSession();
+	//int learningSession();
 
 private:
 
@@ -54,7 +58,7 @@ private:
 
 	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
 
-	Weights* pickWeights(std::string, Setting&, std::vector<SteeringBehavior*>, std::vector< std::vector<float> >*);
+	//Weights* pickWeights(std::string, Setting&, std::vector<SteeringBehavior*>, std::vector< std::vector<float> >*);
 
 };
 

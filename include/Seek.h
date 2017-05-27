@@ -10,6 +10,7 @@
 
 #include "ros/ros.h"
 #include "ros/message.h"
+#include "tf/tf.h"
 
 #include "SteeringBehavior.h"
 
@@ -44,12 +45,8 @@ public:
 	 * gets the last data and actualizes the desiredTwist
 	 * @param myPose
 	 */
-	virtual void update();
-	virtual std::vector<float> getState();
+	virtual int update();
 	virtual void updateState() ;
-
-	virtual float getDesiredW();
-
 	virtual void setGoal(float, float);
 
 private:
@@ -63,9 +60,6 @@ private:
 	//Funciones de Callback para las suscripciones a los topic de la posicion)
 	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
-	//variables para almacenar los valores recibidos de las funciones de callback para el posterior calculo con las mismas
-	nav_msgs::Odometry*	myData;
-
 	//distancia hasta el objetivo
 	float errorx;
 	float errory;
@@ -74,7 +68,8 @@ private:
 	float toleranceToTarget;
 	float standardVel;
 
-	float wIdeal( float, float);
+	void oIdeal();
+	int vIdeal();
 };
 
 #endif //_SEEK_H

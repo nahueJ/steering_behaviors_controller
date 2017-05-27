@@ -15,7 +15,12 @@
  */
 void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
-	*myData = *odom;		//almaceno en la variable correspondiente los ultimos valores recibidos
+	x = odom->pose.pose.position.x;
+	y = odom->pose.pose.position.y;
+	tf::Pose pose;
+	tf::poseMsgToTF(odom->pose.pose, pose);
+	tita = tf::getYaw(pose.getRotation());	//tita: orientación en radianes para el marco coordenadas 2D, transformado a partir del marco de referencia 3D expresado por el quaternion (x,y,z,w) de la estructura orientation.
+	//a partir de la posición inicial (0rad) tiene un rango (-PI/2 ; +PI/2] siendo el giro positivo hacia la izquierda del vehículo
 }
 
 /**
@@ -31,75 +36,55 @@ Seek::Seek(unsigned int id, std::string pre, Setting* configurationPtr) : Steeri
 	standardVel = (*configurationPtr)["desiredV"];
 	toleranceToTarget = (*configurationPtr)["toleranceToTarget"];
 
-	//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
+	//generar el nombre del nodo con el robotId, inicializa el nodo
+	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	ros::M_string remappingsArgs;
-
-	//generar el nombre del nodo con el robotId
 	std::stringstream nameMaster;
 	nameMaster << "controller_" << robotId;
-
-	remappingsArgs.insert(ros::M_string::value_type( "__master", nameMaster.str()));
-
-	//generar el nombre del nodo con el robotId
+	remappingsArgs.insert(ros::M_string::value_type( "seekBh", nameMaster.str()));
 	std::stringstream name;
 	name << "seek_" << robotId;
-
-	//inicializa el nodo
 	ros::init(remappingsArgs, name.str());
-
-	//crear el manejador del nodo y apuntarlo desde la variable de la clase
 	rosNode = new ros::NodeHandle;
 
-	// Subscripcion al topic base_pose_ground_truth de este robot
-	//generar el nombre del topic a partir del robotId
+	// Subscripcion al topic odom, crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	std::stringstream topicname;
-
 	topicname << pretopicname << "odom" ;
-
-	//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 	odomSubscriber = new ros::Subscriber;
 	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(topicname.str(), 1000, &Seek::odomCallback,this);
-
-	myData = new nav_msgs::Odometry;
 
 	setDesiredV(standardVel);
 }
 
-Seek::~Seek() {
+Seek::~Seek()
+{
 	delete rosNode;
 	delete odomSubscriber;
-	delete myData;
 }
 
 /**
  * gets the last data and actualizes the desiredTwist
  * @param myPose
  */
-void Seek::update() {
+int Seek::update()
+{
+	updateState();//actualizar estado
+	oIdeal();//calcular la orientacion ideal
+	int flag = vIdeal();//calcular la velocidad ideal
+	return flag;
+}
 
-	errorx = target.position.x - myData->pose.pose.position.x;
-	errory = target.position.y - myData->pose.pose.position.y;
-
-	//actualizar estado
-	updateState();
-
-	//calcular la orientacion ideal!
-	float wi = wIdeal(errorx,errory);
-
-	setDesiredW(wi);
-
-	//verificar distancia al objetivo
-	float almost = sqrt(pow(errorx,2)+pow(errory,2));
-	// cout << "ALMOST! " << almost << endl;
-	if (toleranceToTarget>almost)
+int Seek::vIdeal()
+{
+	if (toleranceToTarget>stateContinuous)
 	{
 		//si es menor que la tolerancia se detiene
 		cout << "OBJETIVO ALCANZADO" << endl;
 		setDesiredV(0.0);
 		setDesiredW(0.0);
-		system("killall stageros &");
+		return 0;
 	}
-	else if (toleranceToTarget*3>almost)
+	else if (toleranceToTarget*3>stateContinuous)
 	{
 		setDesiredV(0.1);
 	}
@@ -107,69 +92,26 @@ void Seek::update() {
 	{
 		setDesiredV(standardVel);
 	}
+	return 1;
 }
-
-float Seek::getDesiredW()
+void Seek::oIdeal()
 {
-	update();
-	return desiredW;
+	float objAng = atan2(errory,errorx);	//este es el angulo en el q se encuentra el objetivo relativo a las coords del robot (odom). El angulo de la fuerza del comportamiento es la diferencia con la orientacion actual
+	setDesiredW(objAng-tita);
 }
 
-float Seek::wIdeal( float dx, float dy)
-{
-	float objAng;	//angulo al objetivo
-	float wIdeal;	//orientación ideal del vehículo.
-	if (dx == 0) {
-		objAng = PI/2;	//Si el obstaculo esta enfrente del agente, las distancias en x son iguales, y la inclinacion se hace infinita...equivalente a una linea vertical
-	} else {
-		objAng = atan2(dy,dx);
-	}
-	if (objAng > PI) {
-		objAng = objAng - 2 * PI;
-	}
-
-	cout << "objAngC " << objAng*180/PI << " myAng "<< (acos(myData->pose.pose.orientation.z)*2-PI)*180/PI<< endl;
-	objAng = objAng - ((acos(myData->pose.pose.orientation.z)*2) - PI);
-	if (objAng > 0) {		//correspondencia a la escala de orientaciones de ROS
-		wIdeal = -objAng/PI +1;
-	} else {
-		wIdeal = -objAng/PI-1;
-	}
-	cout << " objAng: " << objAng*180/PI << " ROS" << wIdeal << " To:" << target.position.x << " , " << target.position.y << endl;
-	return wIdeal;
-}
-
-std::vector<float> Seek::getState()
-{
-//El estado del comportamiento Seek es la distancia al objetivo, discretizada en los valores del vector valoresEstado
-	return state;
-}
-
+/* Calcula esl estado en el espacio continuo y*
+* lo matchea a las opciones de estado discreto*/
 void Seek::updateState()
 {
-	// cout << "SState/cont: ";
-	float continuousValState=sqrt(pow(errorx,2)+pow(errory,2));
-	//buscar dentro de los posibles valores aquel mas proximo al valor continuo
-	int indexMin = 0;
-	float min = continuousValState - valoresEstado[indexMin];
-	for (int i = 1; i < valoresEstado.size(); ++i)
-	{
-		if ((continuousValState - valoresEstado[i]) > 0)
-		{
-			if ((continuousValState - valoresEstado[i])<min)
-			{
-				min = continuousValState - valoresEstado[i];
-				indexMin=i;
-			}
-		}
-		else{
-			break;
-		}
-	}
-	state[0]=valoresEstado[indexMin];
-	// cout << continuousValState << "/" << state[0] << endl;
+	errorx = target.position.x - x;
+	errory = target.position.y - y;
+	stateContinuous=sqrt(pow(errorx,2)+pow(errory,2));
+	discretizarEstado();
 }
-void Seek::setGoal(float xg, float yg){
+
+void Seek::setGoal(float xg, float yg)
+{
 	target.position.x = xg;
 	target.position.y = yg;
 }

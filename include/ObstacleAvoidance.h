@@ -41,11 +41,8 @@ class ObstacleAvoidance : public SteeringBehavior {
 		/**
 		 * gets the last data and actualizes the desiredTwist
 		 */
-		virtual void update();
-		virtual std::vector<float> getState() ;
+		virtual int update();
 		virtual void updateState() ;
-
-		virtual float getDesiredW();
 
 	private:
 
@@ -68,11 +65,6 @@ class ObstacleAvoidance : public SteeringBehavior {
 		//Funcion de Callback y variables para la suscripcion al topic del odometro (posicion y twist)
 		ros::Subscriber* odomSubscriber;
 		void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
-		nav_msgs::Odometry*	myData;
-		//variables para almacenar los datos del odometro
-		float x;
-		float y;
-		float tita;
 
 		//distancia máxima a la que actua el comportamiento
 		float distMax;

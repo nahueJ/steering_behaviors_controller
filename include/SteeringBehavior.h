@@ -36,14 +36,12 @@ public:
 
 	~SteeringBehavior();
 
-	virtual void update() ; // función virtual pura
-	virtual std::vector<float> getState() ;
+	virtual int update() ; // función virtual pura
+	virtual float getState() ;
 	virtual void updateState() ;
 
 	virtual string getName();
 	virtual string getType();
-	virtual int getNbVbles();
-	virtual std::vector<float> getPosibleValues();
 	virtual float getDesiredV();
 	virtual float getDesiredW();
 	virtual void setGoal(float, float); //only for seek
@@ -57,7 +55,8 @@ protected:
 	std::string myType;
 	unsigned int robotId;
 
-	std::vector<float> state;
+	float stateDiscrete;
+	float stateContinuous;
 	std::vector<float> valoresEstado;
 
 	std::string pretopicname;
@@ -67,6 +66,13 @@ protected:
 
 	//Clase para el ingreso de parametros de configuración
 	Setting* config;
+
+	//variables para almacenar los datos del odometro
+	float x;
+	float y;
+	float tita;
+
+	void discretizarEstado ();
 };
 
 #endif //_STEERINGBEHAVIOR_H

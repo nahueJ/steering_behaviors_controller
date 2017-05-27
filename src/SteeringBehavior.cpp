@@ -31,32 +31,30 @@ SteeringBehavior::SteeringBehavior(
 	int nbVar = (*configurationPtr)["variablesDeEstado"];
 	std::string discret = (*configurationPtr)["discret"].c_str();
 
-	if (discret == "iregular") {
+	//genero un vector con todos los valores discretos que puede tomar la variable de estado, este puede ser regular (i.e. [0;0.5;1.0;1.5;...]) o irregular (i.e. [0;0.2;0.6;1.0;2.0])
+	if (discret == "iregular")
+	{
 		int nbVarPosibles = (*configurationPtr)["vectorEstados"].getLength();
-		//inicializo el array con los posibles valores para las variables de estado
 		Setting& sVal =(*configurationPtr)["vectorEstados"];
 		for (int i = 0; i < nbVarPosibles; ++i)
 		{
 			valoresEstado.push_back(sVal[i]);
 		}
-	} else {
+	}
+	else
+	{
 		float minValState = (*configurationPtr)["minEstado"];
 		float maxValState = (*configurationPtr)["maxEstado"];
 		float stepValState = (*configurationPtr)["paso"];
-
 		int nbVarPosibles = ((maxValState-minValState)/stepValState)+1;
 
-		//inicializo el array con los posibles valores para las variables de estado
 		for (int i = 0; i < nbVarPosibles; ++i)
 		{
 			valoresEstado.push_back(minValState+i*stepValState);
 		}
 	}
 	//inicializo el vector de estado con algun valor de los posibles valores
-	for (int i = 0; i < nbVar; ++i)
-	{
-		state.push_back(valoresEstado.back());
-	}
+	stateDiscrete=valoresEstado.back();
 }
 
 SteeringBehavior::~SteeringBehavior() {
@@ -71,16 +69,6 @@ string SteeringBehavior::getName()
 string SteeringBehavior::getType()
 {
 	return myType;
-}
-
-int SteeringBehavior::getNbVbles()
-{
-	return state.size();
-}
-
-std::vector<float> SteeringBehavior::getPosibleValues()
-{
-	return valoresEstado;
 }
 
 float SteeringBehavior::getDesiredV()
@@ -104,13 +92,13 @@ void SteeringBehavior::setDesiredW(float z)
 	desiredW = ( abs(z) <= 1.0 ) ? z : (z/abs(z));
 }
 
-void SteeringBehavior::update(){
+int SteeringBehavior::update(){
 
 }
 
-std::vector<float> SteeringBehavior::getState()
+float SteeringBehavior::getState()
 {
-
+	return stateDiscrete;
 }
 
 void SteeringBehavior::updateState()
@@ -120,4 +108,26 @@ void SteeringBehavior::updateState()
 
 void SteeringBehavior::setGoal(float xg, float yg){
 
+}
+
+void SteeringBehavior::discretizarEstado ()
+{
+	//buscar dentro de los posibles valores aquel mas proximo al valor continuo
+	int indexMin = 0;
+	float min = stateContinuous - valoresEstado[indexMin];
+	for (int i = 1; i < valoresEstado.size(); ++i)
+	{
+		if ((stateContinuous - valoresEstado[i]) > 0)
+		{
+			if ((stateContinuous - valoresEstado[i])<min)
+			{
+				min = stateContinuous - valoresEstado[i];
+				indexMin=i;
+			}
+		}
+		else{
+			break;
+		}
+	}
+	stateDiscrete = valoresEstado[indexMin];
 }

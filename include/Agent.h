@@ -10,6 +10,7 @@
 
 #include "ros/ros.h"
 #include "ros/message.h"
+#include "tf/tf.h"
 
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/Pose.h>
@@ -44,8 +45,8 @@ private:
 	//Id del robot del controlador
 	unsigned int robotId;
 	string myType;
-	std::vector< std::vector<float> > state;
-	std::vector< std::vector<float> > ansState;
+	std::vector< float > state;
+	std::vector< float > ansState;
 	int roundCounter;
 
 	//Variables para publicar por un topic
@@ -60,8 +61,6 @@ private:
 	Weights* weights;
 	int nbBehaviors;
 
-	int restartFlag;
-
 	geometry_msgs::Pose target;
 
 	geometry_msgs::Pose myPosition;
@@ -70,9 +69,10 @@ private:
 	//Funciones de Callback para las suscripciones al odometro
 	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
 
-	nav_msgs::Odometry*	myData;
-
-	int imAlone();
+	//variables para almacenar los datos del odometro
+	float x;
+	float y;
+	float tita;
 
 	float addAngle(float, float);
 

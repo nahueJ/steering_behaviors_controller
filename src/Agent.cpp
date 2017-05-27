@@ -13,7 +13,12 @@
 
 void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
-	*myData = *odom;	//almaceno en la variable correspondiente los ultimos valores recibidos
+	x = odom->pose.pose.position.x;
+	y = odom->pose.pose.position.y;
+	tf::Pose pose;
+	tf::poseMsgToTF(odom->pose.pose, pose);
+	tita = tf::getYaw(pose.getRotation());	//tita: orientación en radianes para el marco coordenadas 2D, transformado a partir del marco de referencia 3D expresado por el quaternion (x,y,z,w) de la estructura orientation.
+	//a partir de la posición inicial (0rad) tiene un rango (-PI/2 ; +PI/2] siendo el giro positivo hacia la izquierda del vehículo
 }
 
 /*--------------------------- Constructor -----------------------------------
@@ -29,72 +34,52 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 Agent::Agent(unsigned int id, Factory* factoryPtr)
 {
 	robotId = id;
-	restartFlag = 0;
+
 	std::stringstream name;
 	name << "agent" << robotId;
-
 	//Generar prefijo del nombre de los topics del robot del simulador para futuras suscripciones
 	pretopicname = new std::stringstream;
-	if (!imAlone())
-	{
-		*pretopicname << "/robot_" << robotId << "/";
-	}
-	else
-	{
-		*pretopicname << "/" ;
-	}
-
+	*pretopicname << "/" ;
 	//Intento instanciar los comportamientos
-
-	if (factoryPtr->instanciateBehaviors(robotId,pretopicname->str(),&behaviors,&weights,&myType,&state))
+	if ( factoryPtr->instanciateSeekBehavior( robotId, pretopicname->str(), &behaviors, &myType) )
 	{
-
+		cout << "Agent instanciando nodo" << endl;
 		//*****************//
 		//Creacion del Nodo//
 		//*****************//
-
-		//Inicializacion del publisher en el topic cmd_vel del robot correspondiente
 		ros::M_string remappingsArgs;
-		remappingsArgs.insert(ros::M_string::value_type( "__master", "controllerHandler"));
-		//generar el nombre del nodo con el robotId
+		remappingsArgs.insert(ros::M_string::value_type( "agente", "controllerHandler"));
 		std::stringstream name;
 		name << "controller_" << robotId;
-		//inicializa el nodo
 		ros::init(remappingsArgs, name.str());
-		//crear el manejador del nodo y apuntarlo desde la variable de la clase
 		rosNode = new ros::NodeHandle;
 
 		//*************************************//
 		//Suscripcion y Publicaciones en Topics//
 		//*************************************//
-
-		//generar el nombre del topic a partir del robotId
+		//Crear el publicador y apuntarlo con la variable de la clase
 		std::stringstream pubtopicname ;
 		pubtopicname << pretopicname->str() << "cmd_vel" ;
-		//Crear el publicador y apuntarlo con la variable de la clase
 		ctrlPublisher = new ros::Publisher;
 		*ctrlPublisher = rosNode->advertise<geometry_msgs::Twist>(pubtopicname.str(), 100000);
-
+		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 		std::stringstream sustopicname ;
 		sustopicname << pretopicname->str() << "odom" ;
-
-		//Crear el suscriptor en la variable de la clase y ejecutar la suscripcion
 		odomSubscriber = new ros::Subscriber;
 		*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(sustopicname.str(), 1000, &Agent::odomCallback,this);
-
-		myData = new nav_msgs::Odometry;
 	}
 	else
 	{
 		cout << "Agent " << robotId << ": Missing parameter in configuration file." << endl;
 	}
+	cout << "Agent OK" << endl;
 }
 
-Agent::~Agent() {
+Agent::~Agent()
+{
 	delete rosNode;
 	delete ctrlPublisher;
 	delete odomSubscriber;
-	delete myData;
 	//LIBERAR LOS BEHAVIORS
 
 }
@@ -104,38 +89,59 @@ Agent::~Agent() {
  *	cada uno de ellos ponderadamente y comunicar eso a los actuadores del
  *	robot
  ----------------------------------------------------------------------*/
-
 int Agent::update()
 {
-	if (restartFlag == 1) {
-		restartFlag == 0;
-	}
 	/* Recupero la orientación deseada de cada comportamiento */
 	float desiredW;
-	float behaviorDelta[behaviors.size()];
+	// float behaviorV[behaviors.size()];
+	// float behaviorO[behaviors.size()];
+	int behaviorFlag[behaviors.size()];
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
-		desiredW = behaviors[i]->getDesiredW();
+		behaviorFlag[i] = behaviors[i]->update();
 		if (behaviors[i]->getType()=="seek")
 		{
-			behaviorDelta[i] = desiredW;//error del angulo segun seek
-			myTwist.linear.x = behaviors[i]->getDesiredV();
+			switch (behaviorFlag[i]) {
+				case 0:
+					return 0;
+					break;
+				case 1:
+					myTwist.angular.z = behaviors[i]->getDesiredW();
+					myTwist.linear.x = behaviors[i]->getDesiredV();
+					ctrlPublisher->publish(myTwist);
+					break;
+			}
 		}
-		else if (behaviors[i]->getType()=="avoidObstacles")
-		{
-			behaviorDelta[i] = desiredW;//error del angulo segun obstacle avoidance
-		}
-		behaviorDelta[i] = 1- fabs(behaviorDelta[i]);
 	}
+	return 1;
+
+		//
+		// behaviorO[i] = behaviors[i]->getDesiredW();
+		// behaviorV[i] = behaviors[i]->getDesiredW();
+		// if (behaviors[i]->getType()=="seek")
+		// {
+		// 	behaviors[i]->update();
+		// 	 = desiredW;//error del angulo segun seek
+		// 	myTwist.linear.x = behaviors[i]->getDesiredV();
+		// }
+		// else if (behaviors[i]->getType()=="avoidObstacles")
+		// {
+		// 	behaviors[i]->update();
+		// 	behaviorDelta[i] = desiredW;//error del angulo segun obstacle avoidance
+		// 	myTwist.linear.x = behaviors[i]->getDesiredV();
+		// }
+		// behaviorDelta[i] = 1- fabs(behaviorDelta[i]);
+//	}
 	/* Pido los pesos, weights evalua los casos donde se ignora algun comportamiento y disribuye el peso de este entre los demas */
 	//Actualizo el estado
-	updateState();
+	//updateState();
 	//Si el estado no cambia, los pesos son los mismos
-	printState();
-	cout << endl;
-	if ((state != ansState) or (w.empty()))
+	//printState();
+	//cout << endl;
+	//weights->getWeights(state,&w);
+/*	if ((state != ansState) or (w.empty()))
 	{
-		restartFlag = weights->getWeights(state,&w);
+		//
 		//print de la nueva elección de la tabla
 
 		for (std::vector<float>::iterator itw = w.begin(); itw != w.end(); itw++) {
@@ -147,56 +153,30 @@ int Agent::update()
 		}
 		cout << endl;
 
-	}
-	/*************************************************************************/
-	/* Efectuo la suma ponderada de las orientaciones de cada comportamiento */
-	/*************************************************************************/
+	}*/
+	/*
+	// Efectuo la suma ponderada de las orientaciones de cada comportamiento
+
 	float totalDelta  = 0;
-	if (restartFlag == 0) {
-		for (int i = 0; i < behaviors.size(); ++i)
-		{
-			totalDelta += w[i]*behaviorDelta[i];	//calculamos la suma de los errores ponderados
-		}
-	} else if (restartFlag == 1) {	//Se ha recibido un refuerzo y hay que lanzar una nueva simulacion
-		restartFlag = 1;
-	}
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		totalDelta += w[i]*behaviorDelta[i];	//calculamos la suma de los errores ponderados
+	}*/
+	//float desiredAngle = addAngle(tita, totalDelta);		//angulo deseado = angulo + error
 
-	//float desiredAngle = addAngle(myData->pose.pose.orientation.z, totalDelta);		//angulo deseado = angulo + error
-
-	myTwist.angular.z = totalDelta;		//para este error que velocidad corresponde
-	if (myType == "agenteOnlyAvoidObstacles")	//solo para test
+	//myTwist.angular.z = totalDelta;		//para este error que velocidad corresponde
+	/*if (myType == "agenteOnlyAvoidObstacles")	//solo para test
 	{
 		myTwist.linear.x = 0.2;
-	}
-	ctrlPublisher->publish(myTwist);				//envío la velocidad
+	}*/
 
-	cout << myTwist.angular.z << " = S(" << w[0] << " * " << behaviorDelta[0] << ") + OA(" << w[1] << " * " << behaviorDelta[1] << ")" << endl;
+	// ctrlPublisher->publish(myTwist);				//envío la velocidad
 
-	return restartFlag;
+	//cout << myTwist.angular.z << " = S(" << w[0] << " * " << behaviorDelta[0] << ") + OA(" << w[1] << " * " << behaviorDelta[1] << ")" << endl;
 }
 
-int Agent::imAlone(){
-	char robotsChar[10];
-
-	FILE* fp;
-
-	/*Open the commando for reading*/
-	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'cmd_vel'","r");
-
-	/*Read the output*/
-	fgets(robotsChar, sizeof(robotsChar), fp);
-
-	if (atoi(robotsChar)>1)
-	{
-		return 0;
-	}
-	else
-	{
-		return 1;
-	}
-}
-
-float Agent::addAngle(float initialAngle, float error){	//angulo deseado = angulo + error
+/*float Agent::addAngle(float initialAngle, float error)
+{	//angulo deseado = angulo + error
 
 	float desiredAngle = initialAngle - error ;
 
@@ -213,9 +193,10 @@ float Agent::addAngle(float initialAngle, float error){	//angulo deseado = angul
 		cout << "ERROR1 ADDANGLE EN AGENT " << desiredAngle << endl ;
 	}
 	return desiredAngle;
-}
+}*/
 
-float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del angulo
+/*float Agent::deltaAngle(float initialAngle, float desiredAngle)
+{
 
 	//paso todo a angulos [0,360) (esta en la medida de orientacion de ros [-1,1) )
 	//escala = 2/360 = 1/180
@@ -238,7 +219,7 @@ float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del ang
 	//vuelvo a la escala de ROS
 	deltaAng = deltaAng / 180;
 
-//	cout << "delta angulo R: " << deltaAng << endl ;
+	//cout << "delta angulo R: " << deltaAng << endl ;
 
 	if (deltaAng>1.0 ^ deltaAng<-1.0)
 	{
@@ -246,9 +227,10 @@ float Agent::deltaAngle(float initialAngle, float desiredAngle){	//error del ang
 	}
 
 	return deltaAng;
-}
+}*/
 
-float Agent::turningVel(float error){	//para este error que velocidad corresponde
+/*float Agent::turningVel(float error)
+{	//para este error que velocidad corresponde
 
 	if (error>1.0 ^ error<-1.0)
 	{
@@ -256,9 +238,10 @@ float Agent::turningVel(float error){	//para este error que velocidad correspond
 	}
 
 	return -error;
-}
+}*/
 
-float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
+/*float Agent::toScale(float angle)
+{	//pasa los angulos entre [0 , 360)
 	if (angle < 0.0)
 	{
 		angle = 360 + angle;
@@ -268,34 +251,31 @@ float Agent::toScale(float angle){	//pasa los angulos entre [0 , 360)
 		angle = angle - 360;
 	}
 	return angle;
-}
+}*/
 
-
-void Agent::updateState()
+/*void Agent::updateState()
 {
 	ansState = state;
 	state.clear();
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
-		std::vector<float> auxVect = behaviors[i]->getState();
-		state.push_back(auxVect);
+		state.push_back( behaviors[i]->getState() );
 	}
-}
+}*/
 
-void Agent::printState()
+/*void Agent::printState()
 {
 	cout << "PS: ";
-	for (std::vector< std::vector<float> >::iterator ita = state.begin(); ita < state.end(); ++ita)
+	for (std::vector< float >::iterator ita = state.begin(); ita < state.end(); ++ita)
 	{
-		for (std::vector<float>::iterator itb = (*ita).begin(); itb < (*ita).end(); ++itb)
-		{
-			cout << *itb << " ";
-		}
+		cout << *ita << " ";
 	}
 	// cout << endl;
-}
+}*/
 
-void Agent::setNewObjective(std::pair<float, float> auxP){
+void Agent::setNewObjective(std::pair<float, float> auxP)
+{
+	cout << "flag1" << endl;
 	//buscar el behavior seek y setear el objetivo
 	for (std::vector<SteeringBehavior*>::iterator itb = behaviors.begin(); itb != behaviors.end(); ++itb)
 	{

@@ -17,22 +17,10 @@
 #include <stdlib.h> //for system use
 #include <string>
 
-// unsigned int getNumberOfRobots()
-// {
-// 	char robotsChar[10];
-//
-// 	FILE* fp;
-//
-// 	/*Open the commando for reading*/
-// 	fp = popen("/opt/ros/indigo/bin/rostopic list -s | /bin/grep -c 'cmd_vel'","r");
-//
-// 	/*Read the output*/
-// 	fgets(robotsChar, sizeof(robotsChar), fp);
-//
-// 	return atoi(robotsChar);
-// }
 
-std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<float, float> > initPosition){
+//Recibe la posicion inicial del robot y las posiciones de objetivos posibles para elegir uno aleatorio y calcular la posicion objetivo en el sistema de cordenadas referido al vehiculo
+std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<float, float> > initPosition)
+{
 	std::stringstream pos(strPos);
 	float data[4];
 	//extraigo de la cadena x, y y el angulo de inicio
@@ -64,7 +52,9 @@ std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<floa
 	return auxP;
 }
 
-void newSession(string strNewS, string strNewPose){
+//genera el archivo .world para una nueva simulacion
+void newSession(string strNewS, string strNewPose)
+{
 	system("killall stageros &");
 	sleep(1);
 
@@ -116,9 +106,11 @@ int main(int argc, char **argv)
 	std::pair<float, float> auxPair;
 
 	//Simulation parameters
+	//Paths de los mapas para las simulaciones
 	sets.push_back("bitmap \"setD.png\"");
 	sets.push_back("bitmap \"setE.png\"");
 
+	// posiciones iniciales xyz del robot en el mapa
 	std::vector<string> robotPoseAux;
 	robotPoseAux.push_back("-6.25 -6.25 0 ");
 	robotPoseAux.push_back("-1.25 -6.25 0 ");
@@ -139,6 +131,7 @@ int main(int argc, char **argv)
 	initPosition.push_back(std::make_pair(-6.25, 6.25));
 	initPosition.push_back(std::make_pair(-6.25, 1.25));
 
+	// orientaciones iniciales en grados del robot en el mapa
 	std::vector<string> robotOrientationAux;
 	robotOrientationAux.push_back("0");
 	robotOrientationAux.push_back("45");
@@ -149,6 +142,7 @@ int main(int argc, char **argv)
 	robotOrientationAux.push_back("270");
 	robotOrientationAux.push_back("315");
 
+	//combino las posiciones xyz y orientaciones, generando el vector robotPose con todas las posibilidades de puntos iniciales del robot
 	for (std::vector< std::string >::iterator itp = robotPoseAux.begin(); itp != robotPoseAux.end(); ++itp)
 	{
 		for (std::vector< std::string >::iterator ito = robotOrientationAux.begin(); ito != robotOrientationAux.end(); ++ito)
@@ -173,21 +167,22 @@ int main(int argc, char **argv)
 
 	sleep(1);
 
-	if (factoryPtr->getAgents()==1)	//Si los hay definicion para todos los agentes en el simulador
+	if (factoryPtr->getAgents()==1)
 	{
 		//controlador para el robot
 		Agent* agent = new Agent(0,factoryPtr);
 		auxPair = calcObjective(robotPose[randnroP], initPosition);
 		agent->setNewObjective(auxPair);
-		int flag;
+		cout << "flag1" << endl;
 		int roundCounter = 0;
 		//rutina de trabajo
 		while(ros::ok())
 		{
 			// system("clear"); //limpia la consola
 			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-			flag = agent->update();
-			if (flag == 1) {
+			int flag = agent->update();
+			if (flag == 0) {
+				system("killall stageros &");
 				//eleccion aleatoria del mapa
 				randnroS = rand()% sets.size();
 				//eleccion aleatoria de posicion
