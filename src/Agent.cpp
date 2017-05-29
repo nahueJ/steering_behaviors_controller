@@ -115,7 +115,6 @@ int Agent::update()
 		{
 			switch (behaviorFlag[i]) {
 				case 0:
-					cout << "AO nada para hacer. Solo seek." << endl;
 					break;
 				case 1: //AO normal
 					myTwist.angular.z = behaviors[i]->getDesiredW();

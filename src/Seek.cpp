@@ -69,7 +69,7 @@ int Seek::update()
 
 int Seek::vIdeal()
 {
-	if (toleranceToTarget>stateContinuous)
+	if (toleranceToTarget>stateContinuous[0])
 	{
 		//si es menor que la tolerancia se detiene
 		cout << "OBJETIVO ALCANZADO" << endl;
@@ -77,7 +77,7 @@ int Seek::vIdeal()
 		setDesiredW(0.0);
 		return 0;
 	}
-	else if (toleranceToTarget*3>stateContinuous)
+	else if (toleranceToTarget*3>stateContinuous[0])
 	{
 		setDesiredV(0.1);
 	}
@@ -100,7 +100,7 @@ void Seek::updateState()
 {
 	errorx = target.position.x - x;
 	errory = target.position.y - y;
-	stateContinuous=sqrt(pow(errorx,2)+pow(errory,2));
+	stateContinuous[0]=sqrt(pow(errorx,2)+pow(errory,2));
 	discretizarEstado();
 }
 

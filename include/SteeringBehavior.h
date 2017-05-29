@@ -37,7 +37,7 @@ public:
 	~SteeringBehavior();
 
 	virtual int update() ; // función virtual pura
-	virtual float getState() ;
+	virtual std::vector<float> getState() ;
 	virtual void updateState() ;
 
 	virtual string getName();
@@ -46,17 +46,15 @@ public:
 	virtual float getDesiredW();
 	virtual void setGoal(float, float); //only for seek
 
-	void setDesiredV(float y);
-	void setDesiredW(float z);
-
 protected:
 
 	string myName;
 	std::string myType;
 	unsigned int robotId;
+	int nbVar;
 
-	float stateDiscrete;
-	float stateContinuous;
+	std::vector<float> stateDiscrete;
+	std::vector<float> stateContinuous;
 	std::vector<float> valoresEstado;
 
 	std::string pretopicname;
@@ -71,6 +69,9 @@ protected:
 	float x;
 	float y;
 	float tita;
+
+	void setDesiredV(float y);
+	void setDesiredW(float z);
 
 	void discretizarEstado ();
 };

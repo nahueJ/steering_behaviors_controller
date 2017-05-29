@@ -22,16 +22,6 @@ void ObstacleAvoidance::sensorCallback(const sensor_msgs::LaserScan::ConstPtr& s
 	}
 }
 
-void ObstacleAvoidance::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
-{
-	x = odom->pose.pose.position.x;
-	y = odom->pose.pose.position.y;
-	tf::Pose pose;
-	tf::poseMsgToTF(odom->pose.pose, pose);
-	tita = tf::getYaw(pose.getRotation());	//tita: orientación en radianes para el marco coordenadas 2D, transformado a partir del marco de referencia 3D expresado por el quaternion (x,y,z,w) de la estructura orientation.
-	//a partir de la posición inicial (0rad) tiene un rango (-PI/2 ; +PI/2] siendo el giro positivo hacia la izquierda del vehículo
-}
-
 ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* configurationPtr) : SteeringBehavior(id, pre, configurationPtr)
 {
 	//Cargar Valores de configuracion
@@ -58,12 +48,6 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	name << "obstacleavoidance_" << robotId;
 	ros::init(remappingsArgs, name.str());
 	rosNode = new ros::NodeHandle;
-
-	// Subscripcion al topic odom, crear el suscriptor en la variable de la clase y ejecutar la suscripcion
-	std::stringstream odomtopicname;
-	odomtopicname << pretopicname << "odom" ;
-	odomSubscriber = new ros::Subscriber;
-	*odomSubscriber = (*rosNode).subscribe<nav_msgs::Odometry>(odomtopicname.str(), 1000, &ObstacleAvoidance::odomCallback,this);
 
 	//inicializo el puntero con las variables para almacenar los valores de los lasers
 	laser = new float[haz];	//almacena base_scan
@@ -97,18 +81,30 @@ int ObstacleAvoidance::update()
 
 void ObstacleAvoidance::updateState()
 {
-	//indice de la medida del obstaculo mas cercano
-	int minIndex = 0;
+	//Busqueda del minimo global
+	int minIndexGlobal = 0;
 	for (int i = 0; i < haz; ++i)
 	{
-		if (laser[i] < laser[minIndex]) {
-			minIndex = i;
+		if (laser[i] < laser[minIndexGlobal]) {
+			minIndexGlobal = i;
 		}
 	}
-	//actualizo valores de estado
-	minLaserIndex = minIndex;
-	stateContinuous = laser[minLaserIndex];
-	cout << stateContinuous << endl;
+	minLaserIndex = minIndexGlobal;
+
+	//Busqueda del minimo para cada sector, cada valor del arreglo de estado
+	int sector = 0;
+	int minSector = 0;
+	for (int i = 0; i < haz; ++i)
+	{
+		if (i > haz/nbVar*(sector+1)) {
+			stateContinuous[sector] = laser[minSector];
+			sector ++;
+			minSector = i;
+		}
+		if (laser[i] < laser[minSector]) {
+			minSector = i;
+		}
+	}
 	//discretizo el valor de estado continuo
 	discretizarEstado();
 }
@@ -146,11 +142,11 @@ void ObstacleAvoidance::oIdeal()
 int ObstacleAvoidance::vIdeal()
 {
 	float vmax = 0.5;
-	if (stateContinuous>distMax) {
+	if (laser[minLaserIndex]>distMax) {
 		setDesiredV(0.0);
 		return 0;
 	}
-	else if (stateContinuous<distMin) {
+	else if (laser[minLaserIndex]<distMin) {
 		setDesiredV(vmax);
 		return (-1);
 	}
@@ -158,7 +154,7 @@ int ObstacleAvoidance::vIdeal()
 	{
 		float m =(vmax-0)/(distMin-distMax);
 		float b = -m*distMax;
-		float desiredV = (m*stateContinuous)+b;
+		float desiredV = (m*laser[minLaserIndex])+b;
 		setDesiredV(desiredV);
 		return 1;
 	}

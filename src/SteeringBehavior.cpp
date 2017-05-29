@@ -28,7 +28,7 @@ SteeringBehavior::SteeringBehavior(
 	myType = (*configurationPtr)["type"].c_str();
 
 	//Variables para la definicion de estado
-	int nbVar = (*configurationPtr)["variablesDeEstado"];
+	nbVar = (*configurationPtr)["variablesDeEstado"];
 	std::string discret = (*configurationPtr)["discret"].c_str();
 
 	//genero un vector con todos los valores discretos que puede tomar la variable de estado, este puede ser regular (i.e. [0;0.5;1.0;1.5;...]) o irregular (i.e. [0;0.2;0.6;1.0;2.0])
@@ -54,7 +54,10 @@ SteeringBehavior::SteeringBehavior(
 		}
 	}
 	//inicializo el vector de estado con algun valor de los posibles valores
-	stateDiscrete=valoresEstado.back();
+	for (int i = 0; i < nbVar; i++) {
+		stateContinuous.push_back(valoresEstado.back());
+		stateDiscrete.push_back(valoresEstado.back());
+	}
 }
 
 SteeringBehavior::~SteeringBehavior() {
@@ -96,7 +99,7 @@ int SteeringBehavior::update(){
 
 }
 
-float SteeringBehavior::getState()
+std::vector<float> SteeringBehavior::getState()
 {
 	return stateDiscrete;
 }
@@ -112,22 +115,27 @@ void SteeringBehavior::setGoal(float xg, float yg){
 
 void SteeringBehavior::discretizarEstado ()
 {
-	//buscar dentro de los posibles valores aquel mas proximo al valor continuo
-	int indexMin = 0;
-	float min = stateContinuous - valoresEstado[indexMin];
-	for (int i = 1; i < valoresEstado.size(); ++i)
-	{
-		if ((stateContinuous - valoresEstado[i]) > 0)
+	cout << myType << " state: " ;
+	for (int i = 0; i < nbVar; i++) {
+		//buscar dentro de los posibles valores aquel mas proximo al valor continuo
+		int indexMin = 0;
+		float min = stateContinuous[i] - valoresEstado[indexMin];
+		for (int j = 1; j < valoresEstado.size(); ++j)
 		{
-			if ((stateContinuous - valoresEstado[i])<min)
+			if ((stateContinuous[i] - valoresEstado[j]) > 0)
 			{
-				min = stateContinuous - valoresEstado[i];
-				indexMin=i;
+				if ((stateContinuous[i] - valoresEstado[j])<min)
+				{
+					min = stateContinuous[i] - valoresEstado[j];
+					indexMin=j;
+				}
+			}
+			else{
+				break;
 			}
 		}
-		else{
-			break;
-		}
+		stateDiscrete[i] = valoresEstado[indexMin];
+		cout << i << "=" << stateDiscrete[i] << "  ";
 	}
-	stateDiscrete = valoresEstado[indexMin];
+	cout << endl;
 }
