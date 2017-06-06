@@ -30,6 +30,7 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	haz = (*configurationPtr)["haz"];
 	prescicion = (*configurationPtr)["prescicion"];
 	sectores = (*configurationPtr)["sectores"];
+	vmax = (*configurationPtr)["desiredV"];
 
 	for (int i = 0; i < sectores; ++i)
 	{
@@ -136,12 +137,12 @@ void ObstacleAvoidance::oIdeal()
 	if (angRespuesta > PI) {
 		angRespuesta = angRespuesta - 2 * PI;
 	}
-	setDesiredW(angRespuesta);
+	//cout << minIndex << " minimo -> " << laser[minIndex] << " . Respuesta " << angRespuesta*180/PI << " " << angRespuesta << endl;
+	setDesiredO(angRespuesta);
 }
 
 int ObstacleAvoidance::vIdeal()
 {
-	float vmax = 0.5;
 	if (laser[minLaserIndex]>distMax) {
 		setDesiredV(0.0);
 		return 0;

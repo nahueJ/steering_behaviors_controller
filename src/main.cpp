@@ -11,6 +11,7 @@
 
 #include "ros/ros.h"
 #include "../include/Agent.h"
+#include "../include/AgentReactive.h"
 #include "../include/Factory.h"
 
 #include <stdio.h>
@@ -170,9 +171,9 @@ int main(int argc, char **argv)
 	if (factoryPtr->getAgents()==1)
 	{
 		//controlador para el robot
-		Agent* agent = new Agent(0,factoryPtr);
-		//auxPair = calcObjective(robotPose[randnroP], initPosition);
-		//agent->setNewObjective(auxPair);
+		AgentReactive* agent = new AgentReactive(0,factoryPtr);
+		auxPair = calcObjective(robotPose[randnroP], initPosition);
+		agent->setNewObjective(auxPair);
 		int roundCounter = 0;
 		//rutina de trabajo
 		while(ros::ok())

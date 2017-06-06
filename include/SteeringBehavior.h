@@ -21,13 +21,7 @@ using std::cin;
 using std::endl;
 using std::string;
 
-
-//Behavior List //YO PENSABA Q TIENEN QUE ESTAR EN LOS INCLUDES, PERO NO
-//#include "Seek.h"
-//#include "Arrive.h"
-//#include "WallAvoidance.h"
-
-//#include <geometry_msgs/Twist.h>
+#define PI 3.14159265
 
 class SteeringBehavior {
 public:
@@ -43,7 +37,7 @@ public:
 	virtual string getName();
 	virtual string getType();
 	virtual float getDesiredV();
-	virtual float getDesiredW();
+	virtual float getDesiredO();
 	virtual void setGoal(float, float); //only for seek
 
 protected:
@@ -52,6 +46,7 @@ protected:
 	std::string myType;
 	unsigned int robotId;
 	int nbVar;
+	float vmax;
 
 	std::vector<float> stateDiscrete;
 	std::vector<float> stateContinuous;
@@ -60,7 +55,7 @@ protected:
 	std::string pretopicname;
 
 	float desiredV;
-	float desiredW;
+	float desiredO;
 
 	//Clase para el ingreso de parametros de configuración
 	Setting* config;
@@ -71,7 +66,7 @@ protected:
 	float tita;
 
 	void setDesiredV(float y);
-	void setDesiredW(float z);
+	void setDesiredO(float z);
 
 	void discretizarEstado ();
 };

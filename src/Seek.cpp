@@ -7,12 +7,6 @@
 
 #include "Seek.h"
 
-/**
- * Seek implementation
- *
- * The seek steering behavior returns a force that directs an agent toward a
- * target position.
- */
 void Seek::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
 	x = odom->pose.pose.position.x;
@@ -74,12 +68,11 @@ int Seek::vIdeal()
 		//si es menor que la tolerancia se detiene
 		cout << "OBJETIVO ALCANZADO" << endl;
 		setDesiredV(0.0);
-		setDesiredW(0.0);
 		return 0;
 	}
 	else if (toleranceToTarget*3>stateContinuous[0])
 	{
-		setDesiredV(0.1);
+		setDesiredV(standardVel/3);
 	}
 	else
 	{
@@ -91,7 +84,11 @@ int Seek::vIdeal()
 void Seek::oIdeal()
 {
 	float objAng = atan2(errory,errorx);	//este es el angulo en el q se encuentra el objetivo relativo a las coords del robot (odom). El angulo de la fuerza del comportamiento es la diferencia con la orientacion actual
-	setDesiredW(objAng-tita);
+	float auxOrientation = objAng - tita;
+	if (auxOrientation >= PI ) {
+		auxOrientation -= 2*PI;
+	}
+	setDesiredO(auxOrientation);
 }
 
 /* Calcula esl estado en el espacio continuo y*
@@ -108,4 +105,5 @@ void Seek::setGoal(float xg, float yg)
 {
 	target.position.x = xg;
 	target.position.y = yg;
+	updateState();
 }

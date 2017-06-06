@@ -17,12 +17,13 @@
 #include <geometry_msgs/Twist.h>
 
 #include "SteeringBehavior.h"
-#include "Weights.h"
 #include "Factory.h"
 
 #include <string>
 #include <vector>
 #include <sstream>
+
+#include <math.h>
 
 #include <iostream>
 #include <fstream>
@@ -57,14 +58,6 @@ private:
 	std::stringstream* pretopicname;
 
 	std::vector<SteeringBehavior*> behaviors;
-	std::vector<float> w;
-	Weights* weights;
-	int nbBehaviors;
-
-	geometry_msgs::Pose target;
-
-	geometry_msgs::Pose myPosition;
-	geometry_msgs::Twist myTwist;
 
 	//Funciones de Callback para las suscripciones al odometro
 	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);
@@ -74,19 +67,11 @@ private:
 	float y;
 	float tita;
 
-	float addAngle(float, float);
+	// void updateState();
+	//
+	// void printState();
 
-	float deltaAngle(float, float);
-
-	float turningVel(float);
-
-	float toScale(float);
-
-	void updateState();
-
-	void printState();
-
-	void restartRoutine();
+	virtual std::vector<float> getWeights(std::vector<float>);
 
 };
 

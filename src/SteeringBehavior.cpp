@@ -58,6 +58,7 @@ SteeringBehavior::SteeringBehavior(
 		stateContinuous.push_back(valoresEstado.back());
 		stateDiscrete.push_back(valoresEstado.back());
 	}
+
 }
 
 SteeringBehavior::~SteeringBehavior() {
@@ -79,20 +80,28 @@ float SteeringBehavior::getDesiredV()
 	return desiredV;
 }
 
-float SteeringBehavior::getDesiredW()
+float SteeringBehavior::getDesiredO()
 {
-	return desiredW;
+	return desiredO;
 }
 
 void SteeringBehavior::setDesiredV(float y)
 {
-	desiredV = ( abs(y) <= 1.0 ) ? y : (y/abs(y));
+	if ( abs(y) <= 1.0 ){
+		desiredV = y;
+	} else {
+		cout << myName << " ERROR EN DESIRED V: " << y << endl << endl << endl << endl;
+	}
 }
 
 
-void SteeringBehavior::setDesiredW(float z)
+void SteeringBehavior::setDesiredO(float z)
 {
-	desiredW = ( abs(z) <= 1.0 ) ? z : (z/abs(z));
+	if ( abs(z) <= PI ){
+		desiredO = z;
+	} else {
+		cout << myName << " ERROR EN DESIRED O: " << z << endl << endl << endl << endl;
+	}
 }
 
 int SteeringBehavior::update(){
@@ -115,7 +124,7 @@ void SteeringBehavior::setGoal(float xg, float yg){
 
 void SteeringBehavior::discretizarEstado ()
 {
-	cout << myType << " state: " ;
+	//cout << myType << " state: " ;
 	for (int i = 0; i < nbVar; i++) {
 		//buscar dentro de los posibles valores aquel mas proximo al valor continuo
 		int indexMin = 0;
@@ -135,7 +144,7 @@ void SteeringBehavior::discretizarEstado ()
 			}
 		}
 		stateDiscrete[i] = valoresEstado[indexMin];
-		cout << i << "=" << stateDiscrete[i] << "  ";
+//		cout << i << "=" << stateContinuous[i] << "->" << stateDiscrete[i] << "  ";
 	}
-	cout << endl;
+//	cout << endl;
 }

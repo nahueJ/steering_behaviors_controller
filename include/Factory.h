@@ -11,8 +11,6 @@
 #include "ObstacleAvoidance.h"
 #include "Seek.h"
 
-#include "Weights.h"
-
 #include <string>
 #include <vector>
 #include <sstream>
@@ -23,42 +21,26 @@ using namespace libconfig;
 #define CONFIGFILE "./src/steering_behaviors_controller/simulation.cfg"
 
 class Factory {
+
 public:
 
-	/**
-	 * @param unsigned int id
-	 */
 	Factory();
 
 	~Factory();
 
-	/*int instanciateBehaviors(unsigned int id, std::string pre,
+	int instanciateBehaviors(unsigned int id, std::string pre,
 							std::vector<SteeringBehavior*>* behaviors,
-							Weights** weights,
-							std::string* type,
-							std::vector< std::vector<float> >* state);*/
-
-	int instanciateSeekBehavior(	unsigned int id, std::string pre,
-										std::vector<SteeringBehavior*>* behaviors,
-										std::string* type);
-	int instanciateOABehavior(	unsigned int id, std::string pre,
-									std::vector<SteeringBehavior*>* behaviors,
-									std::string* type);
-
+							std::string* type);
 
 	int getAgents();
 
-	//int learningSession();
+	std::vector<float> getConstantWeights();
 
 private:
 
-	int nbAgents;
-
-	int nbAgentsCfg;
-
 	Config* cfg;
-
-	int learningFlag;
+	int nbAgents;
+	std::stringstream agentType;
 
 	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
 

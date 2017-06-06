@@ -14,78 +14,31 @@ Factory::Factory()
 	cfg->readFile(CONFIGFILE);
 	//inicializo la variable
 	nbAgents = cfg->lookup("simulationParams")["agentsOnSimulation"].getLength();
-	//cantidad de definiciones de agentes en la conf
-	nbAgentsCfg = cfg->lookup("agents").getLength();
-	string typeCfg = cfg->lookup("simulationParams")["agentsOnSimulation"][0];
-	learningFlag = 0;
-	if ((typeCfg == "agenteAprendiendo") or (typeCfg == "agenteContinuaAprendizaje")) {
-		learningFlag = 1;
-	}
 }
 
 Factory::~Factory()
 {
 }
 
-/*int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
+int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 									std::vector<SteeringBehavior*>* behaviors,
-									Weights** weights,
-									std::string* type,
-									std::vector< std::vector<float> >* state)
+									std::string* type)
 {
 	//busco el tipo de agente
-	string agentType = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
-	*type = agentType;
-	if (!(*type).empty()){
-		//con el tipo de agente busco el elemento en el array de configuraciones de agentes correspondiente
-		for (int i = 0; i < nbAgentsCfg; ++i)
-		{
-			string typeCfg = cfg->lookup("agents")[i]["type"];
-			if (*type == typeCfg)
-			{
-				//verifico que la cantidad de comportamientos es igual que la cantidad de pesos
-				int nbBehaviorsType = cfg->lookup("agents")[i]["behaviors"].getLength();
-				int nbWeightsType = cfg->lookup("agents")[i]["weights"].getLength();
-				if(nbBehaviorsType == nbWeightsType)
-				{
-					Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
-					Setting& weightsToCreate = cfg ->lookup("agents")[i]["weights"];
-					string seleccionPesos = cfg->lookup("agents")[i]["seleccionPesos"];
+	string aux = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
+	agentType << "agents." << aux;
 
-					//  Instanciación de los comportamientos  //
+	Setting& behaviorsToCreate = cfg ->lookup(agentType.str())["behaviors"];
+	int nbBehaviorsType = cfg->lookup(agentType.str())["behaviors"].getLength();
 
-					for (int k = 0; k < nbBehaviorsType; ++k)
-					{
-						//cargar el vector de comportamiento con los que dice el array behaviorsToCreate
-						behaviors->push_back(pickBehavior(behaviorsToCreate[k].c_str() , id, pre));
-					}
-
-					//Inicializacion de la estructura de Estado General//
-
-					(*state).clear();
-					for (int l = 0; l < behaviors->size(); ++l)
-					{
-						std::vector<float> auxVect = (*behaviors)[l]->getState();
-						(*state).push_back(auxVect);
-					}
-
-					//  Instanciación de los pesos  //
-
-					*weights = pickWeights(seleccionPesos, weightsToCreate, *behaviors, state);
-				}
-				else{
-					cout << "Missing weights for behaviors..." << endl;
-				}
-				break;
-			}
-		}
-		return 1;
+	for (int k = 0; k < nbBehaviorsType; ++k)
+	{
+		//cargar el vector de comportamiento con los que dice el array behaviorsToCreate
+		behaviors->push_back(pickBehavior(behaviorsToCreate[k].c_str() , id, pre));
 	}
-	else{
-		cout << "Cant find agent " << id << " definition" << endl;
-		return 0;
-	}
-}*/
+
+	return 1;
+}
 
 int Factory::getAgents()
 {
@@ -94,29 +47,40 @@ int Factory::getAgents()
 
 SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::string pre)
 {
+	std::stringstream bhType;
+	bhType << "behaviors." << behaviorName;
+	Setting& sets = cfg ->lookup(bhType.str());
+
 	SteeringBehavior* auxBhPtr;
-	if (behaviorName == "seekReactive" )
+
+	if (behaviorName == "seek" )
 	{
-		Setting& sets = cfg ->lookup("seekBehaviors.seekReactive");
 		auxBhPtr = new Seek (id,pre,&sets);
 	}
-	else if (behaviorName == "seekRL" )
+	else if (behaviorName == "obstacleAvoidance")
 	{
-		Setting& sets = cfg ->lookup("seekBehaviors.seekRL");
-		auxBhPtr = new Seek (id,pre,&sets);
-	}
-	else if (behaviorName == "avoidObstaclesReactive")
-	{
-		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesReactive");
 		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
 	}
-	else if (behaviorName == "avoidObstaclesRL")
-	{
-		Setting& sets = cfg ->lookup("avoidObstaclesBehaviors.avoidObstaclesRL");
-		auxBhPtr = new ObstacleAvoidance (id,pre,&sets);
-	}
+
 	return auxBhPtr;
 }
+
+std::vector<float> Factory::getConstantWeights()
+{
+	Setting& ws = cfg ->lookup(agentType.str())["weights"];
+	int nbWs = cfg->lookup(agentType.str())["weights"].getLength();
+
+	std::vector<float> weights;
+
+	for (int k = 0; k < nbWs; ++k)
+	{
+		float aux = ws[k];
+		weights.push_back(aux);
+	}
+
+	return weights;
+}
+
 
 /*Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std::vector<SteeringBehavior*> behaviors, std::vector< std::vector<float> >* state)
 {
@@ -184,57 +148,3 @@ SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::s
 	}
 	return auxWeights;
 }*/
-
-/*int Factory::learningSession(){
-	return learningFlag;
-}*/
-
-int Factory::instanciateSeekBehavior(	unsigned int id, std::string pre,
-									std::vector<SteeringBehavior*>* behaviors,
-									std::string* type)
-{
-	//busco el tipo de agente
-	string agentType = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
-	*type = agentType;
-
-	for (int i = 0; i < nbAgentsCfg; ++i)
-	{
-		string agentCfg = cfg->lookup("agents")[i]["type"];
-		if (*type == agentCfg)
-		{
-			Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
-			int nbBehaviorsType = cfg->lookup("agents")[i]["behaviors"].getLength();
-			for (int k = 0; k < nbBehaviorsType; ++k)
-			{
-				behaviors->push_back(pickBehavior(behaviorsToCreate[k].c_str() , id, pre));
-			}
-			break;
-		}
-	}
-	return 1;
-}
-
-int Factory::instanciateOABehavior(	unsigned int id, std::string pre,
-									std::vector<SteeringBehavior*>* behaviors,
-									std::string* type)
-{
-	//busco el tipo de agente
-	string agentType = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
-	*type = agentType;
-
-	for (int i = 0; i < nbAgentsCfg; ++i)
-	{
-		string agentCfg = cfg->lookup("agents")[i]["type"];
-		if (*type == agentCfg)
-		{
-			Setting& behaviorsToCreate = cfg ->lookup("agents")[i]["behaviors"];
-			int nbBehaviorsType = cfg->lookup("agents")[i]["behaviors"].getLength();
-			for (int k = 0; k < nbBehaviorsType; ++k)
-			{
-				behaviors->push_back(pickBehavior(behaviorsToCreate[k].c_str() , id, pre));
-			}
-			break;
-		}
-	}
-	return 1;
-}
