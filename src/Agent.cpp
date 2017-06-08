@@ -31,10 +31,10 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  *
  * @param unsigned int id
  ------------------------------------------------------------------------*/
-Agent::Agent(unsigned int id, Factory* factoryPtr)
+Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 {
 	robotId = id;
-
+	myType = type;
 	//Generar prefijo del nombre de los topics del robot del simulador para futuras suscripciones
 	pretopicname = new std::stringstream;
 	*pretopicname << "/" ;

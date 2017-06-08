@@ -34,7 +34,7 @@
 class Agent {
 public:
 
-	Agent(unsigned int id, Factory* factoryPtr);
+	Agent(unsigned int id, string type, Factory* factoryPtr);
 
 	~Agent();
 

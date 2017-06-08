@@ -29,7 +29,7 @@ using namespace libconfig;
 class AgentQLTraining: public Agent {
 public:
 
-	AgentQLTraining(unsigned int id, Factory* factoryPtr);
+	AgentQLTraining(unsigned int id, string type, Factory* factoryPtr);
 
 	~AgentQLTraining();
 

@@ -168,38 +168,33 @@ int main(int argc, char **argv)
 
 	sleep(1);
 
-	if (factoryPtr->getAgents()==1)
+	//controlador para el robot
+	Agent* agent = new AgentReactive(0,"QLInit",factoryPtr);
+	auxPair = calcObjective(robotPose[randnroP], initPosition);
+	agent->setNewObjective(auxPair);
+	int roundCounter = 0;
+	//rutina de trabajo
+	while(ros::ok())
 	{
-		//controlador para el robot
-		AgentReactive* agent = new AgentReactive(0,factoryPtr);
-		auxPair = calcObjective(robotPose[randnroP], initPosition);
-		agent->setNewObjective(auxPair);
-		int roundCounter = 0;
-		//rutina de trabajo
-		while(ros::ok())
-		{
-			// system("clear"); //limpia la consola
-			//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-			int flag = agent->update();
-			if (flag == 0) {
-				system("killall stageros &");
-				//eleccion aleatoria del mapa
-				randnroS = rand()% sets.size();
-				//eleccion aleatoria de posicion
-				randnroP = rand()% robotPose.size();
-				newSession(sets[randnroS], robotPose[randnroP]);
-				roundCounter++;
-				cout << "Round: " << roundCounter << endl;
-				//set objetivo aleatorio
-				auxPair = calcObjective(robotPose[randnroP], initPosition);
-				agent->setNewObjective(auxPair);
-			}
-			ros::spinOnce();
-			loop_rate.sleep(); //sleep por el resto del ciclo
+		// system("clear"); //limpia la consola
+		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+		int flag = agent->update();
+		if (flag == 0) {
+			system("killall stageros &");
+			//eleccion aleatoria del mapa
+			randnroS = rand()% sets.size();
+			//eleccion aleatoria de posicion
+			randnroP = rand()% robotPose.size();
+			newSession(sets[randnroS], robotPose[randnroP]);
+			roundCounter++;
+			cout << "Round: " << roundCounter << endl;
+			//set objetivo aleatorio
+			auxPair = calcObjective(robotPose[randnroP], initPosition);
+			agent->setNewObjective(auxPair);
 		}
+		ros::spinOnce();
+		loop_rate.sleep(); //sleep por el resto del ciclo
 	}
-	else{
-		cout << "Faltan/Sobran configuraciones para algunos robots." << endl;
-	}
+
 	return 0;
 }

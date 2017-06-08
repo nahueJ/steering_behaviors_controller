@@ -7,7 +7,7 @@
 
 #include "AgentReactive.h"
 
-AgentReactive::AgentReactive(unsigned int id, Factory* factoryPtr) : Agent(id, factoryPtr)
+AgentReactive::AgentReactive(unsigned int id, string type, Factory* factoryPtr) : Agent(id, type, factoryPtr)
 {
 	pesos = factoryPtr->getConstantWeights();
 }

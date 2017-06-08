@@ -29,7 +29,7 @@ using namespace libconfig;
 class AgentReactive: public Agent {
 public:
 
-	AgentReactive(unsigned int id, Factory* factoryPtr);
+	AgentReactive(unsigned int id, string type, Factory* factoryPtr);
 
 	~AgentReactive();
 

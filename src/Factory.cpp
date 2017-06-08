@@ -12,8 +12,6 @@ Factory::Factory()
 	cfg = new Config;
 	//Cargo los valores en el archivo de configuracion
 	cfg->readFile(CONFIGFILE);
-	//inicializo la variable
-	nbAgents = cfg->lookup("simulationParams")["agentsOnSimulation"].getLength();
 }
 
 Factory::~Factory()
@@ -40,10 +38,6 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 	return 1;
 }
 
-int Factory::getAgents()
-{
-	return nbAgents;
-}
 
 SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::string pre)
 {

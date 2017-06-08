@@ -7,7 +7,7 @@
 
 #include "AgentQLTraining.h"
 
-AgentQLTraining::AgentQLTraining(unsigned int id, Factory* factoryPtr) : Agent(id, factoryPtr)
+AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryPtr) : Agent(id, type, factoryPtr)
 {
 	pesos = factoryPtr->getConstantWeights();
 }
