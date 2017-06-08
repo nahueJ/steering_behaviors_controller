@@ -44,6 +44,9 @@ public:
 
 protected:
 	string myType;
+	std::vector<float> pesos;
+	std::vector<SteeringBehavior*> behaviors;
+	Setting* configurationPtr;
 
 private:
 	//Id del robot del controlador
@@ -58,8 +61,6 @@ private:
 	ros::Publisher* ctrlPublisher;
 	//ros::Subscriber* ctrlSubscriber;
 	std::stringstream* pretopicname;
-
-	std::vector<SteeringBehavior*> behaviors;
 
 	//Funciones de Callback para las suscripciones al odometro
 	void odomCallback(const nav_msgs::Odometry::ConstPtr& odom);

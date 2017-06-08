@@ -35,10 +35,12 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 {
 	robotId = id;
 	myType = type;
+	//Pido la configuracion para el tipo de agente
+	configurationPtr = factoryPtr->getTypeSetting(myType);
+
 	//Generar prefijo del nombre de los topics del robot del simulador para futuras suscripciones
 	pretopicname = new std::stringstream;
 	*pretopicname << "/" ;
-
 	//Instancia los comportamientos
 	factoryPtr->instanciateBehaviors( robotId, pretopicname->str(), &behaviors, myType);
 
@@ -135,7 +137,7 @@ int Agent::update()
 	cout << "Blending" << endl;
 
 	std::vector<float> weights = getWeights(behaviorState);
-	
+
 	float ws = weights[0];
 	float wao = weights[1];
 

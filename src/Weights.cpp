@@ -4,18 +4,18 @@
  * @version 1.0.0
  */
 
-#include "../include/Weights.h"
+//#include "../include/Weights.h"
 
 //constructor para constW
-Weights::Weights(std::vector<float> w, Setting* configurationPtr)
+/*Weights::Weights(std::vector<float> w, Setting* configurationPtr)
 {
 	myType = (*configurationPtr)["type"].c_str();
 	weights = new std::vector<float>;
 	*weights = w;
-}
+}*/
 
 //constructor para qTableW
-/*Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles, Setting* configurationPtr){
+Weights::Weights(std::vector< std::vector< std::vector<float> > > statePosibles, Setting* configurationPtr){
 	// struct fann *ann = fann_create_standard(4, 2, 8, 9, 1);
 	myType = (*configurationPtr)["type"].c_str();
 	gamma = (*configurationPtr)["relativeValue"];
@@ -85,7 +85,7 @@ Weights::Weights(std::vector<float> w, Setting* configurationPtr)
 	{
 		wNull.push_back(0.000);
 	}
-}*/
+}
 
 //constructor para qTableW
 /*Weights::Weights(Setting* configurationPtr){

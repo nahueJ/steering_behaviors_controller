@@ -30,6 +30,8 @@ public:
 
 	~SteeringBehavior();
 
+	std::vector<float> getPosibleValues();
+
 	virtual int update() ; // función virtual pura
 	virtual std::vector<float> getState() ;
 	virtual void updateState() ;

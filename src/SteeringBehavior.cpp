@@ -148,3 +148,8 @@ void SteeringBehavior::discretizarEstado ()
 	}
 //	cout << endl;
 }
+
+std::vector<float> SteeringBehavior::getPosibleValues()
+{
+	return valoresEstado;
+}

@@ -12,6 +12,7 @@
 #include "ros/ros.h"
 #include "../include/Agent.h"
 #include "../include/AgentReactive.h"
+#include "../include/AgentQLTraining.h"
 #include "../include/Factory.h"
 
 #include <stdio.h>
@@ -169,12 +170,13 @@ int main(int argc, char **argv)
 	sleep(1);
 
 	//controlador para el robot
-	Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);
+	//Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
+	Agent* agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
 	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
 	int roundCounter = 0;
 	//rutina de trabajo
-	while(ros::ok())
+	/*while(ros::ok())
 	{
 		// system("clear"); //limpia la consola
 		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
@@ -194,7 +196,7 @@ int main(int argc, char **argv)
 		}
 		ros::spinOnce();
 		loop_rate.sleep(); //sleep por el resto del ciclo
-	}
+	}*/
 
 	return 0;
 }

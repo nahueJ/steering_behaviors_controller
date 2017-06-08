@@ -68,37 +68,7 @@ Setting* Factory::getTypeSetting(std::string type)
 /*Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std::vector<SteeringBehavior*> behaviors, std::vector< std::vector<float> >* state)
 {
 	Weights* auxWeights;
-	if (weightsType == "constW")
-	{
-		std::vector<float> auxW;
-		for (int j = 0; j < behaviors.size(); ++j)
-		{
-			auxW.push_back(weightsVect[j]);
-		}
-		Setting& sets = cfg ->lookup("weights.constW");
-		auxWeights = new Weights(auxW,&sets);
-	}
-	else if (weightsType == "constWOnlySeek")
-	{
-		std::vector<float> auxW;
-		for (int j = 0; j < behaviors.size(); ++j)
-		{
-			auxW.push_back(weightsVect[j]);
-		}
-		Setting& sets = cfg ->lookup("weights.constWOnlySeek");
-		auxWeights = new Weights(auxW,&sets);
-	}
-	else if (weightsType == "constWOnlyAO")
-	{
-		std::vector<float> auxW;
-		for (int j = 0; j < behaviors.size(); ++j)
-		{
-			auxW.push_back(weightsVect[j]);
-		}
-		Setting& sets = cfg ->lookup("weights.constWOnlyAO");
-		auxWeights = new Weights(auxW,&sets);
-	}
-	else if (weightsType == "qvalueW")
+	if (weightsType == "qvalueW")
 	{
 		//generar el vector con los vectores de valores posibles para generar la tabla
 		Setting& sets = cfg ->lookup("weights.qvalueW");

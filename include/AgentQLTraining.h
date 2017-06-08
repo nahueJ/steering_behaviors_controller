@@ -26,6 +26,12 @@ using std::endl;
 #include <libconfig.h++>
 using namespace libconfig;
 
+struct qTableOutput
+{
+	int visits;
+	float qValue;
+};
+
 class AgentQLTraining: public Agent {
 public:
 
@@ -33,11 +39,30 @@ public:
 
 	~AgentQLTraining();
 
+	int newQTable();
+
+	int loadQTable();
+
 private:
 
 	virtual std::vector<float> getWeights(std::vector<float>);
 
-	std::vector<float> pesos;
+	std::vector< std::vector<float> > wCombinacionesPosibles;
+
+	void instanciarWcombinaciones(int wCantDiscretizacion, int size);
+
+	void wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor);
+
+	void sPermutaciones(std::vector< std::vector<float> > valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor);
+
+	int writeQTableToFile(std::string fname);
+
+	//variables para la qtable
+	std::string file;
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
+	int allocateNb;
+	std::pair< std::vector<float> , qTableOutput>* allocP;
+
 };
 
 #endif //_AGENTQLTRAINING_H

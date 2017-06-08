@@ -9,9 +9,6 @@
 
 AgentReactive::AgentReactive(unsigned int id, string type, Factory* factoryPtr) : Agent(id, type, factoryPtr)
 {
-	//Pido la configuracion para el tipo de agente
-	Setting* configurationPtr = factoryPtr->getTypeSetting(myType);
-
 	//saco los pesos constantes de la conf
 	Setting& ws = (*configurationPtr)["weights"];
 	int nbWs = (*configurationPtr)["weights"].getLength();
