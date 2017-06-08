@@ -40,7 +40,7 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 	*pretopicname << "/" ;
 
 	//Instancia los comportamientos
-	factoryPtr->instanciateBehaviors( robotId, pretopicname->str(), &behaviors, &myType);
+	factoryPtr->instanciateBehaviors( robotId, pretopicname->str(), &behaviors, myType);
 
 	//*****************//
 	//Creacion del Nodo//
@@ -123,13 +123,19 @@ int Agent::update()
 			behaviorState = behaviors[i]->getState();
 		}
 	}
-	cout << "Blending" << endl;
+	/*for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
+	{
+		cout << *itb << " ";
+	}*/
+
 	//suma ponderada de los desiresVs y Ws
 	//cout << "seek: v=" << twists[0].linear.x << " o=" << twists[0].angular.z*180/PI << endl;
 	//cout << "aObs: v=" << twists[1].linear.x << " o=" << twists[1].angular.z*180/PI << endl;
 
-	std::vector<float> weights = getWeights(behaviorState);
+	cout << "Blending" << endl;
 
+	std::vector<float> weights = getWeights(behaviorState);
+	
 	float ws = weights[0];
 	float wao = weights[1];
 
@@ -190,5 +196,4 @@ void Agent::setNewObjective(std::pair<float, float> auxP)
 
 std::vector<float> Agent::getWeights(std::vector<float>)
 {
-
 }

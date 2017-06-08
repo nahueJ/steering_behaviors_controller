@@ -30,11 +30,11 @@ public:
 
 	int instanciateBehaviors(unsigned int id, std::string pre,
 							std::vector<SteeringBehavior*>* behaviors,
-							std::string* type);
+							std::string type);
 
 	int getAgents();
 
-	std::vector<float> getConstantWeights();
+	Setting* getTypeSetting(std::string);
 
 private:
 

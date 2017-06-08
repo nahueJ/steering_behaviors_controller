@@ -169,7 +169,7 @@ int main(int argc, char **argv)
 	sleep(1);
 
 	//controlador para el robot
-	Agent* agent = new AgentReactive(0,"QLInit",factoryPtr);
+	Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);
 	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
 	int roundCounter = 0;

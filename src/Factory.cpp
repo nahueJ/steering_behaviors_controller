@@ -20,11 +20,10 @@ Factory::~Factory()
 
 int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 									std::vector<SteeringBehavior*>* behaviors,
-									std::string* type)
+									std::string type)
 {
 	//busco el tipo de agente
-	string aux = cfg->lookup("simulationParams")["agentsOnSimulation"][id];
-	agentType << "agents." << aux;
+	agentType << "agents." << type;
 
 	Setting& behaviorsToCreate = cfg ->lookup(agentType.str())["behaviors"];
 	int nbBehaviorsType = cfg->lookup(agentType.str())["behaviors"].getLength();
@@ -59,23 +58,13 @@ SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::s
 	return auxBhPtr;
 }
 
-std::vector<float> Factory::getConstantWeights()
+Setting* Factory::getTypeSetting(std::string type)
 {
-	Setting& ws = cfg ->lookup(agentType.str())["weights"];
-	int nbWs = cfg->lookup(agentType.str())["weights"].getLength();
-
-	std::vector<float> weights;
-
-	for (int k = 0; k < nbWs; ++k)
-	{
-		float aux = ws[k];
-		weights.push_back(aux);
-	}
-
-	return weights;
+	std::stringstream agType;
+	agType << "agents." << type;
+	Setting& sets = cfg ->lookup(agType.str());
+	return &sets;
 }
-
-
 /*Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std::vector<SteeringBehavior*> behaviors, std::vector< std::vector<float> >* state)
 {
 	Weights* auxWeights;

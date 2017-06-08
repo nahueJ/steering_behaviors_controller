@@ -42,10 +42,12 @@ public:
 
 	void setNewObjective(std::pair<float, float>);
 
+protected:
+	string myType;
+
 private:
 	//Id del robot del controlador
 	unsigned int robotId;
-	string myType;
 	std::vector< float > state;
 	std::vector< float > ansState;
 	int roundCounter;
@@ -71,7 +73,7 @@ private:
 	//
 	// void printState();
 
-	virtual std::vector<float> getWeights(std::vector<float>);
+	virtual std::vector<float> getWeights(std::vector<float> estado);
 
 };
 

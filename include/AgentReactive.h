@@ -35,7 +35,7 @@ public:
 
 private:
 
-	virtual std::vector<float> getWeights(std::vector<float>);
+	virtual std::vector<float> getWeights(std::vector<float> estado);
 
 	std::vector<float> pesos;
 };
