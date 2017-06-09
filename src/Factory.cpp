@@ -23,10 +23,12 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 									std::string type)
 {
 	//busco el tipo de agente
+	std::stringstream agentType;
 	agentType << "agents." << type;
 
 	Setting& behaviorsToCreate = cfg ->lookup(agentType.str())["behaviors"];
 	int nbBehaviorsType = cfg->lookup(agentType.str())["behaviors"].getLength();
+
 
 	for (int k = 0; k < nbBehaviorsType; ++k)
 	{

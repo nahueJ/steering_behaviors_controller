@@ -56,7 +56,7 @@ class ObstacleAvoidance : public SteeringBehavior {
 		float* laser;
 		//Variables inherentes al sensor laser
 		int haz;					//cantidad de haces del laser
-		int sectores;				//cantidad de sectores en que se discretiza el barrido del laser
+		int variablesDeEstado;				//cantidad de sectores en que se discretiza el barrido del laser
 		std::vector<float> zona;	//vector en el que se carga los valores de cada seccion discreta
 		int div;					//cantidad de haces por sector
 		float prescicion;			//separacion entre mediciones del laser, en angulos, es decir, la prescicion del sensor

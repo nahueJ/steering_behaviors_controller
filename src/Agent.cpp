@@ -35,6 +35,7 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 {
 	robotId = id;
 	myType = type;
+
 	//Pido la configuracion para el tipo de agente
 	configurationPtr = factoryPtr->getTypeSetting(myType);
 

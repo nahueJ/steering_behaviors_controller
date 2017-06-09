@@ -9,25 +9,54 @@
 
 AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryPtr) : Agent(id, type, factoryPtr)
 {
+
 	file = (*configurationPtr)["file"].c_str();
 
 	if (myType == "qlInit") {
 		newQTable();
 	}
+	else if (myType == "qlLoad") {
+		int stateSize = (*configurationPtr)["sSize"];
+		int weightSize = (*configurationPtr)["wSize"];
+		int inputSize = stateSize + weightSize;
+		loadQTable(file,inputSize);
+	}
 }
 
 AgentQLTraining::~AgentQLTraining()
 {
+	qTable.get_allocator().deallocate(allocP,allocateNb);
+}
 
+int AgentQLTraining::loadQTable(std::string file, int inputSize)
+{
+	std::ifstream aFile (file.c_str());
+	int numberOfNodes=std::count(std::istreambuf_iterator<char>(aFile), std::istreambuf_iterator<char>(), '\n');
+	int nodeSize = sizeof(std::map<std::vector<float> , qTableOutput>::value_type);
+	allocateNb = nodeSize * numberOfNodes;
+	allocP = qTable.get_allocator().allocate( allocateNb );
+	//para cada linea
+	aFile.seekg(0);
+	for (size_t line = 0; line < numberOfNodes; line++) {
+		//extraigo el input
+		std::vector<float> inV;
+		for (size_t in = 0; in < inputSize; in++) {
+			float aux;
+			aFile >> aux;
+			inV.push_back(aux);
+		}
+		//extraigo el Output
+		char dummy; //para el "="
+		qTableOutput outAux;
+		aFile >> dummy >> outAux.visits >> outAux.qValue ;
+		//lo cargo al mapa
+		qTable[inV] = outAux;
+	}
 }
 
 std::vector<float> AgentQLTraining::getWeights(std::vector<float> estado)
 {
 	return pesos;
-}
-
-int AgentQLTraining::loadQTable(){
-
 }
 
 int AgentQLTraining::newQTable(){
@@ -92,9 +121,10 @@ int AgentQLTraining::newQTable(){
 	}
 	//Se guarda en un archivo
 	int aux = writeQTableToFile(file);
+	return aux;
 }
 
-void AgentQLTraining::instanciarWcombinaciones(int wCantDiscretizacion, int size)
+void AgentQLTraining::instanciarWcombinaciones(int wCantDiscretizacion, int cantComportamientos)
 {
 	//	Instanciacion del vector de posibles outputs / decisiones (combinaciones de pesos)
 	//	sagun la discretizacion tomada de la configuracion
@@ -103,11 +133,12 @@ void AgentQLTraining::instanciarWcombinaciones(int wCantDiscretizacion, int size
 	for (int i = 0; i < wCantDiscretizacion; ++i)
 	{
 		wValPosibles.push_back(step * i + 0.1);
+		// cout << step * i + 0.1 << " " ;
 	}
 	//la suma de los pesos (en primera instancia) debe ser 1. La estrategia es hacer todas las combinaciones posibles de valores
 	//multiplos del step entre 0 y 1 (para step 0.2 [0.0 0.2 0.4 0.6 0.8 1.0]) y almacenar aquellas combinaciones donde la suma sea 1
 	std::vector<float> individuo;
-	wPermutaciones(wValPosibles, individuo, size, &wCombinacionesPosibles);
+	wPermutaciones(wValPosibles, individuo, cantComportamientos, &wCombinacionesPosibles);
 }
 
 void AgentQLTraining::wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
@@ -117,11 +148,13 @@ void AgentQLTraining::wPermutaciones(std::vector<float> valores, std::vector<flo
 		{
 			add += *ii;
 		}
-		if (add == 1.000)
+		if (fabs(add-1.000) < 0.01)
 		{
 			(*contenedor).push_back(individuo);
 		}
-	} else {
+	}
+	else
+	{
 		for (int i = 0; i < valores.size(); i++) {
 			std::vector<float> variante = individuo;
 			variante.push_back(valores[i]);
@@ -162,3 +195,17 @@ int AgentQLTraining::writeQTableToFile(std::string fname) {
 	fclose(fp);
 	return count;
 }
+
+/*void AgentQLTraining::printPerm(std::vector< std::vector<float> > perm )
+{
+	cout << "Combinaciones posibles: " << endl;
+	for (std::vector< std::vector<float> >::iterator ita = perm.begin(); ita < perm.end(); ++ita)
+	{
+		for (std::vector<float>::iterator itb = (*ita).begin(); itb < (*ita).end(); ++itb)
+		{
+			cout << *itb << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}*/

@@ -29,14 +29,14 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	distMin = (*configurationPtr)["distMin"];
 	haz = (*configurationPtr)["haz"];
 	prescicion = (*configurationPtr)["prescicion"];
-	sectores = (*configurationPtr)["sectores"];
+	variablesDeEstado = (*configurationPtr)["variablesDeEstado"];
 	vmax = (*configurationPtr)["desiredV"];
 
-	for (int i = 0; i < sectores; ++i)
+	for (int i = 0; i < variablesDeEstado; ++i)
 	{
 		zona.push_back(3.0);
 	}
-	div = haz/sectores;
+	div = haz/variablesDeEstado;
 	abanico = prescicion*haz;
 
 	//generar el nombre del nodo con el robotId, inicializa el nodo

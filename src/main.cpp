@@ -88,7 +88,7 @@ void newSession(string strNewS, string strNewPose)
 			strTemp += "\n";
 			fileout << strTemp;
 		}
-		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
+		//system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
 		filein.close();
 		fileout.close();
 	}
@@ -172,6 +172,11 @@ int main(int argc, char **argv)
 	//controlador para el robot
 	//Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
 	Agent* agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
+
+	sleep(1);
+	free(agent);
+	agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
+
 	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
 	int roundCounter = 0;

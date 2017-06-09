@@ -40,7 +40,6 @@ private:
 
 	Config* cfg;
 	int nbAgents;
-	std::stringstream agentType;
 
 	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
 

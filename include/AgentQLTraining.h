@@ -41,13 +41,11 @@ public:
 
 	int newQTable();
 
-	int loadQTable();
+	int loadQTable(std::string, int);
 
 private:
 
 	virtual std::vector<float> getWeights(std::vector<float>);
-
-	std::vector< std::vector<float> > wCombinacionesPosibles;
 
 	void instanciarWcombinaciones(int wCantDiscretizacion, int size);
 
@@ -57,11 +55,14 @@ private:
 
 	int writeQTableToFile(std::string fname);
 
+	//void printPerm(std::vector< std::vector<float> >);
+
 	//variables para la qtable
 	std::string file;
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
 	int allocateNb;
 	std::pair< std::vector<float> , qTableOutput>* allocP;
+	std::vector< std::vector<float> > wCombinacionesPosibles;
 
 };
 
