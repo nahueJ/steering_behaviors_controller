@@ -9,7 +9,7 @@
 
 AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryPtr) : Agent(id, type, factoryPtr)
 {
-
+	//parametros para instanciar la estructura qtable
 	file = (*configurationPtr)["file"].c_str();
 
 	if (myType == "qlInit") {
@@ -20,6 +20,28 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 		int weightSize = (*configurationPtr)["wSize"];
 		int inputSize = stateSize + weightSize;
 		loadQTable(file,inputSize);
+	}
+
+	//Parametros de aprendizaje
+	Setting* trainCfgPtr = factoryPtr->getTypeSetting("qlTrain");
+
+	gamma = (*trainCfgPtr)["gamma"];
+	maxVisitasDif = (*trainCfgPtr)["minDeltaVisitas"];
+	//se cargan los estados a los que corresponden los refuerzos
+	critic.clear();
+	int nbReinforcements = (*trainCfgPtr)["refuerzos"].getLength();
+	if (nbReinforcements>0)
+	{
+		Setting& reinf =(*trainCfgPtr)["refuerzos"];
+		for (int i = 0; i < nbReinforcements; ++i)
+		{
+			reinforcement auxReinf;
+			auxReinf.behaviorNb = reinf[i][0];
+			auxReinf.reinforcementState = reinf[i][1];
+			auxReinf.reinforcementValue = reinf[i][2];
+			auxReinf.message = reinf[i][3].c_str();
+			critic.push_back(auxReinf);
+		}
 	}
 }
 
@@ -56,6 +78,7 @@ int AgentQLTraining::loadQTable(std::string file, int inputSize)
 
 std::vector<float> AgentQLTraining::getWeights(std::vector<float> estado)
 {
+
 	return pesos;
 }
 

@@ -32,6 +32,14 @@ struct qTableOutput
 	float qValue;
 };
 
+struct reinforcement
+{
+	int behaviorNb;
+	float reinforcementState;
+	float reinforcementValue;
+	std::string message;
+};
+
 class AgentQLTraining: public Agent {
 public:
 
@@ -63,6 +71,10 @@ private:
 	int allocateNb;
 	std::pair< std::vector<float> , qTableOutput>* allocP;
 	std::vector< std::vector<float> > wCombinacionesPosibles;
+	std::vector<reinforcement> critic;
+	float gamma;
+	int maxVisitasDif;
+
 
 };
 
