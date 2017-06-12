@@ -12,12 +12,22 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 	//parametros para instanciar la estructura qtable
 	file = (*configurationPtr)["file"].c_str();
 
+	//Valores de salidas de la Qtable (permutaciones de los pesos)
+	int wCantDiscretizacion = (*configurationPtr)["wPosibles"];
+	int weightSize = (*configurationPtr)["behaviors"].getLength();
+	instanciarWcombinaciones(wCantDiscretizacion, weightSize);
 	if (myType == "qlInit") {
 		newQTable();
 	}
 	else if (myType == "qlLoad") {
-		int stateSize = (*configurationPtr)["sSize"];
-		int weightSize = (*configurationPtr)["wSize"];
+		//Valores de entradas de la Qtable (permutaciones de los estados de los comportamientos)
+		std::vector< float > behaviorState;
+		for (int i = 0; i < behaviors.size(); ++i)
+		{
+			std::vector<float> aux = behaviors[i]->getState();
+			behaviorState.insert(behaviorState.end(), aux.begin(), aux.end());
+		}
+		int stateSize = behaviorState.size();
 		int inputSize = stateSize + weightSize;
 		loadQTable(file,inputSize);
 	}
@@ -76,12 +86,6 @@ int AgentQLTraining::loadQTable(std::string file, int inputSize)
 	}
 }
 
-std::vector<float> AgentQLTraining::getWeights(std::vector<float> estado)
-{
-
-	return pesos;
-}
-
 int AgentQLTraining::newQTable(){
 	//Valores de entradas de la Qtable (permutaciones de los estados de los comportamientos)
 	std::vector< std::vector<float> > state;
@@ -100,9 +104,6 @@ int AgentQLTraining::newQTable(){
 		}
 		statePosibilities.push_back(auxv);
 	}
-	//Valores de salidas de la Qtable (permutaciones de los pesos)
-	int wCantDiscretizacion = (*configurationPtr)["wPosibles"];
-	instanciarWcombinaciones(wCantDiscretizacion, statePosibilities.size());
 	//	posibles estados
 	std::vector< std::vector<float> > sCombinacionesPosibles;
 	std::vector< std::vector<float> > sValPosibles;
@@ -232,3 +233,119 @@ int AgentQLTraining::writeQTableToFile(std::string fname) {
 	}
 	cout << endl;
 }*/
+
+std::vector<float> AgentQLTraining::getWeights(std::vector<float> estado)
+{
+	pesos = getRandomWfromQTable(estado);
+	//Verifico que el estado no corresponde a ningun refuerzo
+	int testigo = criticCheck();
+	if (testigo != -1) {
+		if (memoria.size()==1) {
+			memoria.clear();
+		}else{
+			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
+			actualizarQTable(testigo);
+			//se limpia la memoria,
+			memoria.clear();
+		}
+	}
+	return pesos;
+}
+
+std::vector<float> AgentQLTraining::getRandomWfromQTable(std::vector<float> state)
+{
+	//Eleccion: si la diferencia de visitas a diferentes acciones en el mismo estado es mayor q la dada en la configuracion, se elije la menos visitada, si no se elije aleatoriamente
+	int eleccion = checkVisits(state);
+	//Genero el input para la qTable
+	state.insert( state.end(), wCombinacionesPosibles[eleccion].begin(), wCombinacionesPosibles[eleccion].end() );
+	//Agrego el elegido a la lista de estados visitados, para la posterior actualizacion de los qValues correspondientes en funcion de los refuerzos recibidos en un futuro
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
+	memoria.push_back(itaux);
+	return wCombinacionesPosibles[eleccion];
+}
+
+int AgentQLTraining::criticCheck()
+{
+	std::vector< std::vector<float> > state;
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		std::vector<float> auxVect = behaviors[i]->getState();
+		state.push_back(auxVect);
+	}
+	int index = 0;
+	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
+	{
+		for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
+		{
+			if (*istate == (*icritic).reinforcementState)
+			{
+				//si se encuentra en un estado de refuerzo, se devuelve el indice del refuerzo en cuestion
+				cout << (*icritic).message.c_str() << endl;
+				return index;
+			}
+		}
+	}
+	//si no se aplica ningun refuerzo se envia -1
+	return -1;
+}
+
+void AgentQLTraining::actualizarQTable(int refuerzo)
+{
+	std::string mensaje = critic[refuerzo].message;
+	cout << "Aplicando refuerzo " << mensaje << " a " << memoria.size() << " estados" << endl;
+	int count = 0;
+	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::reverse_iterator itmem = memoria.rbegin() ; itmem != memoria.rend(); itmem++, count++)
+	{
+		std::vector<float> printv = (*itmem)->first;
+		for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++){
+			cout << std::fixed << std::setprecision(3) << *itv << " ";
+		}
+
+		cout << "prevQVal=" << (*itmem)->second.qValue ;
+		//NONDETERMINISTIC REWARDS & TEMPORAL DIFFERENCE LEARNING
+		float alpha = 1/(1+(*itmem)->second.visits);
+
+		(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue + alpha* pow(gamma,count) *critic[refuerzo].reinforcementValue;
+
+		(*itmem)->second.visits++;
+
+		cout << " actQVal=" << (*itmem)->second.qValue << " visits=" << (*itmem)->second.visits << endl;
+
+	}
+	memoria.clear();
+	int aux = writeQTableToFile(file);
+}
+
+int AgentQLTraining::checkVisits(std::vector<float> state)
+{
+	//Genero todos los posibles inputs estado/pesos, correspondientes al estado actual
+	std::vector< std::vector<float> > options;
+	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles.begin(); itw != wCombinacionesPosibles.end(); ++itw){
+		std::vector<float> aux = state;
+		aux.insert( aux.end(), itw->begin(), itw->end() );
+		options.push_back(aux);
+	}
+	//Evaluo las visitas a las diferentes estados
+	int lessIndex = 0;
+	qTableOutput output = qTable[options[lessIndex]];
+	int most = output.visits;
+	int less = output.visits;
+	int index = 0;
+	for (std::vector< std::vector<float> >::iterator iti = options.begin(); iti != options.end(); ++iti, index++)
+	{
+		output = qTable[*iti];
+		if (less > output.visits) {
+			less = output.visits;
+			lessIndex = index;
+		}
+		if (output.visits > most) {
+			most = output.visits;
+		}
+	}
+	if ((most-less)>maxVisitasDif) {
+		cout << "opcion con " << less << " visitas" << endl;
+		return lessIndex;
+	} else{
+		return rand()% wCombinacionesPosibles.size();
+	}
+}

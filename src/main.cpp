@@ -88,7 +88,7 @@ void newSession(string strNewS, string strNewPose)
 			strTemp += "\n";
 			fileout << strTemp;
 		}
-		//system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
+		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
 		filein.close();
 		fileout.close();
 	}
@@ -173,15 +173,16 @@ int main(int argc, char **argv)
 	//Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
 	Agent* agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
 
-	sleep(1);
+	/*sleep(1);
 	free(agent);
-	agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
+	agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable*/
 
 	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
 	int roundCounter = 0;
+
 	//rutina de trabajo
-	/*while(ros::ok())
+	while(ros::ok())
 	{
 		// system("clear"); //limpia la consola
 		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
@@ -201,7 +202,7 @@ int main(int argc, char **argv)
 		}
 		ros::spinOnce();
 		loop_rate.sleep(); //sleep por el resto del ciclo
-	}*/
+	}
 
 	return 0;
 }

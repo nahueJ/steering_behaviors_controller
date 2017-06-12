@@ -47,22 +47,18 @@ public:
 
 	~AgentQLTraining();
 
-	int newQTable();
-
-	int loadQTable(std::string, int);
-
 private:
 
 	virtual std::vector<float> getWeights(std::vector<float>);
 
+	//Fcs auxiliares al constructor
+	int newQTable();
+	int loadQTable(std::string, int);
+	//Fcs auxiliares para newQtable y loadQTable
 	void instanciarWcombinaciones(int wCantDiscretizacion, int size);
-
 	void wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor);
-
 	void sPermutaciones(std::vector< std::vector<float> > valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor);
-
 	int writeQTableToFile(std::string fname);
-
 	//void printPerm(std::vector< std::vector<float> >);
 
 	//variables para la qtable
@@ -75,6 +71,14 @@ private:
 	float gamma;
 	int maxVisitasDif;
 
+	//Fcs auxiliares a getWeights
+	std::vector<float> getRandomWfromQTable(std::vector<float>);
+	int checkVisits(std::vector<float>);
+	int criticCheck();
+	void actualizarQTable(int refuerzo);
+
+
+	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
 
 };
 

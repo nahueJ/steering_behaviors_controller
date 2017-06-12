@@ -51,7 +51,7 @@ protected:
 private:
 	//Id del robot del controlador
 	unsigned int robotId;
-	std::vector< float > state;
+	std::vector< float > actualState;
 	std::vector< float > ansState;
 	int roundCounter;
 

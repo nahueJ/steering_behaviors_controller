@@ -88,7 +88,7 @@
 }*/
 
 //constructor para qTableW
-Weights::Weights(Setting* configurationPtr){
+/*Weights::Weights(Setting* configurationPtr){
 	myType = (*configurationPtr)["type"].c_str();
 	int wCantDiscretizacion = (*configurationPtr)["wPosibles"];
 	int wSize = (*configurationPtr)["wSize"];
@@ -118,18 +118,18 @@ Weights::Weights(Setting* configurationPtr){
 			}
 		}
 	}
-}
+}*/
 
-Weights::~Weights(){
+/*Weights::~Weights(){
 	qTable.get_allocator().deallocate(allocP,allocateNb);
-}
+}*/
 
 int Weights::getWeights(std::vector< std::vector<float> > state, std::vector<float>* wOut){
 	if (myType == "constW")
 	{
 		*wOut = *weights;
 		return 1;
-	} /*else {
+	} else {
 		std::vector<float> statePart;
 		std::vector<float> wAux;
 		for (std::vector< std::vector< float > >::iterator ita = state.begin(); ita != state.end(); ++ita)
@@ -163,7 +163,7 @@ int Weights::getWeights(std::vector< std::vector<float> > state, std::vector<flo
 		}
 		*wOut = wAux;
 		return 1;
-	}*/
+	}
 }
 
 /*void Weights::wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
@@ -324,7 +324,7 @@ int Weights::getWeights(std::vector< std::vector<float> > state, std::vector<flo
 	int aux = writeQTableToFile(file);
 }*/
 
-void Weights::loadQTable(std::string file, int inputSize)
+/*void Weights::loadQTable(std::string file, int inputSize)
 {
 	std::ifstream aFile (file.c_str());
 	int numberOfNodes=std::count(std::istreambuf_iterator<char>(aFile), std::istreambuf_iterator<char>(), '\n');
@@ -350,7 +350,7 @@ void Weights::loadQTable(std::string file, int inputSize)
 	}
 	cout << "QTable inputs: " << qTable.size() << endl;
 	// printQTable();
-}
+}*/
 
 /*void Weights::instanciarWcombinaciones(int wCantDiscretizacion, int size)
 {

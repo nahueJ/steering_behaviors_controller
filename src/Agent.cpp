@@ -103,14 +103,15 @@ int Agent::update()
 					twists[i].linear.x = behaviors[i]->getDesiredV();
 					break;
 			}
-			behaviorState = behaviors[i]->getState();
+			std::vector<float> aux = behaviors[i]->getState();
+			behaviorState.insert(behaviorState.end(), aux.begin(), aux.end());
 		}
 		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
 			switch (behaviorFlag[i]) {
 				case 0:
 					ctrlPublisher->publish(twists[i-1]);
-					cout << "Solo Seek" << endl;
+					//cout << "Solo Seek" << endl;
 					return 1;
 				case 1: //AO normal
 					twists[i].angular.z = behaviors[i]->getDesiredO();
@@ -123,38 +124,46 @@ int Agent::update()
 					//cout << "Solo AO" << endl;
 					//return 1;
 			}
-			behaviorState = behaviors[i]->getState();
+			std::vector<float> aux = behaviors[i]->getState();
+			behaviorState.insert(behaviorState.end(), aux.begin(), aux.end());
 		}
 	}
-	/*for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
+	//print state
+	for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
 	{
 		cout << *itb << " ";
-	}*/
+	}
+	// cout << endl;
 
 	//suma ponderada de los desiresVs y Ws
 	//cout << "seek: v=" << twists[0].linear.x << " o=" << twists[0].angular.z*180/PI << endl;
 	//cout << "aObs: v=" << twists[1].linear.x << " o=" << twists[1].angular.z*180/PI << endl;
+	ansState=actualState;
+	actualState=behaviorState;
 
-	cout << "Blending" << endl;
+	if (ansState != actualState) {
+		std::vector<float> weights = getWeights(behaviorState);
+		cout << " Nuevos w: ";
+	} else {
+		cout << " Mantiene: ";
+	}
+	cout << pesos[0] << " , " << pesos[1] << endl;
 
-	std::vector<float> weights = getWeights(behaviorState);
 
-	float ws = weights[0];
-	float wao = weights[1];
+	float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
+	float ry = (pesos[0] * twists[0].linear.x * sin(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * sin(twists[1].angular.z));
 
-	float rx = (ws * twists[0].linear.x * cos(twists[0].angular.z)) + (wao * twists[1].linear.x * cos(twists[1].angular.z));
-	float ry = (ws * twists[0].linear.x * sin(twists[0].angular.z)) + (wao * twists[1].linear.x * sin(twists[1].angular.z));
-
-	// cout << rx << "=" << ws << "*" << twists[0].linear.x << "*" << cos(twists[0].angular.z) << "+" << wao << "*" << twists[1].linear.x << "*" << cos(twists[1].angular.z) << endl << ry << "=" << ws << "*"  ;
-	// cout << twists[0].linear.x << "*" << sin(twists[0].angular.z) << "+" << wao << "*" << twists[1].linear.x << "*" << sin(twists[1].angular.z) << endl;
+	// cout << rx << "=" << pesos[0] << "*" << twists[0].linear.x << "*" << cos(twists[0].angular.z) << "+" << pesos[1] << "*" << twists[1].linear.x << "*" << cos(twists[1].angular.z) << endl << ry << "=" << pesos[0] << "*"  ;
+	// cout << twists[0].linear.x << "*" << sin(twists[0].angular.z) << "+" << pesos[1] << "*" << twists[1].linear.x << "*" << sin(twists[1].angular.z) << endl;
 
 	float v = sqrt(pow(rx,2)+pow(ry,2));
 	float alpha = atan2(ry,rx);
 
+	/*cout << "Blending" << endl;
 	cout << "SEEK :  v  " << twists[0].linear.x << " o  " << twists[0].angular.z*180/PI << endl;
 	cout << "RESU :  v  " << v << " o  " << alpha*180/PI << endl;
 	cout << "AOBS :  v  " << twists[1].linear.x << " o  " << twists[1].angular.z*180/PI << endl;
-	cout << endl << rx << " " << ry << endl << endl;
+	cout << endl << rx << " " << ry << endl << endl;*/
 
 	geometry_msgs::Twist twist;
 	twist.angular.z = alpha;
