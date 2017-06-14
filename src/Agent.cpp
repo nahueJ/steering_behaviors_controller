@@ -87,9 +87,9 @@ Agent::~Agent()
 int Agent::update()
 {
 	int behaviorFlag[behaviors.size()];
-	std::vector<float> behaviorState;
 	std::vector<geometry_msgs::Twist> twists;
 	bool llegada = false;
+	bool danger = false;
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
 		geometry_msgs::Twist tw;
@@ -120,6 +120,7 @@ int Agent::update()
 					twists.push_back(tw);
 					break;
 				case -1: //solo AO, peligro de colision
+					danger = true;
 					tw.angular.z = behaviors[i]->getDesiredO();
 					tw.linear.x = behaviors[i]->getDesiredV();
 					twists.push_back(tw);
@@ -129,19 +130,21 @@ int Agent::update()
 					break;
 			}
 		}
-		std::vector<float> auxState = behaviors[i]->getState();
-		behaviorState.insert(behaviorState.end(), auxState.begin(), auxState.end());
 	}
+	std::vector<float> behaviorState = getOneVectorState();
+
+	//print state
+	// for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
+	// {
+	// 	cout << *itb << " ";
+	// }
+	// cout << endl;
+
 	if (twists.size() == 1) {
 		//nothing to blend
 		ctrlPublisher->publish(twists[0]);
 	} else {
-		//print state
-		// for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
-		// {
-		// 	cout << *itb << " ";
-		// }
-		// cout << endl;
+
 
 		//suma ponderada de los desiresVs y Ws
 		//cout << "seek: v=" << twists[0].linear.x << " o=" << twists[0].angular.z*180/PI << endl;
@@ -175,22 +178,13 @@ int Agent::update()
 		twist.linear.x = v;
 		ctrlPublisher->publish(twist);
 	}
-	if (llegada == true) {
+	if (llegada) {
 		return 0;
+	} else if (danger){
+		return -1;
 	}
 	return 1;
 }
-
-
-/*void Agent::updateState()
-{
-	ansState = state;
-	state.clear();
-	for (int i = 0; i < behaviors.size(); ++i)
-	{
-		state.push_back( behaviors[i]->getState() );
-	}
-}*/
 
 /*void Agent::printState()
 {
@@ -216,4 +210,35 @@ void Agent::setNewObjective(std::pair<float, float> auxP)
 
 void Agent::updateWeights(std::vector<float>)
 {
+}
+/*void Agent::updateState()
+{
+	ansState = state;
+	state.clear();
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		state.push_back( behaviors[i]->getState() );
+	}
+}*/
+
+std::vector<float> Agent::getOneVectorState()
+{
+	std::vector<float> behaviorState;
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		std::vector<float> auxState = behaviors[i]->getState();
+		behaviorState.insert(behaviorState.end(), auxState.begin(), auxState.end());
+	}
+	return behaviorState;
+}
+
+std::vector< std::vector<float> > Agent::getIndividualVectorState()
+{
+	std::vector< std::vector<float> > state;
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		std::vector<float> auxVect = behaviors[i]->getState();
+		state.push_back(auxVect);
+	}
+	return state;
 }

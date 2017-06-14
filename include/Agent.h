@@ -48,6 +48,11 @@ protected:
 	std::vector<SteeringBehavior*> behaviors;
 	Setting* configurationPtr;
 
+	std::vector<float> getOneVectorState();
+
+	std::vector< std::vector<float> > getIndividualVectorState();
+
+
 private:
 	//Id del robot del controlador
 	unsigned int robotId;
@@ -70,12 +75,11 @@ private:
 	float y;
 	float tita;
 
-	// void updateState();
-	//
 	// void printState();
 
 	virtual void updateWeights(std::vector<float> estado);
 
+	//Fcs y Vbles para
 };
 
 #endif //_AGENT_H

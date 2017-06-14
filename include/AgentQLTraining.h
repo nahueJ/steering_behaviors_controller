@@ -74,6 +74,8 @@ private:
 	int maxVisitasDif;
 
 	//Fcs auxiliares a getWeights
+	std::vector<float> getBestWfromQTable(std::vector<float>);
+
 	std::vector<float> getRandomWfromQTable(std::vector<float>);
 	int checkVisits(std::vector<float>);
 	void criticCheck();

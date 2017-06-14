@@ -87,7 +87,7 @@ float SteeringBehavior::getDesiredO()
 
 void SteeringBehavior::setDesiredV(float y)
 {
-	if ( abs(y) <= 1.0 ){
+	if ( fabs(y) <= 1.0 ){
 		desiredV = y;
 	} else {
 		cout << myName << " ERROR EN DESIRED V: " << y << endl << endl << endl << endl;
@@ -97,8 +97,10 @@ void SteeringBehavior::setDesiredV(float y)
 
 void SteeringBehavior::setDesiredO(float z)
 {
-	if ( abs(z) <= PI ){
+	if ( fabs(z) <= PI ){
 		desiredO = z;
+	} else if (z < (-PI)) {
+		desiredO = 2*PI+z;
 	} else {
 		cout << myName << " ERROR EN DESIRED O: " << z << endl << endl << endl << endl;
 	}

@@ -181,7 +181,9 @@ int main(int argc, char **argv)
 	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
 	int roundCounter = 0;
-
+	int rondasAprendizaje = 3;
+	int rondasTest = 2;
+	int ciclos=0;
 	//rutina de trabajo
 	while(ros::ok())
 	{
@@ -196,7 +198,30 @@ int main(int argc, char **argv)
 			randnroP = rand()% robotPose.size();
 			newSession(sets[randnroS], robotPose[randnroP]);
 			roundCounter++;
-			cout << "Round: " << roundCounter << endl;
+			cout << "Round: " << (roundCounter+((rondasAprendizaje+rondasTest)*ciclos));
+
+			if (roundCounter < rondasAprendizaje) {
+				cout << " aprendiendo" << endl;
+			} else if (roundCounter == rondasAprendizaje) {
+				free(agent);
+				agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
+				cout << " Aprendizaje a prueba" << endl;
+			} else if (roundCounter < (rondasAprendizaje+rondasTest)) {
+				cout << " testeando" << endl;
+
+				/*GET STATS*/
+
+			} else if (roundCounter == (rondasAprendizaje+rondasTest)) {
+
+				/*GET STATS*/
+
+				free(agent);
+				agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
+				cout << " Aprendiendo de nuevo" << endl;
+				roundCounter = 0;
+				ciclos++;
+			}
+
 			//set objetivo aleatorio
 			auxPair = calcObjective(robotPose[randnroP], initPosition);
 			agent->setNewObjective(auxPair);
