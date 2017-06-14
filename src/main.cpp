@@ -171,7 +171,8 @@ int main(int argc, char **argv)
 
 	//controlador para el robot
 	//Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
-	Agent* agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
+	AgentQLTraining* agent;// = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
+	agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
 
 	/*sleep(1);
 	free(agent);

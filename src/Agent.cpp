@@ -88,88 +88,96 @@ int Agent::update()
 {
 	int behaviorFlag[behaviors.size()];
 	std::vector<float> behaviorState;
-	geometry_msgs::Twist twists[behaviors.size()];
+	std::vector<geometry_msgs::Twist> twists;
+	bool llegada = false;
 	for (int i = 0; i < behaviors.size(); ++i)
 	{
+		geometry_msgs::Twist tw;
 		behaviorFlag[i] = behaviors[i]->update();
 		if (behaviors[i]->getType()=="seek")
 		{
+			tw.angular.z = behaviors[i]->getDesiredO();
+			tw.linear.x = behaviors[i]->getDesiredV();
 			switch (behaviorFlag[i]) {
 				case 0:	//obj alcanzado
-					return 0;
+					llegada = true;//return 0;
 					break;
 				case 1: //seek normal
-					twists[i].angular.z = behaviors[i]->getDesiredO();
-					twists[i].linear.x = behaviors[i]->getDesiredV();
 					break;
 			}
-			std::vector<float> aux = behaviors[i]->getState();
-			behaviorState.insert(behaviorState.end(), aux.begin(), aux.end());
+			twists.push_back(tw);
+
 		}
 		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
 			switch (behaviorFlag[i]) {
 				case 0:
-					ctrlPublisher->publish(twists[i-1]);
 					//cout << "Solo Seek" << endl;
-					return 1;
+					break;
 				case 1: //AO normal
-					twists[i].angular.z = behaviors[i]->getDesiredO();
-					twists[i].linear.x = behaviors[i]->getDesiredV();
+					tw.angular.z = behaviors[i]->getDesiredO();
+					tw.linear.x = behaviors[i]->getDesiredV();
+					twists.push_back(tw);
 					break;
 				case -1: //solo AO, peligro de colision
-					twists[i].angular.z = behaviors[i]->getDesiredO();
-					twists[i].linear.x = behaviors[i]->getDesiredV();
+					tw.angular.z = behaviors[i]->getDesiredO();
+					tw.linear.x = behaviors[i]->getDesiredV();
+					twists.push_back(tw);
 					//ctrlPublisher->publish(twists[i]);
 					//cout << "Solo AO" << endl;
 					//return 1;
+					break;
 			}
-			std::vector<float> aux = behaviors[i]->getState();
-			behaviorState.insert(behaviorState.end(), aux.begin(), aux.end());
 		}
+		std::vector<float> auxState = behaviors[i]->getState();
+		behaviorState.insert(behaviorState.end(), auxState.begin(), auxState.end());
 	}
-	//print state
-	for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
-	{
-		cout << *itb << " ";
-	}
-	// cout << endl;
-
-	//suma ponderada de los desiresVs y Ws
-	//cout << "seek: v=" << twists[0].linear.x << " o=" << twists[0].angular.z*180/PI << endl;
-	//cout << "aObs: v=" << twists[1].linear.x << " o=" << twists[1].angular.z*180/PI << endl;
-	ansState=actualState;
-	actualState=behaviorState;
-
-	if (ansState != actualState) {
-		std::vector<float> weights = getWeights(behaviorState);
-		cout << " Nuevos w: ";
+	if (twists.size() == 1) {
+		//nothing to blend
+		ctrlPublisher->publish(twists[0]);
 	} else {
-		cout << " Mantiene: ";
+		//print state
+		// for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
+		// {
+		// 	cout << *itb << " ";
+		// }
+		// cout << endl;
+
+		//suma ponderada de los desiresVs y Ws
+		//cout << "seek: v=" << twists[0].linear.x << " o=" << twists[0].angular.z*180/PI << endl;
+		//cout << "aObs: v=" << twists[1].linear.x << " o=" << twists[1].angular.z*180/PI << endl;
+		ansState=actualState;
+		actualState=behaviorState;
+
+		if (ansState != actualState) {
+			updateWeights(behaviorState);
+			// cout << " Nuevos w: ";
+		} /*else {
+			// cout << " Mantiene: ";
+		}*/
+		// cout << pesos[0] << " , " << pesos[1] << endl;
+
+
+		float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
+		float ry = (pesos[0] * twists[0].linear.x * sin(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * sin(twists[1].angular.z));
+
+		float v = sqrt(pow(rx,2)+pow(ry,2));
+		float alpha = atan2(ry,rx);
+
+		/*cout << "Blending" << endl;
+		cout << "SEEK :  v  " << twists[0].linear.x << " o  " << twists[0].angular.z*180/PI << endl;
+		cout << "RESU :  v  " << v << " o  " << alpha*180/PI << endl;
+		cout << "AOBS :  v  " << twists[1].linear.x << " o  " << twists[1].angular.z*180/PI << endl;
+		cout << endl << rx << " " << ry << endl << endl;*/
+
+		geometry_msgs::Twist twist;
+		twist.angular.z = alpha;
+		twist.linear.x = v;
+		ctrlPublisher->publish(twist);
 	}
-	cout << pesos[0] << " , " << pesos[1] << endl;
-
-
-	float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
-	float ry = (pesos[0] * twists[0].linear.x * sin(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * sin(twists[1].angular.z));
-
-	// cout << rx << "=" << pesos[0] << "*" << twists[0].linear.x << "*" << cos(twists[0].angular.z) << "+" << pesos[1] << "*" << twists[1].linear.x << "*" << cos(twists[1].angular.z) << endl << ry << "=" << pesos[0] << "*"  ;
-	// cout << twists[0].linear.x << "*" << sin(twists[0].angular.z) << "+" << pesos[1] << "*" << twists[1].linear.x << "*" << sin(twists[1].angular.z) << endl;
-
-	float v = sqrt(pow(rx,2)+pow(ry,2));
-	float alpha = atan2(ry,rx);
-
-	/*cout << "Blending" << endl;
-	cout << "SEEK :  v  " << twists[0].linear.x << " o  " << twists[0].angular.z*180/PI << endl;
-	cout << "RESU :  v  " << v << " o  " << alpha*180/PI << endl;
-	cout << "AOBS :  v  " << twists[1].linear.x << " o  " << twists[1].angular.z*180/PI << endl;
-	cout << endl << rx << " " << ry << endl << endl;*/
-
-	geometry_msgs::Twist twist;
-	twist.angular.z = alpha;
-	twist.linear.x = v;
-	ctrlPublisher->publish(twist);
-
+	if (llegada == true) {
+		return 0;
+	}
 	return 1;
 }
 
@@ -206,6 +214,6 @@ void Agent::setNewObjective(std::pair<float, float> auxP)
 	}
 }
 
-std::vector<float> Agent::getWeights(std::vector<float>)
+void Agent::updateWeights(std::vector<float>)
 {
 }

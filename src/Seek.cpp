@@ -99,6 +99,7 @@ void Seek::updateState()
 	errory = target.position.y - y;
 	stateContinuous[0]=sqrt(pow(errorx,2)+pow(errory,2));
 	discretizarEstado();
+	cout << stateContinuous[0] << " -> " << stateDiscrete[0] << endl;
 }
 
 void Seek::setGoal(float xg, float yg)

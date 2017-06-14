@@ -47,9 +47,11 @@ public:
 
 	~AgentQLTraining();
 
+	int update();
+
 private:
 
-	virtual std::vector<float> getWeights(std::vector<float>);
+	virtual void updateWeights(std::vector<float>);
 
 	//Fcs auxiliares al constructor
 	int newQTable();
@@ -74,7 +76,7 @@ private:
 	//Fcs auxiliares a getWeights
 	std::vector<float> getRandomWfromQTable(std::vector<float>);
 	int checkVisits(std::vector<float>);
-	int criticCheck();
+	void criticCheck();
 	void actualizarQTable(int refuerzo);
 
 

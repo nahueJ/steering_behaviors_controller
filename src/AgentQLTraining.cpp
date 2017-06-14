@@ -234,22 +234,9 @@ int AgentQLTraining::writeQTableToFile(std::string fname) {
 	cout << endl;
 }*/
 
-std::vector<float> AgentQLTraining::getWeights(std::vector<float> estado)
+void AgentQLTraining::updateWeights(std::vector<float> estado)
 {
 	pesos = getRandomWfromQTable(estado);
-	//Verifico que el estado no corresponde a ningun refuerzo
-	int testigo = criticCheck();
-	if (testigo != -1) {
-		if (memoria.size()==1) {
-			memoria.clear();
-		}else{
-			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
-			actualizarQTable(testigo);
-			//se limpia la memoria,
-			memoria.clear();
-		}
-	}
-	return pesos;
 }
 
 std::vector<float> AgentQLTraining::getRandomWfromQTable(std::vector<float> state)
@@ -264,7 +251,7 @@ std::vector<float> AgentQLTraining::getRandomWfromQTable(std::vector<float> stat
 	return wCombinacionesPosibles[eleccion];
 }
 
-int AgentQLTraining::criticCheck()
+void AgentQLTraining::criticCheck()
 {
 	std::vector< std::vector<float> > state;
 	for (int i = 0; i < behaviors.size(); ++i)
@@ -272,21 +259,32 @@ int AgentQLTraining::criticCheck()
 		std::vector<float> auxVect = behaviors[i]->getState();
 		state.push_back(auxVect);
 	}
+	int refuerzo = -1;
 	int index = 0;
 	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
 	{
 		for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
 		{
+			/*if ((*icritic).behaviorNb == 0) {
+				cout << *istate << " " << (*icritic).reinforcementState << endl;
+			}*/
 			if (*istate == (*icritic).reinforcementState)
 			{
+				refuerzo = index;
 				//si se encuentra en un estado de refuerzo, se devuelve el indice del refuerzo en cuestion
-				cout << (*icritic).message.c_str() << endl;
-				return index;
+				cout << refuerzo << " " << (*icritic).message.c_str() << endl;
+				break;
 			}
 		}
 	}
-	//si no se aplica ningun refuerzo se envia -1
-	return -1;
+	if (refuerzo != -1) {
+		if (memoria.size()<=1) {
+			memoria.clear();
+		}else{
+			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
+			actualizarQTable(refuerzo);
+		}
+	}
 }
 
 void AgentQLTraining::actualizarQTable(int refuerzo)
@@ -348,4 +346,13 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 	} else{
 		return rand()% wCombinacionesPosibles.size();
 	}
+}
+
+int AgentQLTraining::update()
+{
+	int aux = Agent::update();
+	//Verifico que el estado no corresponde a ningun refuerzo // en vez de revisar por el estado podría mapear del int que devuelve el agent::update
+	criticCheck();
+	cout << "recibi " << aux << endl;
+	return aux;
 }

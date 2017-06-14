@@ -74,7 +74,7 @@ private:
 	//
 	// void printState();
 
-	virtual std::vector<float> getWeights(std::vector<float> estado);
+	virtual void updateWeights(std::vector<float> estado);
 
 };
 
