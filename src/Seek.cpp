@@ -66,7 +66,6 @@ int Seek::vIdeal()
 	if (toleranceToTarget>stateContinuous[0])
 	{
 		//si es menor que la tolerancia se detiene
-		cout << "OBJETIVO ALCANZADO" << endl;
 		setDesiredV(0.0);
 		return 0;
 	}

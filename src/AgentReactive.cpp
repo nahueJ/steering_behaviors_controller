@@ -26,8 +26,8 @@ AgentReactive::~AgentReactive()
 
 void AgentReactive::updateWeights(std::vector<float> estado)
 {
-	for (std::vector<float>::iterator itb = pesos.begin(); itb != pesos.end(); ++itb)
+	/*for (std::vector<float>::iterator itb = pesos.begin(); itb != pesos.end(); ++itb)
 	{
 		cout << *itb << " ";
-	}
+	}*/
 }

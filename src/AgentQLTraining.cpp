@@ -29,6 +29,7 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 
 		gamma = (*trainCfgPtr)["gamma"];
 		maxVisitasDif = (*trainCfgPtr)["minDeltaVisitas"];
+		dtCastigo = (*trainCfgPtr)["dTpunish"];
 		//se cargan los estados a los que corresponden los refuerzos
 		critic.clear();
 		int nbReinforcements = (*trainCfgPtr)["refuerzos"].getLength();
@@ -234,7 +235,9 @@ void AgentQLTraining::updateWeights(std::vector<float> estado)
 	if (myType == "qlTest") {
 		pesos = getBestWfromQTable(estado);
 	} else {
+		dtPunish();
 		pesos = getRandomWfromQTable(estado);
+
 	}
 }
 
@@ -247,6 +250,8 @@ std::vector<float> AgentQLTraining::getRandomWfromQTable(std::vector<float> stat
 	//Agrego el elegido a la lista de estados visitados, para la posterior actualizacion de los qValues correspondientes en funcion de los refuerzos recibidos en un futuro
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
 	memoria.push_back(itaux);
+
+	chooseTime = ros::Time::now().toSec();
 	return wCombinacionesPosibles[eleccion];
 }
 
@@ -279,55 +284,22 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 			bestQval =ito->qValue;
 		}
 	}
-	cout<< "lo mejor que habia " << bestQval<< endl;
+	//cout<< "lo mejor que habia " << bestQval<< endl;
 	return wCombinacionesPosibles[best];
-}
-
-void AgentQLTraining::criticCheck()
-{
-	std::vector< std::vector<float> > state = getIndividualVectorState();
-
-	int refuerzo = -1;
-	int index = 0;
-	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
-	{
-		for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
-		{
-			/*if ((*icritic).behaviorNb == 0) {
-				cout << *istate << " " << (*icritic).reinforcementState << endl;
-			}*/
-			if (*istate == (*icritic).reinforcementState)
-			{
-				refuerzo = index;
-				//si se encuentra en un estado de refuerzo, se devuelve el indice del refuerzo en cuestion
-				cout << refuerzo << " " << (*icritic).message.c_str() << endl;
-				break;
-			}
-		}
-	}
-	if (refuerzo != -1) {
-		if (memoria.size()<=1) {
-			memoria.clear();
-		}else{
-			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
-			actualizarQTable(refuerzo);
-		}
-	}
 }
 
 void AgentQLTraining::actualizarQTable(int refuerzo)
 {
-	std::string mensaje = critic[refuerzo].message;
 	int count = 0;
 	int refs = 0;
 	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::reverse_iterator itmem = memoria.rbegin() ; itmem != memoria.rend(); itmem++, count++)
 	{
-		std::vector<float> printv = (*itmem)->first;
-		for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++){
-			cout << std::fixed << std::setprecision(3) << *itv << " ";
-		}
-
-		cout << "prevQVal=" << (*itmem)->second.qValue ;
+		// std::vector<float> printv = (*itmem)->first;
+		// for (std::vector<float>::iterator itv = printv.begin(); itv < printv.end(); itv++){
+		// 	cout << std::fixed << std::setprecision(3) << *itv << " ";
+		// }
+		//
+		// cout << "prevQVal=" << (*itmem)->second.qValue ;
 
 		//NONDETERMINISTIC REWARDS & TEMPORAL DIFFERENCE LEARNING
 		float alpha = 1/(1+(*itmem)->second.visits);
@@ -341,10 +313,10 @@ void AgentQLTraining::actualizarQTable(int refuerzo)
 
 		(*itmem)->second.visits++;
 
-		cout << " actQVal=" << (*itmem)->second.qValue << " visits=" << (*itmem)->second.visits << " TD: " << fabs(temporalDifference) <<endl;
+		// cout << " actQVal=" << (*itmem)->second.qValue << " visits=" << (*itmem)->second.visits << " TD: " << fabs(temporalDifference) <<endl;
 
 	}
-	cout << "Aplicando refuerzo " << mensaje << " a " << refs << "/" << memoria.size() << " estados" << endl;
+	cout << "Aplicando refuerzo " << critic[refuerzo].message << " a " << refs << "/" << memoria.size() << " estados" << endl;
 	memoria.clear();
 	int aux = writeQTableToFile(file);
 }
@@ -385,10 +357,73 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 
 int AgentQLTraining::update()
 {
-	int aux = Agent::update();
+	int aux;
+	switch (Agent::update()) {
+		case 0:
+			aux=0;
+			break;
+		case 1:
+			aux=1;
+			break;
+		case -1:
+			aux=-1;
+			break;
+	};
 	//Verifico que el estado no corresponde a ningun refuerzo // en vez de revisar por el estado podría mapear del int que devuelve el agent::update
+
 	if (myType != "qlTest") {
 		criticCheck();
 	}
 	return aux;
+}
+
+void AgentQLTraining::criticCheck()
+{
+	std::vector< std::vector<float> > state = getIndividualVectorState();
+
+	int refuerzo = -1;
+	int index = 0;
+	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
+	{
+		for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
+		{
+			/*if ((*icritic).behaviorNb == 0) {
+				cout << *istate << " " << (*icritic).reinforcementState << endl;
+			}*/
+			if (*istate == (*icritic).reinforcementState)
+			{
+				refuerzo = index;
+				//si se encuentra en un estado de refuerzo, se devuelve el indice del refuerzo en cuestion
+				break;
+			}
+		}
+	}
+	if (refuerzo != -1) {
+		if (memoria.size()<=1) {
+			memoria.clear();
+		}else{
+			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
+			actualizarQTable(refuerzo);
+		}
+	}
+}
+
+void AgentQLTraining::dtPunish()
+{
+	if (!memoria.empty()) {
+		float secsElapsed = (ros::Time::now().toSec() - chooseTime);
+		float reinforcement = dtCastigo * secsElapsed;
+
+		// cout << "Aplicando castigo dt al input ";
+		// std::vector< float > qtableinput = memoria.back()->first;
+		// for (std::vector< float >::iterator itvec = qtableinput.begin() ; itvec < qtableinput.end(); itvec++)
+		// {
+		// 	cout << std::fixed << std::setprecision(3) << *itvec << " ";
+		// }
+		// cout << "prevQVal=" << memoria.back()->second.qValue ;
+
+		memoria.back()->second.qValue += reinforcement;
+
+		//cout << " actQVal=" << memoria.back()->second.qValue << endl;
+	}
 }

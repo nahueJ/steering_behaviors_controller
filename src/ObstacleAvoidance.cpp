@@ -29,14 +29,9 @@ ObstacleAvoidance::ObstacleAvoidance(unsigned int id, std::string pre, Setting* 
 	distMin = (*configurationPtr)["distMin"];
 	haz = (*configurationPtr)["haz"];
 	prescicion = (*configurationPtr)["prescicion"];
-	variablesDeEstado = (*configurationPtr)["variablesDeEstado"];
 	vmax = (*configurationPtr)["desiredV"];
 
-	for (int i = 0; i < variablesDeEstado; ++i)
-	{
-		zona.push_back(3.0);
-	}
-	div = haz/variablesDeEstado;
+	divisiones = haz/nbVar;
 	abanico = prescicion*haz;
 
 	//generar el nombre del nodo con el robotId, inicializa el nodo
@@ -95,9 +90,9 @@ void ObstacleAvoidance::updateState()
 	//Busqueda del minimo para cada sector, cada valor del arreglo de estado
 	int sector = 0;
 	int minSector = 0;
-	for (int i = 0; i < haz; ++i)
+	for (int i = 0; i <= haz; ++i)
 	{
-		if (i > haz/nbVar*(sector+1)) {
+		if (i == haz/nbVar*(sector+1)) {
 			stateContinuous[sector] = laser[minSector];
 			sector ++;
 			minSector = i;

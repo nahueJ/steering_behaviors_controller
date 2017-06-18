@@ -1,5 +1,5 @@
 # time to pause (in GUI mode) or quit (in headless mode (-g)) the simulation
-quit_time 3600 # 1 hour of simulated time
+#quit_time 3600 # 1 hour of simulated time
 
 #resolution 0.02
 resolution 0.1
@@ -48,7 +48,7 @@ pioneer3dx
   # can refer to the robot by this name
   name "pioneer"
   #seleccion de posicion y orientacion del agente
-pose [6.25 6.25 0 225]
+pose [-6.25 -6.25 0 90]
 
   fancysicklaser(color "blue")
 )

@@ -55,8 +55,8 @@ SteeringBehavior::SteeringBehavior(
 	}
 	//inicializo el vector de estado con algun valor de los posibles valores
 	for (int i = 0; i < nbVar; i++) {
-		stateContinuous.push_back(valoresEstado.back());
-		stateDiscrete.push_back(valoresEstado.back());
+		stateContinuous.push_back(0.0);
+		stateDiscrete.push_back(0.0);
 	}
 
 }

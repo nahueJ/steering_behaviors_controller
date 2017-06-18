@@ -13,6 +13,11 @@
 
 void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
 {
+	//actualizo las estadisticas de tiempo y distancia recorrida
+	//stiempo = odom->header.stamp; //seq toma el tiempo en seg*10 (incluye la decima como parte entera)
+	distx += fabs(odom->pose.pose.position.x - x);
+	disty += fabs(odom->pose.pose.position.y - y);
+	//actualizo las variables
 	x = odom->pose.pose.position.x;
 	y = odom->pose.pose.position.y;
 	tf::Pose pose;
@@ -33,6 +38,10 @@ void Agent::odomCallback(const nav_msgs::Odometry::ConstPtr& odom)
  ------------------------------------------------------------------------*/
 Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 {
+	stiempo = 0;
+	disty = 0;
+	distx = 0;
+
 	robotId = id;
 	myType = type;
 
@@ -96,8 +105,6 @@ int Agent::update()
 		behaviorFlag[i] = behaviors[i]->update();
 		if (behaviors[i]->getType()=="seek")
 		{
-			tw.angular.z = behaviors[i]->getDesiredO();
-			tw.linear.x = behaviors[i]->getDesiredV();
 			switch (behaviorFlag[i]) {
 				case 0:	//obj alcanzado
 					llegada = true;//return 0;
@@ -105,8 +112,11 @@ int Agent::update()
 				case 1: //seek normal
 					break;
 			}
-			twists.push_back(tw);
-
+			if (!danger) {
+				tw.angular.z = behaviors[i]->getDesiredO();
+				tw.linear.x = behaviors[i]->getDesiredV();
+				twists.push_back(tw);
+			}
 		}
 		else if (behaviors[i]->getType()=="avoidObstacles")
 		{
@@ -121,64 +131,69 @@ int Agent::update()
 					break;
 				case -1: //solo AO, peligro de colision
 					danger = true;
+					twists.clear();
 					tw.angular.z = behaviors[i]->getDesiredO();
 					tw.linear.x = behaviors[i]->getDesiredV();
 					twists.push_back(tw);
-					//ctrlPublisher->publish(twists[i]);
-					//cout << "Solo AO" << endl;
-					//return 1;
 					break;
 			}
 		}
 	}
 	std::vector<float> behaviorState = getOneVectorState();
 
-	//print state
-	// for (std::vector<float>::iterator itb = behaviorState.begin(); itb != behaviorState.end(); ++itb)
-	// {
-	// 	cout << *itb << " ";
-	// }
-	// cout << endl;
-
 	if (twists.size() == 1) {
 		//nothing to blend
 		ctrlPublisher->publish(twists[0]);
 	} else {
-
-
-		//suma ponderada de los desiresVs y Ws
-		//cout << "seek: v=" << twists[0].linear.x << " o=" << twists[0].angular.z*180/PI << endl;
-		//cout << "aObs: v=" << twists[1].linear.x << " o=" << twists[1].angular.z*180/PI << endl;
 		ansState=actualState;
 		actualState=behaviorState;
 
+		//Estadisticas
+		if (ros::Time::now().toSec()>2.0) { //para evitar las primeras iteraciones donde los valores de estado son los de inicializacion y no los reales
+			if (minState.empty() and maxState.empty()) {
+				minState=actualState;
+				maxState=actualState;
+			}
+			minMaxStats();
+		}
+
 		if (ansState != actualState) {
 			updateWeights(behaviorState);
-			// cout << " Nuevos w: ";
-		} /*else {
-			// cout << " Mantiene: ";
-		}*/
-		// cout << pesos[0] << " , " << pesos[1] << endl;
-
+		}
 
 		float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
 		float ry = (pesos[0] * twists[0].linear.x * sin(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * sin(twists[1].angular.z));
 
-		float v = sqrt(pow(rx,2)+pow(ry,2));
-		float alpha = atan2(ry,rx);
-
-		/*cout << "Blending" << endl;
-		cout << "SEEK :  v  " << twists[0].linear.x << " o  " << twists[0].angular.z*180/PI << endl;
-		cout << "RESU :  v  " << v << " o  " << alpha*180/PI << endl;
-		cout << "AOBS :  v  " << twists[1].linear.x << " o  " << twists[1].angular.z*180/PI << endl;
-		cout << endl << rx << " " << ry << endl << endl;*/
-
 		geometry_msgs::Twist twist;
-		twist.angular.z = alpha;
-		twist.linear.x = v;
+		twist.angular.z = atan2(ry,rx);
+		twist.linear.x = sqrt(pow(rx,2)+pow(ry,2));
+		if (twist.linear.x < 0.3) {
+			twist.linear.x = 0.3;
+		}
 		ctrlPublisher->publish(twist);
 	}
 	if (llegada) {
+		float distancia = sqrt(pow(distx,2)+pow(disty,2));
+		cout << "DistanciaRecorrida " << distancia << endl;
+		distx=0;
+		disty=0;
+		float secs = ros::Time::now().toSec();
+		cout << "Tpo: " << secs << endl;
+
+		cout << "minimos: ";
+		for (std::vector< float >::iterator ita = minState.begin(); ita < minState.end(); ++ita)
+		{
+			cout << *ita << " ";
+		}
+		cout << endl;
+
+		cout << "maximos: ";
+		for (std::vector< float >::iterator ita = maxState.begin(); ita < maxState.end(); ++ita)
+		{
+			cout << *ita << " ";
+		}
+		cout << endl;
+
 		return 0;
 	} else if (danger){
 		return -1;
@@ -211,15 +226,6 @@ void Agent::setNewObjective(std::pair<float, float> auxP)
 void Agent::updateWeights(std::vector<float>)
 {
 }
-/*void Agent::updateState()
-{
-	ansState = state;
-	state.clear();
-	for (int i = 0; i < behaviors.size(); ++i)
-	{
-		state.push_back( behaviors[i]->getState() );
-	}
-}*/
 
 std::vector<float> Agent::getOneVectorState()
 {
@@ -241,4 +247,15 @@ std::vector< std::vector<float> > Agent::getIndividualVectorState()
 		state.push_back(auxVect);
 	}
 	return state;
+}
+
+void Agent::minMaxStats(){
+	for (int i = 0; i < actualState.size(); i++) {
+		if (actualState[i]<minState[i]) {
+			minState[i] = actualState[i];
+		}
+		if (actualState[i]>maxState[i]) {
+			maxState[i] = actualState[i];
+		}
+	}
 }

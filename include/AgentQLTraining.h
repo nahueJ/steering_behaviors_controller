@@ -72,14 +72,18 @@ private:
 	std::vector<reinforcement> critic;
 	float gamma;
 	int maxVisitasDif;
+	float dtCastigo;
 
 	//Fcs auxiliares a getWeights
 	std::vector<float> getBestWfromQTable(std::vector<float>);
 
 	std::vector<float> getRandomWfromQTable(std::vector<float>);
+	float chooseTime;
+
 	int checkVisits(std::vector<float>);
 	void criticCheck();
 	void actualizarQTable(int refuerzo);
+	void dtPunish();
 
 
 	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;

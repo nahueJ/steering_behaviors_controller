@@ -54,6 +54,10 @@ protected:
 	std::vector<float> stateContinuous;
 	std::vector<float> valoresEstado;
 
+	//para estadisticas
+	std::vector<float> minStateContinuous;
+	std::vector<float> maxStateContinuous;
+
 	std::string pretopicname;
 
 	float desiredV;

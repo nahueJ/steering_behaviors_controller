@@ -37,7 +37,7 @@ std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<floa
 		float dx= auxP.first - itp->first;
 		float dy= auxP.second - itp->second;
 		float dist = sqrt(pow(dx,2.0)+pow(dy,2.0));
-		if (dist>12.0) {
+		if (dist>13.0) {
 			auxObj.push_back(*itp);
 		}
 	}
@@ -170,9 +170,9 @@ int main(int argc, char **argv)
 	sleep(1);
 
 	//controlador para el robot
-	//Agent* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
-	AgentQLTraining* agent;// = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
-	agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
+	//AgentReactive* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
+
+	AgentQLTraining* agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
 
 	/*sleep(1);
 	free(agent);
@@ -180,10 +180,26 @@ int main(int argc, char **argv)
 
 	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
+
+	//sets experimento
+	string experimento = factoryPtr->getExperiment();
+	Setting* configurationPtr = factoryPtr->getExperimentSetting(experimento);
 	int roundCounter = 0;
-	int rondasAprendizaje = 3;
-	int rondasTest = 2;
+	int rondasAprendizaje;
+	int rondasTest;
 	int ciclos=0;
+	int nbExp = (*trainCfgPtr)["nbExp"];
+	switch (nbExp) {
+		case 0:
+			break;
+		case 1:
+			rondasAprendizaje = (*trainCfgPtr)["rondasAprendizaje"];
+			rondasTest = (*trainCfgPtr)["rondasTest"];
+			break;
+		case 2:
+			break;
+	}
+
 	//rutina de trabajo
 	while(ros::ok())
 	{
@@ -198,7 +214,7 @@ int main(int argc, char **argv)
 			randnroP = rand()% robotPose.size();
 			newSession(sets[randnroS], robotPose[randnroP]);
 			roundCounter++;
-			cout << "Round: " << (roundCounter+((rondasAprendizaje+rondasTest)*ciclos));
+			cout << "Round: " << roundCounter << endl; //(roundCounter+((rondasAprendizaje+rondasTest)*ciclos));
 
 			if (roundCounter < rondasAprendizaje) {
 				cout << " aprendiendo" << endl;

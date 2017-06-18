@@ -79,7 +79,16 @@ private:
 
 	virtual void updateWeights(std::vector<float> estado);
 
-	//Fcs y Vbles para
+	//Fcs y Vbles para stats
+	float stiempo;
+	float disty;
+	float distx;
+
+	float minObs;
+
+	std::vector< float > minState;
+	std::vector< float > maxState;
+	void minMaxStats();
 };
 
 #endif //_AGENT_H
