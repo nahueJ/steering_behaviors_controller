@@ -60,7 +60,7 @@ private:
 	void instanciarWcombinaciones(int wCantDiscretizacion, int size);
 	void wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor);
 	void sPermutaciones(std::vector< std::vector<float> > valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor);
-	int writeQTableToFile(std::string fname);
+	int writeQTableToFile();
 	//void printPerm(std::vector< std::vector<float> >);
 
 	//variables para la qtable
@@ -70,6 +70,7 @@ private:
 	std::pair< std::vector<float> , qTableOutput>* allocP;
 	std::vector< std::vector<float> > wCombinacionesPosibles;
 	std::vector<reinforcement> critic;
+	std::vector<int> refuerzosAplicados;
 	float gamma;
 	int maxVisitasDif;
 	float dtCastigo;

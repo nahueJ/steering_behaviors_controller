@@ -41,10 +41,10 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 	stiempo = 0;
 	disty = 0;
 	distx = 0;
-
+	qvalAcumulado = 0;
 	robotId = id;
 	myType = type;
-
+	myfactory = factoryPtr;
 	//Pido la configuracion para el tipo de agente
 	configurationPtr = factoryPtr->getTypeSetting(myType);
 
@@ -84,8 +84,7 @@ Agent::~Agent()
 	delete rosNode;
 	delete ctrlPublisher;
 	delete odomSubscriber;
-	//LIBERAR LOS BEHAVIORS
-
+	myfactory->freeBehaviors(&behaviors);
 }
 
 /*--------------------------- Update ------------------------------------
@@ -93,123 +92,8 @@ Agent::~Agent()
  *	cada uno de ellos ponderadamente y comunicar eso a los actuadores del
  *	robot
  ----------------------------------------------------------------------*/
-int Agent::update()
-{
-	int behaviorFlag[behaviors.size()];
-	std::vector<geometry_msgs::Twist> twists;
-	bool llegada = false;
-	bool danger = false;
-	for (int i = 0; i < behaviors.size(); ++i)
-	{
-		geometry_msgs::Twist tw;
-		behaviorFlag[i] = behaviors[i]->update();
-		if (behaviors[i]->getType()=="seek")
-		{
-			switch (behaviorFlag[i]) {
-				case 0:	//obj alcanzado
-					llegada = true;//return 0;
-					break;
-				case 1: //seek normal
-					break;
-			}
-			if (!danger) {
-				tw.angular.z = behaviors[i]->getDesiredO();
-				tw.linear.x = behaviors[i]->getDesiredV();
-				twists.push_back(tw);
-			}
-		}
-		else if (behaviors[i]->getType()=="avoidObstacles")
-		{
-			switch (behaviorFlag[i]) {
-				case 0:
-					//cout << "Solo Seek" << endl;
-					break;
-				case 1: //AO normal
-					tw.angular.z = behaviors[i]->getDesiredO();
-					tw.linear.x = behaviors[i]->getDesiredV();
-					twists.push_back(tw);
-					break;
-				case -1: //solo AO, peligro de colision
-					danger = true;
-					twists.clear();
-					tw.angular.z = behaviors[i]->getDesiredO();
-					tw.linear.x = behaviors[i]->getDesiredV();
-					twists.push_back(tw);
-					break;
-			}
-		}
-	}
-	std::vector<float> behaviorState = getOneVectorState();
-
-	if (twists.size() == 1) {
-		//nothing to blend
-		ctrlPublisher->publish(twists[0]);
-	} else {
-		ansState=actualState;
-		actualState=behaviorState;
-
-		//Estadisticas
-		if (ros::Time::now().toSec()>2.0) { //para evitar las primeras iteraciones donde los valores de estado son los de inicializacion y no los reales
-			if (minState.empty() and maxState.empty()) {
-				minState=actualState;
-				maxState=actualState;
-			}
-			minMaxStats();
-		}
-
-		if (ansState != actualState) {
-			updateWeights(behaviorState);
-		}
-
-		float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
-		float ry = (pesos[0] * twists[0].linear.x * sin(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * sin(twists[1].angular.z));
-
-		geometry_msgs::Twist twist;
-		twist.angular.z = atan2(ry,rx);
-		twist.linear.x = sqrt(pow(rx,2)+pow(ry,2));
-		if (twist.linear.x < 0.3) {
-			twist.linear.x = 0.3;
-		}
-		ctrlPublisher->publish(twist);
-	}
-	if (llegada) {
-		float distancia = sqrt(pow(distx,2)+pow(disty,2));
-		cout << "DistanciaRecorrida " << distancia << endl;
-		distx=0;
-		disty=0;
-		float secs = ros::Time::now().toSec();
-		cout << "Tpo: " << secs << endl;
-
-		cout << "minimos: ";
-		for (std::vector< float >::iterator ita = minState.begin(); ita < minState.end(); ++ita)
-		{
-			cout << *ita << " ";
-		}
-		cout << endl;
-
-		cout << "maximos: ";
-		for (std::vector< float >::iterator ita = maxState.begin(); ita < maxState.end(); ++ita)
-		{
-			cout << *ita << " ";
-		}
-		cout << endl;
-
-		return 0;
-	} else if (danger){
-		return -1;
-	}
-	return 1;
+int Agent::update(){
 }
-
-/*void Agent::printState()
-{
-	cout << "PS: ";
-	for (std::vector< float >::iterator ita = state.begin(); ita < state.end(); ++ita)
-	{
-		cout << *ita << " ";
-	}
-	// cout << endl;
-}*/
 
 void Agent::setNewObjective(std::pair<float, float> auxP)
 {
@@ -219,6 +103,8 @@ void Agent::setNewObjective(std::pair<float, float> auxP)
 		if ((*itb)->getType() =="seek")
 		{
 			(*itb)->setGoal(auxP.first, auxP.second);
+			distx=0;
+			disty=0;
 		}
 	}
 }
@@ -258,4 +144,64 @@ void Agent::minMaxStats(){
 			maxState[i] = actualState[i];
 		}
 	}
+}
+
+void Agent::blend()
+{
+	std::vector<float> behaviorState = getOneVectorState();
+
+	if (twists.size() == 1) {
+		//nothing to blend
+		ctrlPublisher->publish(twists[0]);
+	} else {
+		ansState=actualState;
+		actualState=behaviorState;
+
+		//Estadisticas
+		if (ros::Time::now().toSec()>2.0) { //para evitar las primeras iteraciones donde los valores de estado son los de inicializacion y no los reales
+			if (minState.empty() and maxState.empty()) {
+				minState=actualState;
+				maxState=actualState;
+			}
+			minMaxStats();
+		}
+
+		if (ansState != actualState) {
+			updateWeights(behaviorState);
+		}
+
+		float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
+		float ry = (pesos[0] * twists[0].linear.x * sin(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * sin(twists[1].angular.z));
+
+		geometry_msgs::Twist twist;
+		twist.angular.z = atan2(ry,rx);
+		twist.linear.x = sqrt(pow(rx,2)+pow(ry,2));
+		if (twist.linear.x < 0.5) {
+			twist.linear.x = 0.5;
+		}
+		ctrlPublisher->publish(twist);
+	}
+}
+
+qlearningStats Agent::getStats()
+{
+	qlearningStats aux;
+	aux.distanciaRecorrida = sqrt(pow(distx,2)+pow(disty,2));;
+	aux.tiempo = ros::Time::now().toSec();
+	aux.mins = minState;
+	aux.maxs = maxState;
+	aux.qvalTotal = qvalAcumulado;
+	minState.clear();
+	maxState.clear();
+	qvalAcumulado = 0;
+	return aux;
+}
+
+std::vector< std::pair< std::string , int > > Agent::getRefsAcumulados(){
+	std::vector< std::pair< std::string , int > > aux = refuerzosAcumulados;
+	for (std::vector< std::pair< std::string , int > >::iterator itr = refuerzosAcumulados.begin(); itr != refuerzosAcumulados.end(); ++itr)
+	{
+		itr->second = 0;
+	}
+	return aux;
 }

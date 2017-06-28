@@ -31,6 +31,15 @@
 
 #define PI 3.14159265
 
+struct qlearningStats
+{
+	float distanciaRecorrida;
+	float tiempo;
+	std::vector<float> mins;
+	std::vector<float> maxs;
+	float qvalTotal;
+};
+
 class Agent {
 public:
 
@@ -38,20 +47,24 @@ public:
 
 	~Agent();
 
-	int update();
+	virtual int update();
 
 	void setNewObjective(std::pair<float, float>);
+	qlearningStats getStats();
+	std::vector< std::pair< std::string , int > > getRefsAcumulados();
 
 protected:
 	string myType;
 	std::vector<float> pesos;
 	std::vector<SteeringBehavior*> behaviors;
 	Setting* configurationPtr;
-
+	std::vector<geometry_msgs::Twist> twists;
+	std::vector< std::pair< std::string , int > > refuerzosAcumulados;
+	float qvalAcumulado;
 	std::vector<float> getOneVectorState();
-
 	std::vector< std::vector<float> > getIndividualVectorState();
 
+	void blend();
 
 private:
 	//Id del robot del controlador
@@ -89,6 +102,8 @@ private:
 	std::vector< float > minState;
 	std::vector< float > maxState;
 	void minMaxStats();
+
+	Factory* myfactory;
 };
 
 #endif //_AGENT_H

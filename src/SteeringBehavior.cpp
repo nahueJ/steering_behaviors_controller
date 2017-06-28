@@ -102,7 +102,7 @@ void SteeringBehavior::setDesiredO(float z)
 	} else if (z < (-PI)) {
 		desiredO = 2*PI+z;
 	} else {
-		cout << myName << " ERROR EN DESIRED O: " << z << endl << endl << endl << endl;
+		desiredO = 0.0;
 	}
 }
 

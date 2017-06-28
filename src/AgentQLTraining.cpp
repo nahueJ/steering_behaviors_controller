@@ -44,6 +44,7 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 				auxReinf.reinforcementValue = reinf[i][2];
 				auxReinf.message = reinf[i][3].c_str();
 				critic.push_back(auxReinf);
+				refuerzosAcumulados.push_back(std::make_pair(critic[i].message,0));
 			}
 		}
 	}
@@ -52,6 +53,9 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 
 AgentQLTraining::~AgentQLTraining()
 {
+	if (myType != "qlTest") {
+		writeQTableToFile();
+	}
 	qTable.get_allocator().deallocate(allocP,allocateNb);
 }
 
@@ -140,7 +144,7 @@ int AgentQLTraining::newQTable(){
 		qTable[*i] = out;
 	}
 	//Se guarda en un archivo
-	int aux = writeQTableToFile(file);
+	int aux = writeQTableToFile();
 	return aux;
 }
 
@@ -196,13 +200,16 @@ void AgentQLTraining::sPermutaciones(std::vector< std::vector<float> > valores, 
 	}
 }
 
-int AgentQLTraining::writeQTableToFile(std::string fname) {
+int AgentQLTraining::writeQTableToFile() {
 	int count = 0;
-	if (qTable.empty())
-			return 0;
-	FILE *fp = fopen(fname.c_str(), "w");
-	if (!fp)
-			return -errno;
+	if (qTable.empty()){
+		cout << "ERROR Qtable empty AgentQLTraining::writeQTableToFile" << endl;
+		return 0;
+	}
+	FILE *fp = fopen(file.c_str(), "w");
+	if (!fp){
+		return -errno;
+	}
 	for(std::map<std::vector<float> , qTableOutput>::iterator itm = qTable.begin(); itm != qTable.end(); itm++) {
 		std::vector<float> auxv = itm->first;
 		for (std::vector<float>::iterator itv = auxv.begin(); itv != auxv.end(); ++itv)
@@ -215,20 +222,6 @@ int AgentQLTraining::writeQTableToFile(std::string fname) {
 	fclose(fp);
 	return count;
 }
-
-/*void AgentQLTraining::printPerm(std::vector< std::vector<float> > perm )
-{
-	cout << "Combinaciones posibles: " << endl;
-	for (std::vector< std::vector<float> >::iterator ita = perm.begin(); ita < perm.end(); ++ita)
-	{
-		for (std::vector<float>::iterator itb = (*ita).begin(); itb < (*ita).end(); ++itb)
-		{
-			cout << *itb << " ";
-		}
-		cout << endl;
-	}
-	cout << endl;
-}*/
 
 void AgentQLTraining::updateWeights(std::vector<float> estado)
 {
@@ -285,6 +278,7 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 		}
 	}
 	//cout<< "lo mejor que habia " << bestQval<< endl;
+	qvalAcumulado += bestQval;
 	return wCombinacionesPosibles[best];
 }
 
@@ -304,11 +298,13 @@ void AgentQLTraining::actualizarQTable(int refuerzo)
 		//NONDETERMINISTIC REWARDS & TEMPORAL DIFFERENCE LEARNING
 		float alpha = 1/(1+(*itmem)->second.visits);
 
-		float temporalDifference = alpha* pow(gamma,count) *critic[refuerzo].reinforcementValue;
+		float temporalDifference =  pow(gamma,count) *critic[refuerzo].reinforcementValue;
 
 		if (fabs(temporalDifference) > 0.05) {
 			refs++;
-			(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue + temporalDifference;
+			(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue + alpha*temporalDifference;
+		} else {
+			(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue;
 		}
 
 		(*itmem)->second.visits++;
@@ -317,8 +313,8 @@ void AgentQLTraining::actualizarQTable(int refuerzo)
 
 	}
 	cout << "Aplicando refuerzo " << critic[refuerzo].message << " a " << refs << "/" << memoria.size() << " estados" << endl;
+	refuerzosAcumulados[refuerzo].second++;
 	memoria.clear();
-	int aux = writeQTableToFile(file);
 }
 
 int AgentQLTraining::checkVisits(std::vector<float> state)
@@ -348,7 +344,7 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 		}
 	}
 	if ((most-less)>maxVisitasDif) {
-		cout << "opcion con " << less << " visitas" << endl;
+		//cout << "opcion con " << less << " visitas" << endl;
 		return lessIndex;
 	} else{
 		return rand()% wCombinacionesPosibles.size();
@@ -357,24 +353,70 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 
 int AgentQLTraining::update()
 {
-	int aux;
-	switch (Agent::update()) {
-		case 0:
-			aux=0;
-			break;
-		case 1:
-			aux=1;
-			break;
-		case -1:
-			aux=-1;
-			break;
-	};
+	float moment = ros::Time::now().toSec();
+	int behaviorFlag[behaviors.size()];
+	twists.clear();
+	bool llegada = false;
+	bool danger = false;
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		geometry_msgs::Twist tw;
+		behaviorFlag[i] = behaviors[i]->update();
+		if (behaviors[i]->getType()=="seek")
+		{
+			switch (behaviorFlag[i]) {
+				case 0:	//obj alcanzado
+					llegada = true;//return 0;
+					break;
+				case 1: //seek normal
+					break;
+			}
+			if (!danger) {
+				tw.angular.z = behaviors[i]->getDesiredO();
+				tw.linear.x = behaviors[i]->getDesiredV();
+				twists.push_back(tw);
+			}
+		}
+		else if (behaviors[i]->getType()=="avoidObstacles")
+		{
+			switch (behaviorFlag[i]) {
+				case 0:
+					//cout << "Solo Seek" << endl;
+					break;
+				case 1: //AO normal
+					tw.angular.z = behaviors[i]->getDesiredO();
+					tw.linear.x = behaviors[i]->getDesiredV();
+					twists.push_back(tw);
+					break;
+				case -1: //solo AO, peligro de colision ----> Control de seguridad para evitar colisiones, se considera un estado no deseado y se aplica un castigo
+					if (myType != "qlTest") {
+						danger = true;
+						twists.clear();
+					}
+					tw.angular.z = behaviors[i]->getDesiredO();
+					tw.linear.x = behaviors[i]->getDesiredV();
+					twists.push_back(tw);
+					break;
+			}
+		}
+	}
+
+	blend();
+
 	//Verifico que el estado no corresponde a ningun refuerzo // en vez de revisar por el estado podría mapear del int que devuelve el agent::update
 
 	if (myType != "qlTest") {
 		criticCheck();
 	}
-	return aux;
+	if (llegada) {
+		cout << "Objetivo alcanzado" << endl;
+		return 0;
+	}
+	if (moment>60*2) {
+		cout << "tiempo superado " << moment << endl;
+		return 0;
+	}
+	return 1;
 }
 
 void AgentQLTraining::criticCheck()

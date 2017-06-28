@@ -36,14 +36,18 @@ public:
 
 	Setting* getTypeSetting(std::string);
 
+	Setting* getExperimentSetting();
+
+	std::string getCommand();
+
+	int freeBehaviors(std::vector<SteeringBehavior*>* behaviors);
+
 private:
 
 	Config* cfg;
 	int nbAgents;
 
 	SteeringBehavior* pickBehavior(std::string behaviorName, int id, std::string pre);
-
-	//Weights* pickWeights(std::string, Setting&, std::vector<SteeringBehavior*>, std::vector< std::vector<float> >*);
 
 };
 

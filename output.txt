@@ -1,0 +1,130 @@
+experimentos.ql cfg returned
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo peligroDeColision a 14/48 estados
+Aplicando refuerzo peligroDeColision a 2/2 estados
+Aplicando refuerzo objetivo a 14/169 estados
+Round: 1
+qvalAcumulado 0
+DistanciaRecorrida 2.63079e+07
+Tpo (secs): 55
+minimos: 0.2 0.75 0.75 1 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/80 estados
+Round: 2
+qvalAcumulado 0
+DistanciaRecorrida 23.7997
+Tpo (secs): 120.1
+minimos: 5 1 0.75 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/41 estados
+Aplicando refuerzo peligroDeColision a 14/75 estados
+Aplicando refuerzo objetivo a 14/52 estados
+Round: 3
+qvalAcumulado 0
+DistanciaRecorrida 31.411
+Tpo (secs): 45.2
+minimos: 0.2 0.75 0.75 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/100 estados
+Round: 4
+qvalAcumulado 0
+DistanciaRecorrida 30.307
+Tpo (secs): 29.7
+minimos: 0.2 1.5 1.5 1.5 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo objetivo a 14/89 estados
+Round: 5
+qvalAcumulado 0
+DistanciaRecorrida 28.5734
+Tpo (secs): 31.6
+minimos: 0.2 2 2 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 6
+qvalAcumulado 3.816
+DistanciaRecorrida 44.193
+Tpo (secs): 64.7
+minimos: 0.2 1 1.5 1.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 7
+qvalAcumulado 2.904
+DistanciaRecorrida 60.0185
+Tpo (secs): 88.5
+minimos: 0.2 1.5 1.5 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 8
+qvalAcumulado 6.927
+DistanciaRecorrida 39.5458
+Tpo (secs): 54.9
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 5 rondas
+qvalAcumulado 4.549
+DistanciaRecorrida 47.9191
+Tpo (secs): 69.3667
+minimos: 0.2 1.16667 1.33333 1.66667 1.83333 1.66667 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/50 estados
+Aplicando refuerzo objetivo a 14/133 estados
+Round: 8
+qvalAcumulado 0
+DistanciaRecorrida 38.0101
+Tpo (secs): 55.9
+minimos: 0.2 0.75 0.75 1 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo peligroDeColision a 14/192 estados
+Aplicando refuerzo objetivo a 7/7 estados
+Round: 9
+qvalAcumulado 0
+DistanciaRecorrida 37.4173
+Tpo (secs): 48.4
+minimos: 0.2 1 0.75 0.75 1 0.75 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/60 estados
+Round: 10
+qvalAcumulado 0
+DistanciaRecorrida 21.4209
+Tpo (secs): 120.1
+minimos: 5 1.5 1 0.75 2 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/17 estados
+Round: 11
+qvalAcumulado 0
+DistanciaRecorrida 5.88123
+Tpo (secs): 120.1
+minimos: 5 1.5 1.5 0.75 1 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo objetivo a 14/106 estados
+Round: 12
+qvalAcumulado 0
+DistanciaRecorrida 21.8268
+Tpo (secs): 36.2
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-1.25,-6.25)

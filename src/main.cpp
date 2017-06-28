@@ -18,7 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h> //for system use
 #include <string>
-
+#include <iostream>
+#include <fstream>
 
 //Recibe la posicion inicial del robot y las posiciones de objetivos posibles para elegir uno aleatorio y calcular la posicion objetivo en el sistema de cordenadas referido al vehiculo
 std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<float, float> > initPosition)
@@ -43,7 +44,7 @@ std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<floa
 	}
 	//elegir uno aleatorio
 	int randnro = rand()% auxObj.size();
-	cout << "NEW OBJ:(" << auxObj[randnro].first << "," << auxObj[randnro].second << ")" << endl;
+	cout << "OBJETIVO:(" << auxObj[randnro].first << "," << auxObj[randnro].second << ")" << endl;
 	//Convertir a coordenadas odometricas la posicion final
 	float angCoordOdom = data[3]*PI/180; //en el que esta orientado el robot
 	//Traslacion de centro del sist de coordenadas
@@ -55,7 +56,7 @@ std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<floa
 }
 
 //genera el archivo .world para una nueva simulacion
-void newSession(string strNewS, string strNewPose)
+void newSession(string strNewS, string strNewPose,string command)
 {
 	system("killall stageros &");
 	sleep(1);
@@ -88,11 +89,85 @@ void newSession(string strNewS, string strNewPose)
 			strTemp += "\n";
 			fileout << strTemp;
 		}
-		system("rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world &");
+		system(command.c_str());
 		filein.close();
 		fileout.close();
 	}
 }
+
+void printEndStats(qlearningStats stat){
+	cout << "qvalAcumulado " << stat.qvalTotal << endl;
+	cout << "DistanciaRecorrida " << stat.distanciaRecorrida << endl;
+	cout << "Tpo (secs): " << stat.tiempo << endl;
+	cout << "minimos: ";
+	for (std::vector< float >::iterator ita = stat.mins.begin(); ita < stat.mins.end(); ++ita)
+	{
+		cout << *ita << " ";
+	}
+	cout << endl;
+
+	cout << "maximos: ";
+	for (std::vector< float >::iterator ita = stat.maxs.begin(); ita < stat.maxs.end(); ++ita)
+	{
+		cout << *ita << " ";
+	}
+	cout << endl;
+}
+
+void statsToFile(std::vector<qlearningStats> stats, int rondas,std::vector< std::pair< std::string , int > > refuerzos)
+{
+	//inicializo
+	qlearningStats promedio;
+	promedio.distanciaRecorrida = 0;
+	promedio.tiempo = 0;
+	for (int i = 0; i < stats[0].mins.size(); i++) {
+		promedio.mins.push_back(0.0);
+		promedio.maxs.push_back(0.0);
+	}
+	promedio.qvalTotal = 0;
+	//cargo
+	int divPromedio = stats.size();
+	for (int i = 0; i < stats.size(); i++) {
+		if (stats[i].tiempo>120) {
+			divPromedio--;
+		}
+	}
+	for (int i = 0; i < stats.size(); i++) {
+		if (!(stats[i].tiempo>120)) {
+			promedio.distanciaRecorrida += stats[i].distanciaRecorrida / divPromedio;
+			promedio.tiempo += stats[i].tiempo / divPromedio;
+			for (int j = 0; j < stats[0].mins.size(); j++) {
+				promedio.mins[j] += stats[i].mins[j] / divPromedio;
+				promedio.maxs[j] += stats[i].maxs[j] / divPromedio;
+			}
+			promedio.qvalTotal += stats[i].qvalTotal / divPromedio;
+		}
+	}
+	//imprimo
+	std::ofstream outputFile;
+	string filename = "/home/nahuel/catkin_ws/src/steering_behaviors_controller/stats.csv";
+	outputFile.open(filename.c_str(), std::ofstream::app);
+	cout << endl << "Resultado luego de " << rondas << " rondas" << endl;
+	outputFile << rondas;
+	outputFile << ";" << promedio.qvalTotal;
+	outputFile << ";" << promedio.distanciaRecorrida;
+	outputFile << ";" << promedio.tiempo;
+	for (int j = 0; j < promedio.mins.size(); j++) {
+		outputFile << ";" << promedio.mins[j];
+	}
+	for (int j = 0; j < promedio.maxs.size(); j++) {
+		outputFile << ";" << promedio.maxs[j];
+	}
+	for (int j = 0; j < refuerzos.size(); j++) {
+		outputFile << ";" << refuerzos[j].second;
+	}
+	outputFile << endl;
+
+	outputFile.close();
+	printEndStats(promedio);
+	cout << endl;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -106,6 +181,8 @@ int main(int argc, char **argv)
 	std::vector<string> robotPose;
 	std::vector< std::pair<float, float> > initPosition;
 	std::pair<float, float> auxPair;
+	std::vector< std::pair< std::string , int > > refuerzos;
+
 
 	//Simulation parameters
 	//Paths de los mapas para las simulaciones
@@ -164,80 +241,102 @@ int main(int argc, char **argv)
 	int randnroS = rand()% sets.size();
 	//eleccion aleatoria de posicion
 	int randnroP = rand()% robotPose.size();
-
-	newSession(sets[randnroS], robotPose[randnroP]);
+	std::string auxstring = factoryPtr->getCommand();
+	newSession(sets[randnroS], robotPose[randnroP], auxstring);
 
 	sleep(1);
 
-	//controlador para el robot
-	//AgentReactive* agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
-
-	AgentQLTraining* agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
-
-	/*sleep(1);
-	free(agent);
-	agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable*/
-
-	auxPair = calcObjective(robotPose[randnroP], initPosition);
-	agent->setNewObjective(auxPair);
-
 	//sets experimento
-	string experimento = factoryPtr->getExperiment();
-	Setting* configurationPtr = factoryPtr->getExperimentSetting(experimento);
-	int roundCounter = 0;
+	Setting* configurationPtr = factoryPtr->getExperimentSetting();
+	int roundCounter = 1;
 	int rondasAprendizaje;
 	int rondasTest;
 	int ciclos=0;
-	int nbExp = (*trainCfgPtr)["nbExp"];
-	switch (nbExp) {
-		case 0:
-			break;
-		case 1:
-			rondasAprendizaje = (*trainCfgPtr)["rondasAprendizaje"];
-			rondasTest = (*trainCfgPtr)["rondasTest"];
-			break;
-		case 2:
-			break;
+	std::vector<qlearningStats> stats;
+	int nbExp = (*configurationPtr)["nbExp"];
+	Agent* agent;
+	if (nbExp == 0) {
+		agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
+	}else if (nbExp == 1) {
+		rondasAprendizaje = (*configurationPtr)["rondasAprendizaje"];
+		rondasTest = (*configurationPtr)["rondasTest"];
+		int freshStart = (*configurationPtr)["fresh"];
+		if (freshStart==0) {
+			agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
+		} else {
+			agent = new AgentQLTraining(0,"qlLoad",factoryPtr);
+		}
 	}
-
+	auxPair = calcObjective(robotPose[randnroP], initPosition);
+	agent->setNewObjective(auxPair);
 	//rutina de trabajo
 	while(ros::ok())
 	{
 		// system("clear"); //limpia la consola
 		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
+		
 		int flag = agent->update();
+
 		if (flag == 0) {
-			system("killall stageros &");
+			//se termino el ejercicio
+			//siguiente
+			if (nbExp == 0) {
+				cout << "Round: " << roundCounter << endl;
+			} else if (nbExp == 1) {
+				cout << "Round: " << (roundCounter+((rondasAprendizaje+rondasTest)*ciclos)) << endl;
+			}
 			//eleccion aleatoria del mapa
 			randnroS = rand()% sets.size();
 			//eleccion aleatoria de posicion
 			randnroP = rand()% robotPose.size();
-			newSession(sets[randnroS], robotPose[randnroP]);
-			roundCounter++;
-			cout << "Round: " << roundCounter << endl; //(roundCounter+((rondasAprendizaje+rondasTest)*ciclos));
+			std::string auxstring = factoryPtr->getCommand();
+			newSession(sets[randnroS], robotPose[randnroP], auxstring);
 
-			if (roundCounter < rondasAprendizaje) {
-				cout << " aprendiendo" << endl;
-			} else if (roundCounter == rondasAprendizaje) {
-				free(agent);
-				agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
-				cout << " Aprendizaje a prueba" << endl;
-			} else if (roundCounter < (rondasAprendizaje+rondasTest)) {
-				cout << " testeando" << endl;
+			if (nbExp == 1) {
+				//print stats
+				qlearningStats finalStats;
+				if (roundCounter <= rondasAprendizaje) {
+					std::vector< std::pair< std::string , int > > auxrefs = agent->getRefsAcumulados();
+					if(refuerzos.empty()){
+						refuerzos = auxrefs;
+					} else {
+						for (std::vector< std::pair< std::string , int > >::iterator itr = auxrefs.begin(); itr != auxrefs.end(); ++itr)
+						{
+							for (std::vector< std::pair< std::string , int > >::iterator itb = refuerzos.begin(); itb != refuerzos.end(); ++itb)
+							{
+								if (itb->first == itr->first) {
+									itb->second += itr->second;
+									break;
+								}
+							}
+						}
+					}
+					finalStats = agent->getStats();
+					printEndStats(finalStats);
+				} else if (roundCounter > rondasAprendizaje) {
+					finalStats = agent->getStats();
+					printEndStats(finalStats);
+					stats.push_back(finalStats);
+				}
 
-				/*GET STATS*/
 
-			} else if (roundCounter == (rondasAprendizaje+rondasTest)) {
-
-				/*GET STATS*/
-
-				free(agent);
-				agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
-				cout << " Aprendiendo de nuevo" << endl;
-				roundCounter = 0;
-				ciclos++;
+				//si hay q cambiar de control de agente
+				if (roundCounter == rondasAprendizaje) {
+					free(agent);
+					agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
+					stats.clear();
+				}else if (roundCounter == (rondasAprendizaje+rondasTest)) {
+					ciclos++;
+					statsToFile(stats,(rondasAprendizaje*ciclos),refuerzos); //promedia los resultados y los imprime en un csv
+					free(agent);
+					agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
+					roundCounter = -1;
+				}
+				sleep(2);
 			}
-
+			//siguiente round
+			roundCounter++;
+			cout << endl;
 			//set objetivo aleatorio
 			auxPair = calcObjective(robotPose[randnroP], initPosition);
 			agent->setNewObjective(auxPair);

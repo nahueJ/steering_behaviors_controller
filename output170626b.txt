@@ -1,0 +1,3791 @@
+experimentos.ql cfg returned
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo peligroDeColision a 14/35 estados
+Aplicando refuerzo objetivo a 14/140 estados
+Round: 1
+qvalAcumulado 0
+DistanciaRecorrida 22.7124
+Tpo (secs): 46.1
+minimos: 0.2 0.75 0.75 0.75 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/64 estados
+Aplicando refuerzo peligroDeColision a 14/36 estados
+Aplicando refuerzo peligroDeColision a 11/11 estados
+Round: 2
+qvalAcumulado 0
+DistanciaRecorrida 31.1515
+Tpo (secs): 120.1
+minimos: 5 0.75 0.75 0.75 0.75 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo peligroDeColision a 14/22 estados
+Aplicando refuerzo peligroDeColision a 14/162 estados
+Aplicando refuerzo objetivo a 14/299 estados
+Round: 3
+qvalAcumulado 0
+DistanciaRecorrida 69.8544
+Tpo (secs): 101.6
+minimos: 0.2 0.75 0.75 0.75 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/60 estados
+Aplicando refuerzo peligroDeColision a 3/3 estados
+Aplicando refuerzo objetivo a 14/56 estados
+Round: 4
+qvalAcumulado 0
+DistanciaRecorrida 35.0196
+Tpo (secs): 39.2
+minimos: 0.2 0.75 1 0.75 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/88 estados
+Round: 5
+qvalAcumulado 0
+DistanciaRecorrida 30.841
+Tpo (secs): 30.1
+minimos: 0.2 1.5 1.5 1.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 6
+qvalAcumulado 0
+DistanciaRecorrida 50.8217
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 3.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 7
+qvalAcumulado 1.152
+DistanciaRecorrida 39.8059
+Tpo (secs): 82.1
+minimos: 0.2 2 2 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 8
+qvalAcumulado 0
+DistanciaRecorrida 65.3937
+Tpo (secs): 120.1
+minimos: 5 1.5 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 5 rondas
+qvalAcumulado 1.152
+DistanciaRecorrida 39.8059
+Tpo (secs): 82.1
+minimos: 0.2 2 2 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo objetivo a 14/107 estados
+Round: 8
+qvalAcumulado 0
+DistanciaRecorrida 20.6927
+Tpo (secs): 38.4
+minimos: 0.2 1.5 1.5 1.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/108 estados
+Round: 9
+qvalAcumulado 0
+DistanciaRecorrida 30.1337
+Tpo (secs): 32.5
+minimos: 0.2 1.5 1.5 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/52 estados
+Aplicando refuerzo peligroDeColision a 3/3 estados
+Aplicando refuerzo objetivo a 14/28 estados
+Round: 10
+qvalAcumulado 0
+DistanciaRecorrida 31.1986
+Tpo (secs): 32.3
+minimos: 0.2 0.75 0.75 0.75 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Aplicando refuerzo objetivo a 14/183 estados
+Round: 11
+qvalAcumulado 0
+DistanciaRecorrida 38.5308
+Tpo (secs): 45.6
+minimos: 0.2 1 1 1.5 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/67 estados
+Round: 12
+qvalAcumulado 0
+DistanciaRecorrida 27.0826
+Tpo (secs): 24.8
+minimos: 0.2 1 1 2 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/87 estados
+Round: 13
+qvalAcumulado 0
+DistanciaRecorrida 29.0111
+Tpo (secs): 28.1
+minimos: 0.2 1.5 1.5 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 14
+qvalAcumulado 0
+DistanciaRecorrida 63.8776
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 3.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 15
+qvalAcumulado 0
+DistanciaRecorrida 54.7798
+Tpo (secs): 120.1
+minimos: 5 2 2 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 16
+qvalAcumulado 0.68
+DistanciaRecorrida 57.8664
+Tpo (secs): 120.1
+minimos: 0.3 1 1 1.5 1.5 1 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 10 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo objetivo a 14/128 estados
+Round: 16
+qvalAcumulado 0
+DistanciaRecorrida 35.2411
+Tpo (secs): 47.1
+minimos: 0.2 1 1 1.5 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo peligroDeColision a 12/12 estados
+Aplicando refuerzo objetivo a 14/152 estados
+Round: 17
+qvalAcumulado 0
+DistanciaRecorrida 38.8557
+Tpo (secs): 43.2
+minimos: 0.2 2 2 1 0.75 0.75 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo objetivo a 14/74 estados
+Round: 18
+qvalAcumulado 0
+DistanciaRecorrida 27.9606
+Tpo (secs): 28.4
+minimos: 0.2 1.5 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/77 estados
+Round: 19
+qvalAcumulado 0
+DistanciaRecorrida 26.1715
+Tpo (secs): 120.1
+minimos: 1 1.5 1 0.75 0.75 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/87 estados
+Round: 20
+qvalAcumulado 0
+DistanciaRecorrida 26.051
+Tpo (secs): 32.1
+minimos: 0.2 1.5 1.5 1.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/116 estados
+Aplicando refuerzo peligroDeColision a 14/33 estados
+Round: 21
+qvalAcumulado 0
+DistanciaRecorrida 29.3177
+Tpo (secs): 120.1
+minimos: 5 0.75 0.75 0.75 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 22
+qvalAcumulado 0
+DistanciaRecorrida 60.891
+Tpo (secs): 120.1
+minimos: 5 1.5 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 23
+qvalAcumulado 0
+DistanciaRecorrida 23.7007
+Tpo (secs): 120.1
+minimos: 5 2 0.25 0.25 0.25 0.25 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 24
+qvalAcumulado 2.251
+DistanciaRecorrida 28.381
+Tpo (secs): 49.5
+minimos: 0.2 2 2 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 15 rondas
+qvalAcumulado 2.251
+DistanciaRecorrida 28.381
+Tpo (secs): 49.5
+minimos: 0.2 2 2 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/77 estados
+Round: 24
+qvalAcumulado 0
+DistanciaRecorrida 26.3965
+Tpo (secs): 33
+minimos: 0.2 1 1 2.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/25 estados
+Aplicando refuerzo peligroDeColision a 14/57 estados
+Aplicando refuerzo objetivo a 14/59 estados
+Round: 25
+qvalAcumulado 0
+DistanciaRecorrida 32.502
+Tpo (secs): 39.1
+minimos: 0.2 0.75 0.75 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/45 estados
+Aplicando refuerzo objetivo a 14/40 estados
+Round: 26
+qvalAcumulado 0
+DistanciaRecorrida 30.248
+Tpo (secs): 31.4
+minimos: 0.2 0.75 0.75 1 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo peligroDeColision a 14/67 estados
+Aplicando refuerzo peligroDeColision a 14/28 estados
+Round: 27
+qvalAcumulado 0
+DistanciaRecorrida 31.126
+Tpo (secs): 120.1
+minimos: 1 0.75 0.75 0.75 1 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo objetivo a 14/100 estados
+Round: 28
+qvalAcumulado 0
+DistanciaRecorrida 29.474
+Tpo (secs): 34.2
+minimos: 0.2 1 1.5 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/66 estados
+Round: 29
+qvalAcumulado 0
+DistanciaRecorrida 31.6985
+Tpo (secs): 28.4
+minimos: 0.2 1 1 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 30
+qvalAcumulado 0
+DistanciaRecorrida 65.7379
+Tpo (secs): 120.1
+minimos: 5 1.5 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 31
+qvalAcumulado 0
+DistanciaRecorrida 64.8223
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 32
+qvalAcumulado 0
+DistanciaRecorrida 56.8941
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 20 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/100 estados
+Aplicando refuerzo objetivo a 14/16 estados
+Round: 32
+qvalAcumulado 0
+DistanciaRecorrida 22.4727
+Tpo (secs): 43.1
+minimos: 0.2 1.5 1.5 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/16 estados
+Aplicando refuerzo peligroDeColision a 14/48 estados
+Aplicando refuerzo objetivo a 14/64 estados
+Round: 33
+qvalAcumulado 0
+DistanciaRecorrida 31.5889
+Tpo (secs): 38.5
+minimos: 0.2 1 1 1 0.75 0.75 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/33 estados
+Aplicando refuerzo objetivo a 14/53 estados
+Round: 34
+qvalAcumulado 0
+DistanciaRecorrida 31.4169
+Tpo (secs): 34.1
+minimos: 0.2 2 2 1 1 0.75 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/197 estados
+Round: 35
+qvalAcumulado 0
+DistanciaRecorrida 39.44
+Tpo (secs): 47.2
+minimos: 0.2 1 1 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo objetivo a 14/94 estados
+Round: 36
+qvalAcumulado 0
+DistanciaRecorrida 30.0255
+Tpo (secs): 30.4
+minimos: 0.2 2 2 2 1.5 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/75 estados
+Round: 37
+qvalAcumulado 0
+DistanciaRecorrida 31.5818
+Tpo (secs): 32.1
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 38
+qvalAcumulado 0
+DistanciaRecorrida 64.4183
+Tpo (secs): 120.1
+minimos: 5 2 2.5 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 39
+qvalAcumulado 0
+DistanciaRecorrida 59.1683
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 40
+qvalAcumulado 2.126
+DistanciaRecorrida 41.4638
+Tpo (secs): 77.6
+minimos: 0.2 2 2 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 25 rondas
+qvalAcumulado 2.126
+DistanciaRecorrida 41.4638
+Tpo (secs): 77.6
+minimos: 0.2 2 2 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/26 estados
+Aplicando refuerzo peligroDeColision a 14/59 estados
+Aplicando refuerzo objetivo a 14/40 estados
+Round: 40
+qvalAcumulado 0
+DistanciaRecorrida 31.0159
+Tpo (secs): 44.8
+minimos: 0.2 0.75 0.75 1 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/106 estados
+Aplicando refuerzo objetivo a 14/61 estados
+Round: 41
+qvalAcumulado 0
+DistanciaRecorrida 37.3899
+Tpo (secs): 45.5
+minimos: 0.2 0.75 1 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/102 estados
+Round: 42
+qvalAcumulado 0
+DistanciaRecorrida 33.572
+Tpo (secs): 32.9
+minimos: 0.2 1.5 1.5 2.5 2.5 2 
+maximos: 5 5 5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/92 estados
+Aplicando refuerzo objetivo a 14/43 estados
+Round: 43
+qvalAcumulado 0
+DistanciaRecorrida 35.6946
+Tpo (secs): 41.3
+minimos: 0.2 0.75 0.75 1.5 2.5 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo objetivo a 14/140 estados
+Round: 44
+qvalAcumulado 0
+DistanciaRecorrida 38.3018
+Tpo (secs): 42.7
+minimos: 0.2 1 1 1.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/24 estados
+Aplicando refuerzo peligroDeColision a 4/4 estados
+Aplicando refuerzo peligroDeColision a 14/35 estados
+Aplicando refuerzo peligroDeColision a 9/9 estados
+Round: 45
+qvalAcumulado 0
+DistanciaRecorrida 27.3468
+Tpo (secs): 120.1
+minimos: 5 0.75 0.75 0.75 1.5 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 46
+qvalAcumulado 2.315
+DistanciaRecorrida 34.2792
+Tpo (secs): 61.1
+minimos: 0.2 2 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 47
+qvalAcumulado 0
+DistanciaRecorrida 67.3938
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 3.5 3.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 48
+qvalAcumulado 3.772
+DistanciaRecorrida 60.8309
+Tpo (secs): 120.1
+minimos: 0.3 1 1 1 1.5 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 30 rondas
+qvalAcumulado 2.315
+DistanciaRecorrida 34.2792
+Tpo (secs): 61.1
+minimos: 0.2 2 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo objetivo a 14/97 estados
+Round: 48
+qvalAcumulado 0
+DistanciaRecorrida 26.4979
+Tpo (secs): 37.7
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 6/6 estados
+Aplicando refuerzo objetivo a 14/94 estados
+Aplicando refuerzo objetivo a 14/65 estados
+Aplicando refuerzo objetivo a 14/35 estados
+Round: 49
+qvalAcumulado 0
+DistanciaRecorrida 40.3731
+Tpo (secs): 56
+minimos: 0.2 0.75 1 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo objetivo a 14/260 estados
+Round: 50
+qvalAcumulado 0
+DistanciaRecorrida 42.2368
+Tpo (secs): 54.2
+minimos: 0.2 1 1 1 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo objetivo a 14/90 estados
+Round: 51
+qvalAcumulado 0
+DistanciaRecorrida 29.5196
+Tpo (secs): 29
+minimos: 0.2 1.5 1.5 2.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo peligroDeColision a 14/48 estados
+Aplicando refuerzo objetivo a 14/68 estados
+Round: 52
+qvalAcumulado 0
+DistanciaRecorrida 32.1224
+Tpo (secs): 35.9
+minimos: 0.2 0.75 1 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/24 estados
+Aplicando refuerzo objetivo a 14/116 estados
+Round: 53
+qvalAcumulado 0
+DistanciaRecorrida 33.419
+Tpo (secs): 38.6
+minimos: 0.2 0.75 0.75 1 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 54
+qvalAcumulado 0
+DistanciaRecorrida 62.2919
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 55
+qvalAcumulado 0
+DistanciaRecorrida 55.7156
+Tpo (secs): 120.1
+minimos: 5 2 2 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 56
+qvalAcumulado 0
+DistanciaRecorrida 57.3522
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 35 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/100 estados
+Round: 56
+qvalAcumulado 0
+DistanciaRecorrida 16.9961
+Tpo (secs): 37.5
+minimos: 0.2 1 1.5 2 2 2 
+maximos: 5 5 5 5 5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/79 estados
+Round: 57
+qvalAcumulado 0
+DistanciaRecorrida 28.5593
+Tpo (secs): 26.8
+minimos: 0.2 1.5 1.5 2.5 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/32 estados
+Aplicando refuerzo objetivo a 14/152 estados
+Round: 58
+qvalAcumulado 0
+DistanciaRecorrida 42.0166
+Tpo (secs): 51.7
+minimos: 0.2 0.75 0.75 0.75 1 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo objetivo a 14/86 estados
+Round: 59
+qvalAcumulado 0
+DistanciaRecorrida 36.2385
+Tpo (secs): 33.1
+minimos: 0.2 1.5 1.5 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/20 estados
+Aplicando refuerzo peligroDeColision a 3/3 estados
+Aplicando refuerzo objetivo a 14/156 estados
+Round: 60
+qvalAcumulado 0
+DistanciaRecorrida 38.9495
+Tpo (secs): 44.2
+minimos: 0.2 0.75 0.75 0.75 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/74 estados
+Round: 61
+qvalAcumulado 0
+DistanciaRecorrida 28.9683
+Tpo (secs): 28.3
+minimos: 0.2 1 1 2 2.5 2.5 
+maximos: 5 5 5 5 5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 62
+qvalAcumulado 3.605
+DistanciaRecorrida 38.2446
+Tpo (secs): 60.9
+minimos: 0.2 2 2 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 63
+qvalAcumulado 0
+DistanciaRecorrida 67.1322
+Tpo (secs): 120.1
+minimos: 5 2 2 2.5 2.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 64
+qvalAcumulado 4.758
+DistanciaRecorrida 39.9333
+Tpo (secs): 74
+minimos: 0.2 1.5 2 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 40 rondas
+qvalAcumulado 4.1815
+DistanciaRecorrida 39.0889
+Tpo (secs): 67.45
+minimos: 0.2 1.75 2 2.25 2 1.75 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/121 estados
+Aplicando refuerzo peligroDeColision a 4/4 estados
+Aplicando refuerzo peligroDeColision a 14/26 estados
+Round: 64
+qvalAcumulado 0
+DistanciaRecorrida 37.4103
+Tpo (secs): 120.1
+minimos: 5 0.75 0.75 0.75 0.75 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/89 estados
+Round: 65
+qvalAcumulado 0
+DistanciaRecorrida 27.6613
+Tpo (secs): 29
+minimos: 0.2 1.5 1.5 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/99 estados
+Round: 66
+qvalAcumulado 0
+DistanciaRecorrida 28.6302
+Tpo (secs): 32.9
+minimos: 0.2 1.5 1.5 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Aplicando refuerzo objetivo a 14/131 estados
+Round: 67
+qvalAcumulado 0
+DistanciaRecorrida 33.5321
+Tpo (secs): 36
+minimos: 0.2 1 1 1.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/58 estados
+Aplicando refuerzo objetivo a 14/80 estados
+Aplicando refuerzo objetivo a 14/18 estados
+Round: 68
+qvalAcumulado 0
+DistanciaRecorrida 35.3045
+Tpo (secs): 42.1
+minimos: 0.2 1.5 1.5 1 0.75 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/31 estados
+Aplicando refuerzo peligroDeColision a 14/44 estados
+Round: 69
+qvalAcumulado 0
+DistanciaRecorrida 26.1201
+Tpo (secs): 120.1
+minimos: 5 0.75 1 0.75 1 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 70
+qvalAcumulado 6.799
+DistanciaRecorrida 32.4691
+Tpo (secs): 63.4
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 71
+qvalAcumulado 0
+DistanciaRecorrida 65.6369
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 72
+qvalAcumulado 0
+DistanciaRecorrida 57.4543
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 3.5 3.5 1 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 45 rondas
+qvalAcumulado 6.799
+DistanciaRecorrida 32.4691
+Tpo (secs): 63.4
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/183 estados
+Round: 72
+qvalAcumulado 0
+DistanciaRecorrida 30.7451
+Tpo (secs): 51.2
+minimos: 0.2 1 1 1.5 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/62 estados
+Round: 73
+qvalAcumulado 0
+DistanciaRecorrida 24.2924
+Tpo (secs): 120.1
+minimos: 5 1 1 0.75 0.75 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/66 estados
+Aplicando refuerzo objetivo a 14/113 estados
+Round: 74
+qvalAcumulado 0
+DistanciaRecorrida 32.4105
+Tpo (secs): 46.7
+minimos: 0.2 0.75 1 0.75 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo objetivo a 14/83 estados
+Round: 75
+qvalAcumulado 0
+DistanciaRecorrida 29.3618
+Tpo (secs): 27.8
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/109 estados
+Aplicando refuerzo objetivo a 14/28 estados
+Round: 76
+qvalAcumulado 0
+DistanciaRecorrida 35.423
+Tpo (secs): 37.8
+minimos: 0.2 0.75 0.75 1 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo peligroDeColision a 14/84 estados
+Round: 77
+qvalAcumulado 0
+DistanciaRecorrida 28.005
+Tpo (secs): 120.1
+minimos: 5 1.5 1.5 0.75 0.75 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 78
+qvalAcumulado 0
+DistanciaRecorrida 60.2415
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 79
+qvalAcumulado 6.169
+DistanciaRecorrida 29.8259
+Tpo (secs): 56.9
+minimos: 0.2 1 1 1 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 80
+qvalAcumulado 1.784
+DistanciaRecorrida 63.7273
+Tpo (secs): 102.7
+minimos: 0.2 2 2 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 50 rondas
+qvalAcumulado 3.9765
+DistanciaRecorrida 46.7766
+Tpo (secs): 79.8
+minimos: 0.2 1.5 1.5 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo objetivo a 14/92 estados
+Round: 80
+qvalAcumulado 0
+DistanciaRecorrida 27.9963
+Tpo (secs): 35
+minimos: 0.2 1 1 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/105 estados
+Round: 81
+qvalAcumulado 0
+DistanciaRecorrida 30.9213
+Tpo (secs): 32.1
+minimos: 0.2 1.5 1.5 2.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/82 estados
+Aplicando refuerzo objetivo a 14/105 estados
+Round: 82
+qvalAcumulado 0
+DistanciaRecorrida 38.3734
+Tpo (secs): 45.4
+minimos: 0.2 0.75 0.75 1 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Aplicando refuerzo objetivo a 14/224 estados
+Round: 83
+qvalAcumulado 0
+DistanciaRecorrida 40.5054
+Tpo (secs): 50.6
+minimos: 0.2 1.5 1.5 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo objetivo a 14/98 estados
+Round: 84
+qvalAcumulado 0
+DistanciaRecorrida 27.7803
+Tpo (secs): 31.4
+minimos: 0.2 1.5 1.5 2 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Aplicando refuerzo objetivo a 14/109 estados
+Round: 85
+qvalAcumulado 0
+DistanciaRecorrida 31.608
+Tpo (secs): 32.6
+minimos: 0.2 1.5 1.5 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 86
+qvalAcumulado 6.771
+DistanciaRecorrida 66.3017
+Tpo (secs): 120.1
+minimos: 0.3 2 2 2 2 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 87
+qvalAcumulado 0
+DistanciaRecorrida 65.9546
+Tpo (secs): 120.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 88
+qvalAcumulado 2.567
+DistanciaRecorrida 46.5347
+Tpo (secs): 86.7
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+Resultado luego de 55 rondas
+qvalAcumulado 2.567
+DistanciaRecorrida 46.5347
+Tpo (secs): 86.7
+minimos: 0.2 1 1 1.5 2 2 
+maximos: 5 5 5 5 5 5 
+
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/43 estados
+Aplicando refuerzo peligroDeColision a 14/33 estados
+Aplicando refuerzo objetivo a 14/80 estados
+Round: 88
+qvalAcumulado 0
+DistanciaRecorrida 37.8184
+Tpo (secs): 53.3
+minimos: 0.2 0.75 0.75 0.75 0.75 0.75 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo peligroDeColision a 14/17 estados
+Aplicando refuerzo objetivo a 14/76 estados
+Round: 89
+qvalAcumulado 0
+DistanciaRecorrida 27.1164
+Tpo (secs): 30.6
+minimos: 0.2 2.5 2 0.75 0.75 0.75 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Aplicando refuerzo peligroDeColision a 14/65 estados
+Aplicando refuerzo objetivo a 14/32 estados
+Round: 90
+qvalAcumulado 0
+DistanciaRecorrida 33.3783
+Tpo (secs): 38.4
+minimos: 0.2 0.75 1 0.75 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Aplicando refuerzo objetivo a 14/109 estados
+Round: 91
+qvalAcumulado 0
+DistanciaRecorrida 32.7242
+Tpo (secs): 31.8
+minimos: 0.2 1 1 1.5 1.5 1.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Aplicando refuerzo objetivo a 14/130 estados
+Round: 92
+qvalAcumulado 0
+DistanciaRecorrida 32.3701
+Tpo (secs): 38.6
+minimos: 0.2 1 1.5 2 1 1 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Aplicando refuerzo objetivo a 14/98 estados
+Round: 93
+qvalAcumulado 0
+DistanciaRecorrida 27.5595
+Tpo (secs): 27.5
+minimos: 0.2 1.5 1.5 2 2 2 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 94
+qvalAcumulado 0
+DistanciaRecorrida 65.7945
+Tpo (secs): 121.1
+minimos: 5 2.5 2.5 2.5 2.5 2.5 
+maximos: 5 5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 95
+qvalAcumulado 0
+DistanciaRecorrida 0.200015
+Tpo (secs): 124.2
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 96
+qvalAcumulado 0
+DistanciaRecorrida 0.100024
+Tpo (secs): 127.4
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+Resultado luego de 60 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,1.25)
+Round: 96
+qvalAcumulado 0
+DistanciaRecorrida 0.10009
+Tpo (secs): 137
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 97
+qvalAcumulado 0
+DistanciaRecorrida 0.100017
+Tpo (secs): 140.1
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 98
+qvalAcumulado 0
+DistanciaRecorrida 0.10003
+Tpo (secs): 143.3
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 99
+qvalAcumulado 0
+DistanciaRecorrida 0.100022
+Tpo (secs): 146.4
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 100
+qvalAcumulado 0
+DistanciaRecorrida 0.100045
+Tpo (secs): 149.5
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 101
+qvalAcumulado 0
+DistanciaRecorrida 0.100026
+Tpo (secs): 152.6
+minimos: 5 3.5 3.5 2.5 3.5 5 
+maximos: 5 3.5 3.5 2.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 102
+qvalAcumulado 0
+DistanciaRecorrida 0.138281
+Tpo (secs): 162.3
+minimos: 5 3.5 2.5 2.5 3.5 5 
+maximos: 5 3.5 2.5 2.5 3.5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 103
+qvalAcumulado 0
+DistanciaRecorrida 0.0997122
+Tpo (secs): 165.4
+minimos: 5 5 2.5 2.5 3.5 5 
+maximos: 5 5 2.5 2.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 104
+qvalAcumulado 0
+DistanciaRecorrida 0.0997106
+Tpo (secs): 168.5
+minimos: 5 3.5 2.5 2.5 3.5 5 
+maximos: 5 3.5 2.5 2.5 3.5 5 
+
+Resultado luego de 65 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 104
+qvalAcumulado 0
+DistanciaRecorrida 0.099911
+Tpo (secs): 178.1
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 105
+qvalAcumulado 0
+DistanciaRecorrida 0.0997162
+Tpo (secs): 181.2
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 106
+qvalAcumulado 0
+DistanciaRecorrida 0.0997075
+Tpo (secs): 184.4
+minimos: 5 2.5 2.5 3.5 5 3.5 
+maximos: 5 2.5 2.5 3.5 5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 107
+qvalAcumulado 0
+DistanciaRecorrida 0.0997343
+Tpo (secs): 187.5
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 108
+qvalAcumulado 0
+DistanciaRecorrida 0.143968
+Tpo (secs): 190.6
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 109
+qvalAcumulado 0
+DistanciaRecorrida 0.136176
+Tpo (secs): 193.7
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 110
+qvalAcumulado 0
+DistanciaRecorrida 0.157878
+Tpo (secs): 203.4
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 111
+qvalAcumulado 0
+DistanciaRecorrida 0.0997082
+Tpo (secs): 206.5
+minimos: 5 2.5 2.5 3.5 5 3.5 
+maximos: 5 2.5 2.5 3.5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 112
+qvalAcumulado 0
+DistanciaRecorrida 0.0998079
+Tpo (secs): 209.6
+minimos: 5 2.5 3.5 5 5 3.5 
+maximos: 5 2.5 3.5 5 5 3.5 
+
+Resultado luego de 70 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,6.25)
+Round: 112
+qvalAcumulado 0
+DistanciaRecorrida 0.0999022
+Tpo (secs): 219.2
+minimos: 5 2.5 2.5 5 5 3.5 
+maximos: 5 2.5 2.5 5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 113
+qvalAcumulado 0
+DistanciaRecorrida 0.185269
+Tpo (secs): 222.3
+minimos: 5 2.5 2.5 5 5 3.5 
+maximos: 5 2.5 2.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 114
+qvalAcumulado 0
+DistanciaRecorrida 0.170774
+Tpo (secs): 225.4
+minimos: 5 2.5 2.5 5 5 3.5 
+maximos: 5 2.5 2.5 5 5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 115
+qvalAcumulado 0
+DistanciaRecorrida 0.172217
+Tpo (secs): 228.6
+minimos: 5 2.5 2.5 5 5 3.5 
+maximos: 5 2.5 2.5 5 5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 116
+qvalAcumulado 0
+DistanciaRecorrida 0.17314
+Tpo (secs): 231.7
+minimos: 5 2.5 2.5 2.5 5 5 
+maximos: 5 2.5 2.5 2.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 117
+qvalAcumulado 0
+DistanciaRecorrida 0.110857
+Tpo (secs): 234.8
+minimos: 5 2.5 2.5 5 3.5 5 
+maximos: 5 2.5 2.5 5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 118
+qvalAcumulado 0
+DistanciaRecorrida 0.0999102
+Tpo (secs): 244.4
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 119
+qvalAcumulado 0
+DistanciaRecorrida 0.112424
+Tpo (secs): 247.5
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 120
+qvalAcumulado 0
+DistanciaRecorrida 0.0998854
+Tpo (secs): 250.7
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+Resultado luego de 75 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 120
+qvalAcumulado 0
+DistanciaRecorrida 0.119529
+Tpo (secs): 260.3
+minimos: 5 2.5 5 3.5 5 5 
+maximos: 5 2.5 5 3.5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 121
+qvalAcumulado 0
+DistanciaRecorrida 0.100019
+Tpo (secs): 263.5
+minimos: 5 2.5 5 3.5 5 5 
+maximos: 5 2.5 5 3.5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 122
+qvalAcumulado 0
+DistanciaRecorrida 0.0998332
+Tpo (secs): 266.6
+minimos: 5 2.5 3.5 3.5 5 5 
+maximos: 5 2.5 3.5 3.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 123
+qvalAcumulado 0
+DistanciaRecorrida 0.172431
+Tpo (secs): 269.7
+minimos: 5 2.5 3.5 3.5 5 5 
+maximos: 5 2.5 3.5 3.5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 124
+qvalAcumulado 0
+DistanciaRecorrida 0.138561
+Tpo (secs): 272.8
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 125
+qvalAcumulado 0
+DistanciaRecorrida 0.18072
+Tpo (secs): 275.9
+minimos: 5 2.5 3.5 3.5 5 5 
+maximos: 5 2.5 3.5 3.5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 126
+qvalAcumulado 0
+DistanciaRecorrida 0.155602
+Tpo (secs): 285.7
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 127
+qvalAcumulado 0
+DistanciaRecorrida 0.107177
+Tpo (secs): 288.8
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 128
+qvalAcumulado 0
+DistanciaRecorrida 0.100003
+Tpo (secs): 292
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+Resultado luego de 80 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 128
+qvalAcumulado 0
+DistanciaRecorrida 0.100026
+Tpo (secs): 301.7
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 129
+qvalAcumulado 0
+DistanciaRecorrida 0.128129
+Tpo (secs): 304.8
+minimos: 5 2.5 3.5 2.5 5 5 
+maximos: 5 2.5 3.5 2.5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 130
+qvalAcumulado 0
+DistanciaRecorrida 0.099715
+Tpo (secs): 308
+minimos: 5 2.5 2.5 5 5 5 
+maximos: 5 2.5 2.5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 131
+qvalAcumulado 0
+DistanciaRecorrida 0.140701
+Tpo (secs): 311.1
+minimos: 5 2.5 2.5 5 3.5 5 
+maximos: 5 2.5 2.5 5 3.5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 132
+qvalAcumulado 0
+DistanciaRecorrida 0.173287
+Tpo (secs): 314.2
+minimos: 5 2.5 2.5 3.5 3.5 5 
+maximos: 5 2.5 2.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 133
+qvalAcumulado 0
+DistanciaRecorrida 0.144647
+Tpo (secs): 317.4
+minimos: 5 5 2.5 5 3.5 5 
+maximos: 5 5 2.5 5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 134
+qvalAcumulado 0
+DistanciaRecorrida 0.166377
+Tpo (secs): 327
+minimos: 5 5 2.5 3.5 5 5 
+maximos: 5 5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 135
+qvalAcumulado 0
+DistanciaRecorrida 0.0999094
+Tpo (secs): 330.2
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 136
+qvalAcumulado 0
+DistanciaRecorrida 0.100006
+Tpo (secs): 333.4
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+Resultado luego de 85 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,6.25)
+Round: 136
+qvalAcumulado 0
+DistanciaRecorrida 0.115961
+Tpo (secs): 343.1
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 137
+qvalAcumulado 0
+DistanciaRecorrida 0.100021
+Tpo (secs): 346.2
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 138
+qvalAcumulado 0
+DistanciaRecorrida 0.100011
+Tpo (secs): 349.3
+minimos: 5 2.5 5 3.5 3.5 5 
+maximos: 5 2.5 5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 139
+qvalAcumulado 0
+DistanciaRecorrida 0.123287
+Tpo (secs): 352.5
+minimos: 5 2.5 3.5 5 3.5 5 
+maximos: 5 2.5 3.5 5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 140
+qvalAcumulado 0
+DistanciaRecorrida 0.127527
+Tpo (secs): 355.6
+minimos: 5 3.5 3.5 3.5 5 5 
+maximos: 5 3.5 3.5 3.5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 141
+qvalAcumulado 0
+DistanciaRecorrida 0.125914
+Tpo (secs): 358.7
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 142
+qvalAcumulado 0
+DistanciaRecorrida 0.100115
+Tpo (secs): 368.4
+minimos: 5 2.5 5 3.5 3.5 5 
+maximos: 5 2.5 5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 143
+qvalAcumulado 0
+DistanciaRecorrida 0.099992
+Tpo (secs): 371.5
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 144
+qvalAcumulado 0
+DistanciaRecorrida 0.099927
+Tpo (secs): 374.7
+minimos: 5 2.5 2.5 5 3.5 5 
+maximos: 5 2.5 2.5 5 3.5 5 
+
+Resultado luego de 90 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 144
+qvalAcumulado 0
+DistanciaRecorrida 0.100223
+Tpo (secs): 384.4
+minimos: 5 3.5 2.5 3.5 3.5 5 
+maximos: 5 3.5 2.5 3.5 3.5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 145
+qvalAcumulado 0
+DistanciaRecorrida 0.125829
+Tpo (secs): 387.5
+minimos: 5 5 2.5 3.5 5 3.5 
+maximos: 5 5 2.5 3.5 5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 146
+qvalAcumulado 0
+DistanciaRecorrida 0.185153
+Tpo (secs): 390.7
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 147
+qvalAcumulado 0
+DistanciaRecorrida 0.0999104
+Tpo (secs): 393.8
+minimos: 5 2.5 5 3.5 5 5 
+maximos: 5 2.5 5 3.5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 148
+qvalAcumulado 0
+DistanciaRecorrida 0.0998113
+Tpo (secs): 396.9
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 149
+qvalAcumulado 0
+DistanciaRecorrida 0.10092
+Tpo (secs): 400.1
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 150
+qvalAcumulado 0
+DistanciaRecorrida 0.12726
+Tpo (secs): 409.7
+minimos: 5 2.5 3.5 5 5 5 
+maximos: 5 2.5 3.5 5 5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 151
+qvalAcumulado 0
+DistanciaRecorrida 0.100027
+Tpo (secs): 412.9
+minimos: 5 3.5 3.5 5 5 3.5 
+maximos: 5 3.5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 152
+qvalAcumulado 0
+DistanciaRecorrida 0.0997543
+Tpo (secs): 416
+minimos: 5 5 2.5 5 5 3.5 
+maximos: 5 5 2.5 5 5 3.5 
+
+Resultado luego de 95 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,6.25)
+Round: 152
+qvalAcumulado 0
+DistanciaRecorrida 0.0998913
+Tpo (secs): 425.7
+minimos: 5 2.5 5 5 5 3.5 
+maximos: 5 2.5 5 5 5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 153
+qvalAcumulado 0
+DistanciaRecorrida 0.0997651
+Tpo (secs): 428.8
+minimos: 5 2.5 5 3.5 5 3.5 
+maximos: 5 2.5 5 3.5 5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 154
+qvalAcumulado 0
+DistanciaRecorrida 0.110559
+Tpo (secs): 431.9
+minimos: 5 3.5 5 3.5 3.5 5 
+maximos: 5 3.5 5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 155
+qvalAcumulado 0
+DistanciaRecorrida 0.161911
+Tpo (secs): 435.1
+minimos: 5 3.5 5 3.5 5 3.5 
+maximos: 5 3.5 5 3.5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 156
+qvalAcumulado 0
+DistanciaRecorrida 0.0997389
+Tpo (secs): 438.2
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 157
+qvalAcumulado 0
+DistanciaRecorrida 0.0997433
+Tpo (secs): 441.4
+minimos: 5 3.5 5 3.5 5 3.5 
+maximos: 5 3.5 5 3.5 5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 158
+qvalAcumulado 0
+DistanciaRecorrida 0.102998
+Tpo (secs): 451
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 159
+qvalAcumulado 0
+DistanciaRecorrida 0.0999577
+Tpo (secs): 454.2
+minimos: 5 3.5 5 3.5 5 3.5 
+maximos: 5 3.5 5 3.5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 160
+qvalAcumulado 0
+DistanciaRecorrida 0.100074
+Tpo (secs): 457.3
+minimos: 5 3.5 5 3.5 5 3.5 
+maximos: 5 3.5 5 3.5 5 3.5 
+
+Resultado luego de 100 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-1.25)
+Round: 160
+qvalAcumulado 0
+DistanciaRecorrida 0.100161
+Tpo (secs): 467
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 161
+qvalAcumulado 0
+DistanciaRecorrida 0.0997576
+Tpo (secs): 470.2
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 162
+qvalAcumulado 0
+DistanciaRecorrida 0.0997258
+Tpo (secs): 473.3
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 163
+qvalAcumulado 0
+DistanciaRecorrida 0.0997309
+Tpo (secs): 476.5
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 164
+qvalAcumulado 0
+DistanciaRecorrida 0.0999564
+Tpo (secs): 479.6
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 165
+qvalAcumulado 0
+DistanciaRecorrida 0.0997318
+Tpo (secs): 482.8
+minimos: 5 5 3.5 3.5 5 3.5 
+maximos: 5 5 3.5 3.5 5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 166
+qvalAcumulado 0
+DistanciaRecorrida 0.0997081
+Tpo (secs): 492.5
+minimos: 5 5 3.5 3.5 3.5 5 
+maximos: 5 5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 167
+qvalAcumulado 0
+DistanciaRecorrida 0.0997119
+Tpo (secs): 495.7
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 168
+qvalAcumulado 0
+DistanciaRecorrida 0.0997125
+Tpo (secs): 498.8
+minimos: 5 3.5 3.5 5 3.5 5 
+maximos: 5 3.5 3.5 5 3.5 5 
+
+Resultado luego de 105 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 168
+qvalAcumulado 0
+DistanciaRecorrida 0.0997674
+Tpo (secs): 508.5
+minimos: 5 3.5 2.5 3.5 3.5 5 
+maximos: 5 3.5 2.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 169
+qvalAcumulado 0
+DistanciaRecorrida 0.0999166
+Tpo (secs): 511.7
+minimos: 5 3.5 2.5 3.5 5 5 
+maximos: 5 3.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 170
+qvalAcumulado 0
+DistanciaRecorrida 0.0997559
+Tpo (secs): 514.8
+minimos: 5 2.5 2.5 3.5 5 3.5 
+maximos: 5 2.5 2.5 3.5 5 3.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 171
+qvalAcumulado 0
+DistanciaRecorrida 0.100041
+Tpo (secs): 518
+minimos: 5 2.5 5 3.5 5 3.5 
+maximos: 5 2.5 5 3.5 5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 172
+qvalAcumulado 0
+DistanciaRecorrida 0.100047
+Tpo (secs): 521.1
+minimos: 5 2.5 3.5 3.5 5 3.5 
+maximos: 5 2.5 3.5 3.5 5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 173
+qvalAcumulado 0
+DistanciaRecorrida 0.0997522
+Tpo (secs): 524.3
+minimos: 5 2.5 3.5 5 5 3.5 
+maximos: 5 2.5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 174
+qvalAcumulado 0
+DistanciaRecorrida 0.099899
+Tpo (secs): 534
+minimos: 5 2.5 3.5 3.5 3.5 3.5 
+maximos: 5 2.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 175
+qvalAcumulado 0
+DistanciaRecorrida 0.100017
+Tpo (secs): 537.2
+minimos: 5 2.5 3.5 3.5 3.5 3.5 
+maximos: 5 2.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 176
+qvalAcumulado 0
+DistanciaRecorrida 0.100044
+Tpo (secs): 540.3
+minimos: 5 2.5 3.5 5 3.5 3.5 
+maximos: 5 2.5 3.5 5 3.5 3.5 
+
+Resultado luego de 110 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,1.25)
+Round: 176
+qvalAcumulado 0
+DistanciaRecorrida 0.0999976
+Tpo (secs): 550.1
+minimos: 5 3.5 2.5 5 3.5 3.5 
+maximos: 5 3.5 2.5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 177
+qvalAcumulado 0
+DistanciaRecorrida 0.173254
+Tpo (secs): 553.3
+minimos: 5 3.5 2.5 2.5 3.5 3.5 
+maximos: 5 3.5 2.5 2.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 178
+qvalAcumulado 0
+DistanciaRecorrida 0.179163
+Tpo (secs): 556.4
+minimos: 5 3.5 2.5 5 3.5 3.5 
+maximos: 5 3.5 2.5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 179
+qvalAcumulado 0
+DistanciaRecorrida 0.0999532
+Tpo (secs): 559.6
+minimos: 5 5 2.5 3.5 3.5 3.5 
+maximos: 5 5 2.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 180
+qvalAcumulado 0
+DistanciaRecorrida 0.126901
+Tpo (secs): 562.7
+minimos: 5 3.5 2.5 3.5 3.5 5 
+maximos: 5 3.5 2.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 181
+qvalAcumulado 0
+DistanciaRecorrida 0.0997967
+Tpo (secs): 565.9
+minimos: 5 5 2.5 3.5 3.5 3.5 
+maximos: 5 5 2.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 182
+qvalAcumulado 0
+DistanciaRecorrida 0.166593
+Tpo (secs): 575.6
+minimos: 5 5 2.5 3.5 5 3.5 
+maximos: 5 5 2.5 3.5 5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 183
+qvalAcumulado 0
+DistanciaRecorrida 0.0999857
+Tpo (secs): 578.8
+minimos: 5 2.5 2.5 3.5 3.5 5 
+maximos: 5 2.5 2.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 184
+qvalAcumulado 0
+DistanciaRecorrida 0.099998
+Tpo (secs): 581.9
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+Resultado luego de 115 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 184
+qvalAcumulado 0
+DistanciaRecorrida 0.0999397
+Tpo (secs): 591.6
+minimos: 5 2.5 5 3.5 3.5 5 
+maximos: 5 2.5 5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 185
+qvalAcumulado 0
+DistanciaRecorrida 0.0999575
+Tpo (secs): 594.8
+minimos: 5 2.5 5 3.5 3.5 5 
+maximos: 5 2.5 5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 186
+qvalAcumulado 0
+DistanciaRecorrida 0.143829
+Tpo (secs): 598
+minimos: 5 2.5 5 3.5 3.5 5 
+maximos: 5 2.5 5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 187
+qvalAcumulado 0
+DistanciaRecorrida 0.100009
+Tpo (secs): 601.1
+minimos: 5 2.5 2.5 3.5 3.5 5 
+maximos: 5 2.5 2.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 188
+qvalAcumulado 0
+DistanciaRecorrida 0.108461
+Tpo (secs): 604.3
+minimos: 5 3.5 2.5 5 3.5 5 
+maximos: 5 3.5 2.5 5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 189
+qvalAcumulado 0
+DistanciaRecorrida 0.105565
+Tpo (secs): 607.4
+minimos: 5 2.5 3.5 2.5 3.5 5 
+maximos: 5 2.5 3.5 2.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 190
+qvalAcumulado 0
+DistanciaRecorrida 0.143297
+Tpo (secs): 617.1
+minimos: 5 2.5 5 2.5 3.5 5 
+maximos: 5 2.5 5 2.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 191
+qvalAcumulado 0
+DistanciaRecorrida 0.100018
+Tpo (secs): 620.3
+minimos: 5 3.5 2.5 5 3.5 5 
+maximos: 5 3.5 2.5 5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 192
+qvalAcumulado 0
+DistanciaRecorrida 0.107159
+Tpo (secs): 623.5
+minimos: 5 5 2.5 3.5 3.5 5 
+maximos: 5 5 2.5 3.5 3.5 5 
+
+Resultado luego de 120 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 192
+qvalAcumulado 0
+DistanciaRecorrida 0.10638
+Tpo (secs): 633.2
+minimos: 5 5 2.5 3.5 5 5 
+maximos: 5 5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 193
+qvalAcumulado 0
+DistanciaRecorrida 0.0997587
+Tpo (secs): 636.4
+minimos: 5 2.5 5 3.5 5 5 
+maximos: 5 2.5 5 3.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 194
+qvalAcumulado 0
+DistanciaRecorrida 0.190171
+Tpo (secs): 639.6
+minimos: 5 2.5 3.5 3.5 5 5 
+maximos: 5 2.5 3.5 3.5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 195
+qvalAcumulado 0
+DistanciaRecorrida 0.0997374
+Tpo (secs): 642.8
+minimos: 5 2.5 3.5 5 5 3.5 
+maximos: 5 2.5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 196
+qvalAcumulado 0
+DistanciaRecorrida 0.111131
+Tpo (secs): 646
+minimos: 5 2.5 3.5 5 5 3.5 
+maximos: 5 2.5 3.5 5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 197
+qvalAcumulado 0
+DistanciaRecorrida 0.100022
+Tpo (secs): 649.2
+minimos: 5 5 3.5 5 5 3.5 
+maximos: 5 5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 198
+qvalAcumulado 0
+DistanciaRecorrida 0.119052
+Tpo (secs): 658.9
+minimos: 5 2.5 2.5 5 5 3.5 
+maximos: 5 2.5 2.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 199
+qvalAcumulado 0
+DistanciaRecorrida 0.100061
+Tpo (secs): 662
+minimos: 5 5 2.5 5 5 3.5 
+maximos: 5 5 2.5 5 5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 200
+qvalAcumulado 0
+DistanciaRecorrida 0.0997394
+Tpo (secs): 665.2
+minimos: 5 5 2.5 5 5 3.5 
+maximos: 5 5 2.5 5 5 3.5 
+
+Resultado luego de 125 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,1.25)
+Round: 200
+qvalAcumulado 0
+DistanciaRecorrida 0.0999871
+Tpo (secs): 674.9
+minimos: 5 2.5 5 5 5 3.5 
+maximos: 5 2.5 5 5 5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 201
+qvalAcumulado 0
+DistanciaRecorrida 0.10006
+Tpo (secs): 678.1
+minimos: 5 2.5 5 5 5 3.5 
+maximos: 5 2.5 5 5 5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 202
+qvalAcumulado 0
+DistanciaRecorrida 0.111869
+Tpo (secs): 681.3
+minimos: 5 2.5 5 5 5 3.5 
+maximos: 5 2.5 5 5 5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 203
+qvalAcumulado 0
+DistanciaRecorrida 0.117324
+Tpo (secs): 684.5
+minimos: 5 2.5 5 5 3.5 5 
+maximos: 5 2.5 5 5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 204
+qvalAcumulado 0
+DistanciaRecorrida 0.177107
+Tpo (secs): 687.7
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 205
+qvalAcumulado 0
+DistanciaRecorrida 0.179652
+Tpo (secs): 690.9
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 206
+qvalAcumulado 0
+DistanciaRecorrida 0.135017
+Tpo (secs): 700.6
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 207
+qvalAcumulado 0
+DistanciaRecorrida 0.0999784
+Tpo (secs): 703.8
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 208
+qvalAcumulado 0
+DistanciaRecorrida 0.100042
+Tpo (secs): 707
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+Resultado luego de 130 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 208
+qvalAcumulado 0
+DistanciaRecorrida 0.100071
+Tpo (secs): 716.7
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 209
+qvalAcumulado 0
+DistanciaRecorrida 0.184861
+Tpo (secs): 719.9
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 210
+qvalAcumulado 0
+DistanciaRecorrida 0.100018
+Tpo (secs): 723.1
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 211
+qvalAcumulado 0
+DistanciaRecorrida 0.100057
+Tpo (secs): 726.2
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 212
+qvalAcumulado 0
+DistanciaRecorrida 0.0999589
+Tpo (secs): 729.5
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 213
+qvalAcumulado 0
+DistanciaRecorrida 0.0999763
+Tpo (secs): 732.6
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 214
+qvalAcumulado 0
+DistanciaRecorrida 0.099748
+Tpo (secs): 742.3
+minimos: 5 3.5 5 3.5 3.5 5 
+maximos: 5 3.5 5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 215
+qvalAcumulado 0
+DistanciaRecorrida 0.099711
+Tpo (secs): 745.5
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 216
+qvalAcumulado 0
+DistanciaRecorrida 0.0996938
+Tpo (secs): 748.7
+minimos: 5 5 3.5 3.5 3.5 3.5 
+maximos: 5 5 3.5 3.5 3.5 3.5 
+
+Resultado luego de 135 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 216
+qvalAcumulado 0
+DistanciaRecorrida 0.0997037
+Tpo (secs): 758.4
+minimos: 5 5 3.5 5 3.5 3.5 
+maximos: 5 5 3.5 5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 217
+qvalAcumulado 0
+DistanciaRecorrida 0.0996989
+Tpo (secs): 761.6
+minimos: 5 5 3.5 3.5 3.5 3.5 
+maximos: 5 5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 218
+qvalAcumulado 0
+DistanciaRecorrida 0.0999893
+Tpo (secs): 764.8
+minimos: 5 5 3.5 3.5 3.5 3.5 
+maximos: 5 5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 219
+qvalAcumulado 0
+DistanciaRecorrida 0.109208
+Tpo (secs): 768
+minimos: 5 5 3.5 3.5 3.5 3.5 
+maximos: 5 5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 220
+qvalAcumulado 0
+DistanciaRecorrida 0.12859
+Tpo (secs): 771.3
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 221
+qvalAcumulado 0
+DistanciaRecorrida 0.0998938
+Tpo (secs): 774.5
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 222
+qvalAcumulado 0
+DistanciaRecorrida 0.18637
+Tpo (secs): 784.2
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 223
+qvalAcumulado 0
+DistanciaRecorrida 0.100027
+Tpo (secs): 787.4
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 224
+qvalAcumulado 0
+DistanciaRecorrida 0.0996994
+Tpo (secs): 790.7
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+Resultado luego de 140 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 224
+qvalAcumulado 0
+DistanciaRecorrida 0.100013
+Tpo (secs): 800.4
+minimos: 5 5 3.5 3.5 3.5 3.5 
+maximos: 5 5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 225
+qvalAcumulado 0
+DistanciaRecorrida 0.136162
+Tpo (secs): 803.6
+minimos: 5 5 3.5 5 3.5 3.5 
+maximos: 5 5 3.5 5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 226
+qvalAcumulado 0
+DistanciaRecorrida 0.0997926
+Tpo (secs): 806.8
+minimos: 5 5 3.5 3.5 3.5 2.5 
+maximos: 5 5 3.5 3.5 3.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 227
+qvalAcumulado 0
+DistanciaRecorrida 0.0999726
+Tpo (secs): 810
+minimos: 5 5 2.5 3.5 3.5 2.5 
+maximos: 5 5 2.5 3.5 3.5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 228
+qvalAcumulado 0
+DistanciaRecorrida 0.107632
+Tpo (secs): 813.2
+minimos: 5 5 2.5 5 2.5 3.5 
+maximos: 5 5 2.5 5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 229
+qvalAcumulado 0
+DistanciaRecorrida 0.112121
+Tpo (secs): 816.4
+minimos: 5 5 2.5 3.5 2.5 3.5 
+maximos: 5 5 2.5 3.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 230
+qvalAcumulado 0
+DistanciaRecorrida 0.100053
+Tpo (secs): 826.2
+minimos: 5 2.5 3.5 3.5 2.5 3.5 
+maximos: 5 2.5 3.5 3.5 2.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 231
+qvalAcumulado 0
+DistanciaRecorrida 0.0999508
+Tpo (secs): 829.4
+minimos: 5 2.5 3.5 3.5 2.5 3.5 
+maximos: 5 2.5 3.5 3.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 232
+qvalAcumulado 0
+DistanciaRecorrida 0.100006
+Tpo (secs): 832.6
+minimos: 5 2.5 5 2.5 2.5 3.5 
+maximos: 5 2.5 5 2.5 2.5 3.5 
+
+Resultado luego de 145 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 232
+qvalAcumulado 0
+DistanciaRecorrida 0.0999417
+Tpo (secs): 842.3
+minimos: 5 2.5 3.5 3.5 2.5 3.5 
+maximos: 5 2.5 3.5 3.5 2.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 233
+qvalAcumulado 0
+DistanciaRecorrida 0.161717
+Tpo (secs): 845.5
+minimos: 5 5 2.5 3.5 2.5 2.5 
+maximos: 5 5 2.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 234
+qvalAcumulado 0
+DistanciaRecorrida 0.16095
+Tpo (secs): 848.7
+minimos: 5 5 2.5 5 2.5 2.5 
+maximos: 5 5 2.5 5 2.5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 235
+qvalAcumulado 0
+DistanciaRecorrida 0.145235
+Tpo (secs): 851.9
+minimos: 5 5 2.5 3.5 2.5 2.5 
+maximos: 5 5 2.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 236
+qvalAcumulado 0
+DistanciaRecorrida 0.143492
+Tpo (secs): 855.1
+minimos: 5 5 2.5 2.5 3.5 2.5 
+maximos: 5 5 2.5 2.5 3.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 237
+qvalAcumulado 0
+DistanciaRecorrida 0.122551
+Tpo (secs): 858.3
+minimos: 5 5 2.5 3.5 2.5 2.5 
+maximos: 5 5 2.5 3.5 2.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 238
+qvalAcumulado 0
+DistanciaRecorrida 0.177859
+Tpo (secs): 868.1
+minimos: 5 5 2.5 2.5 3.5 2.5 
+maximos: 5 5 2.5 2.5 3.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 239
+qvalAcumulado 0
+DistanciaRecorrida 0.0997716
+Tpo (secs): 871.3
+minimos: 5 5 2.5 3.5 3.5 2.5 
+maximos: 5 5 2.5 3.5 3.5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 240
+qvalAcumulado 0
+DistanciaRecorrida 0.0998906
+Tpo (secs): 874.4
+minimos: 5 5 2.5 5 2.5 2.5 
+maximos: 5 5 2.5 5 2.5 2.5 
+
+Resultado luego de 150 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 240
+qvalAcumulado 0
+DistanciaRecorrida 0.10017
+Tpo (secs): 884.2
+minimos: 5 2.5 2.5 3.5 2.5 2.5 
+maximos: 5 2.5 2.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 241
+qvalAcumulado 0
+DistanciaRecorrida 0.10274
+Tpo (secs): 887.4
+minimos: 5 2.5 3.5 3.5 2.5 3.5 
+maximos: 5 2.5 3.5 3.5 2.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 242
+qvalAcumulado 0
+DistanciaRecorrida 0.17746
+Tpo (secs): 890.6
+minimos: 5 2.5 5 2.5 2.5 3.5 
+maximos: 5 2.5 5 2.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 243
+qvalAcumulado 0
+DistanciaRecorrida 0.100141
+Tpo (secs): 893.8
+minimos: 5 2.5 5 2.5 2.5 3.5 
+maximos: 5 2.5 5 2.5 2.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 244
+qvalAcumulado 0
+DistanciaRecorrida 0.0997822
+Tpo (secs): 897
+minimos: 5 2.5 3.5 2.5 2.5 5 
+maximos: 5 2.5 3.5 2.5 2.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 245
+qvalAcumulado 0
+DistanciaRecorrida 0.0998018
+Tpo (secs): 900.2
+minimos: 5 2.5 3.5 2.5 2.5 3.5 
+maximos: 5 2.5 3.5 2.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 246
+qvalAcumulado 0
+DistanciaRecorrida 0.176378
+Tpo (secs): 909.9
+minimos: 5 2.5 3.5 2.5 2.5 5 
+maximos: 5 2.5 3.5 2.5 2.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 247
+qvalAcumulado 0
+DistanciaRecorrida 0.099878
+Tpo (secs): 913.1
+minimos: 5 2.5 3.5 2.5 2.5 2.5 
+maximos: 5 2.5 3.5 2.5 2.5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 248
+qvalAcumulado 0
+DistanciaRecorrida 0.113635
+Tpo (secs): 916.3
+minimos: 5 2.5 3.5 2.5 2.5 2.5 
+maximos: 5 2.5 3.5 2.5 2.5 2.5 
+
+Resultado luego de 155 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,1.25)
+Round: 248
+qvalAcumulado 0
+DistanciaRecorrida 0.0998687
+Tpo (secs): 926.1
+minimos: 5 2.5 3.5 3.5 2.5 2.5 
+maximos: 5 2.5 3.5 3.5 2.5 2.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 249
+qvalAcumulado 0
+DistanciaRecorrida 0.187074
+Tpo (secs): 929.3
+minimos: 5 2.5 2.5 3.5 2.5 2.5 
+maximos: 5 2.5 2.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 250
+qvalAcumulado 0
+DistanciaRecorrida 0.0998651
+Tpo (secs): 932.5
+minimos: 5 5 2.5 3.5 2.5 2.5 
+maximos: 5 5 2.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 251
+qvalAcumulado 0
+DistanciaRecorrida 0.144493
+Tpo (secs): 935.7
+minimos: 5 5 2.5 3.5 3.5 2.5 
+maximos: 5 5 2.5 3.5 3.5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 252
+qvalAcumulado 0
+DistanciaRecorrida 0.169772
+Tpo (secs): 938.9
+minimos: 5 5 2.5 2.5 3.5 2.5 
+maximos: 5 5 2.5 2.5 3.5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 253
+qvalAcumulado 0
+DistanciaRecorrida 0.11622
+Tpo (secs): 942.1
+minimos: 5 5 2.5 2.5 3.5 2.5 
+maximos: 5 5 2.5 2.5 3.5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 254
+qvalAcumulado 0
+DistanciaRecorrida 0.117163
+Tpo (secs): 951.9
+minimos: 5 3.5 5 2.5 3.5 3.5 
+maximos: 5 3.5 5 2.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 255
+qvalAcumulado 0
+DistanciaRecorrida 0.100943
+Tpo (secs): 955.1
+minimos: 5 2.5 5 2.5 2.5 3.5 
+maximos: 5 2.5 5 2.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 256
+qvalAcumulado 0
+DistanciaRecorrida 0.0998858
+Tpo (secs): 958.3
+minimos: 5 2.5 5 2.5 2.5 3.5 
+maximos: 5 2.5 5 2.5 2.5 3.5 
+
+Resultado luego de 160 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 256
+qvalAcumulado 0
+DistanciaRecorrida 0.0998553
+Tpo (secs): 968.1
+minimos: 5 2.5 3.5 5 2.5 2.5 
+maximos: 5 2.5 3.5 5 2.5 2.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 257
+qvalAcumulado 0
+DistanciaRecorrida 0.172915
+Tpo (secs): 971.3
+minimos: 5 2.5 5 2.5 2.5 3.5 
+maximos: 5 2.5 5 2.5 2.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 258
+qvalAcumulado 0
+DistanciaRecorrida 0.0998023
+Tpo (secs): 974.5
+minimos: 5 2.5 3.5 5 2.5 2.5 
+maximos: 5 2.5 3.5 5 2.5 2.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 259
+qvalAcumulado 0
+DistanciaRecorrida 0.0999138
+Tpo (secs): 977.8
+minimos: 5 3.5 3.5 5 2.5 2.5 
+maximos: 5 3.5 3.5 5 2.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 260
+qvalAcumulado 0
+DistanciaRecorrida 0.0688413
+Tpo (secs): 981
+minimos: 5 3.5 3.5 5 2 2.5 
+maximos: 5 3.5 3.5 5 2 2.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 261
+qvalAcumulado 0
+DistanciaRecorrida 0.128995
+Tpo (secs): 984.2
+minimos: 5 3.5 3.5 5 5 2.5 
+maximos: 5 3.5 3.5 5 5 2.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 262
+qvalAcumulado 0
+DistanciaRecorrida 0.119646
+Tpo (secs): 993.9
+minimos: 5 3.5 2.5 5 5 2.5 
+maximos: 5 3.5 2.5 5 5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 263
+qvalAcumulado 0
+DistanciaRecorrida 0.128827
+Tpo (secs): 997.2
+minimos: 5 3.5 3.5 3.5 5 2.5 
+maximos: 5 3.5 3.5 3.5 5 2.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 264
+qvalAcumulado 0
+DistanciaRecorrida 0.0999399
+Tpo (secs): 1000.4
+minimos: 5 3.5 2.5 3.5 5 5 
+maximos: 5 3.5 2.5 3.5 5 5 
+
+Resultado luego de 165 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 264
+qvalAcumulado 0
+DistanciaRecorrida 0.100004
+Tpo (secs): 1010.2
+minimos: 5 3.5 2.5 3.5 5 2.5 
+maximos: 5 3.5 2.5 3.5 5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 265
+qvalAcumulado 0
+DistanciaRecorrida 0.134361
+Tpo (secs): 1013.4
+minimos: 5 3.5 2.5 3.5 5 5 
+maximos: 5 3.5 2.5 3.5 5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 266
+qvalAcumulado 0
+DistanciaRecorrida 0.141289
+Tpo (secs): 1016.6
+minimos: 5 2.5 2.5 3.5 5 2.5 
+maximos: 5 2.5 2.5 3.5 5 2.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 267
+qvalAcumulado 0
+DistanciaRecorrida 0.177895
+Tpo (secs): 1019.9
+minimos: 5 2.5 2.5 3.5 5 2.5 
+maximos: 5 2.5 2.5 3.5 5 2.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 268
+qvalAcumulado 0
+DistanciaRecorrida 0.186204
+Tpo (secs): 1023.1
+minimos: 5 2.5 2.5 3.5 5 2.5 
+maximos: 5 2.5 2.5 3.5 5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 269
+qvalAcumulado 0
+DistanciaRecorrida 0.176924
+Tpo (secs): 1026.3
+minimos: 5 2.5 2.5 3.5 5 2.5 
+maximos: 5 2.5 2.5 3.5 5 2.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 270
+qvalAcumulado 0
+DistanciaRecorrida 0.180978
+Tpo (secs): 1036.1
+minimos: 5 2.5 2.5 5 5 2.5 
+maximos: 5 2.5 2.5 5 5 2.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 271
+qvalAcumulado 0
+DistanciaRecorrida 0.105208
+Tpo (secs): 1039.3
+minimos: 5 2.5 2.5 5 5 2.5 
+maximos: 5 2.5 2.5 5 5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 272
+qvalAcumulado 0
+DistanciaRecorrida 0.100019
+Tpo (secs): 1042.6
+minimos: 5 2.5 3.5 5 5 2.5 
+maximos: 5 2.5 3.5 5 5 2.5 
+
+Resultado luego de 170 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 272
+qvalAcumulado 0
+DistanciaRecorrida 0.100072
+Tpo (secs): 1052.3
+minimos: 5 2.5 3.5 5 2.5 2.5 
+maximos: 5 2.5 3.5 5 2.5 2.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 273
+qvalAcumulado 0
+DistanciaRecorrida 0.120208
+Tpo (secs): 1055.6
+minimos: 5 2.5 3.5 5 5 2.5 
+maximos: 5 2.5 3.5 5 5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 274
+qvalAcumulado 0
+DistanciaRecorrida 0.131213
+Tpo (secs): 1058.8
+minimos: 5 2.5 5 5 2.5 3.5 
+maximos: 5 2.5 5 5 2.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 275
+qvalAcumulado 0
+DistanciaRecorrida 0.164038
+Tpo (secs): 1062
+minimos: 5 2.5 3.5 5 5 2.5 
+maximos: 5 2.5 3.5 5 5 2.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 276
+qvalAcumulado 0
+DistanciaRecorrida 0.0998062
+Tpo (secs): 1065.2
+minimos: 5 3.5 3.5 5 5 2.5 
+maximos: 5 3.5 3.5 5 5 2.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 277
+qvalAcumulado 0
+DistanciaRecorrida 0.0997712
+Tpo (secs): 1068.5
+minimos: 5 3.5 3.5 5 5 2.5 
+maximos: 5 3.5 3.5 5 5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 278
+qvalAcumulado 0
+DistanciaRecorrida 0.099874
+Tpo (secs): 1078.3
+minimos: 5 3.5 3.5 3.5 5 5 
+maximos: 5 3.5 3.5 3.5 5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 279
+qvalAcumulado 0
+DistanciaRecorrida 0.0997756
+Tpo (secs): 1081.5
+minimos: 5 3.5 3.5 3.5 5 2.5 
+maximos: 5 3.5 3.5 3.5 5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 280
+qvalAcumulado 0
+DistanciaRecorrida 0.0997957
+Tpo (secs): 1084.7
+minimos: 5 2.5 3.5 3.5 5 5 
+maximos: 5 2.5 3.5 3.5 5 5 
+
+Resultado luego de 175 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,-6.25)
+Round: 280
+qvalAcumulado 0
+DistanciaRecorrida 0.100017
+Tpo (secs): 1094.5
+minimos: 5 2.5 2.5 3.5 5 3.5 
+maximos: 5 2.5 2.5 3.5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 281
+qvalAcumulado 0
+DistanciaRecorrida 0.177608
+Tpo (secs): 1097.7
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 282
+qvalAcumulado 0
+DistanciaRecorrida 0.0997157
+Tpo (secs): 1101
+minimos: 5 2.5 2.5 3.5 5 5 
+maximos: 5 2.5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 283
+qvalAcumulado 0
+DistanciaRecorrida 0.0997517
+Tpo (secs): 1104.2
+minimos: 5 2.5 3.5 3.5 5 3.5 
+maximos: 5 2.5 3.5 3.5 5 3.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 284
+qvalAcumulado 0
+DistanciaRecorrida 0.115802
+Tpo (secs): 1107.4
+minimos: 5 2.5 3.5 5 5 3.5 
+maximos: 5 2.5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 285
+qvalAcumulado 0
+DistanciaRecorrida 0.133451
+Tpo (secs): 1110.6
+minimos: 5 2.5 3.5 3.5 5 3.5 
+maximos: 5 2.5 3.5 3.5 5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 286
+qvalAcumulado 0
+DistanciaRecorrida 0.17226
+Tpo (secs): 1120.4
+minimos: 5 3.5 3.5 3.5 5 5 
+maximos: 5 3.5 3.5 3.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 287
+qvalAcumulado 0
+DistanciaRecorrida 0.0997974
+Tpo (secs): 1123.6
+minimos: 5 3.5 3.5 3.5 5 3.5 
+maximos: 5 3.5 3.5 3.5 5 3.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 288
+qvalAcumulado 0
+DistanciaRecorrida 0.0997608
+Tpo (secs): 1126.9
+minimos: 5 3.5 3.5 5 5 3.5 
+maximos: 5 3.5 3.5 5 5 3.5 
+
+Resultado luego de 180 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 288
+qvalAcumulado 0
+DistanciaRecorrida 0.0997517
+Tpo (secs): 1136.7
+minimos: 5 3.5 3.5 5 5 3.5 
+maximos: 5 3.5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 289
+qvalAcumulado 0
+DistanciaRecorrida 0.0999832
+Tpo (secs): 1139.9
+minimos: 5 3.5 3.5 5 5 3.5 
+maximos: 5 3.5 3.5 5 5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 290
+qvalAcumulado 0
+DistanciaRecorrida 0.0999551
+Tpo (secs): 1143.2
+minimos: 5 3.5 3.5 5 5 3.5 
+maximos: 5 3.5 3.5 5 5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 291
+qvalAcumulado 0
+DistanciaRecorrida 0.0999418
+Tpo (secs): 1146.4
+minimos: 5 3.5 5 5 3.5 3.5 
+maximos: 5 3.5 5 5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 292
+qvalAcumulado 0
+DistanciaRecorrida 0.142836
+Tpo (secs): 1149.6
+minimos: 5 3.5 3.5 5 3.5 5 
+maximos: 5 3.5 3.5 5 3.5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 293
+qvalAcumulado 0
+DistanciaRecorrida 0.172655
+Tpo (secs): 1152.9
+minimos: 5 3.5 3.5 5 3.5 3.5 
+maximos: 5 3.5 3.5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 294
+qvalAcumulado 0
+DistanciaRecorrida 0.100136
+Tpo (secs): 1162.7
+minimos: 5 3.5 3.5 5 3.5 3.5 
+maximos: 5 3.5 3.5 5 3.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 295
+qvalAcumulado 0
+DistanciaRecorrida 0.099874
+Tpo (secs): 1165.9
+minimos: 5 3.5 3.5 5 3.5 5 
+maximos: 5 3.5 3.5 5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 296
+qvalAcumulado 0
+DistanciaRecorrida 0.0999383
+Tpo (secs): 1169.2
+minimos: 5 3.5 3.5 5 3.5 5 
+maximos: 5 3.5 3.5 5 3.5 5 
+
+Resultado luego de 185 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-1.25)
+Round: 296
+qvalAcumulado 0
+DistanciaRecorrida 0.100108
+Tpo (secs): 1179
+minimos: 5 3.5 3.5 5 3.5 5 
+maximos: 5 3.5 3.5 5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 297
+qvalAcumulado 0
+DistanciaRecorrida 0.113539
+Tpo (secs): 1182.2
+minimos: 5 3.5 3.5 5 5 3.5 
+maximos: 5 3.5 3.5 5 5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 298
+qvalAcumulado 0
+DistanciaRecorrida 0.151358
+Tpo (secs): 1185.5
+minimos: 5 3.5 3.5 5 3.5 3.5 
+maximos: 5 3.5 3.5 5 3.5 3.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 299
+qvalAcumulado 0
+DistanciaRecorrida 0.0999915
+Tpo (secs): 1188.8
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 300
+qvalAcumulado 0
+DistanciaRecorrida 0.0997438
+Tpo (secs): 1192
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 301
+qvalAcumulado 0
+DistanciaRecorrida 0.099716
+Tpo (secs): 1195.2
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 302
+qvalAcumulado 0
+DistanciaRecorrida 0.100057
+Tpo (secs): 1205.1
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 303
+qvalAcumulado 0
+DistanciaRecorrida 0.099904
+Tpo (secs): 1208.3
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 304
+qvalAcumulado 0
+DistanciaRecorrida 0.0998196
+Tpo (secs): 1211.6
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+Resultado luego de 190 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,6.25)
+Round: 304
+qvalAcumulado 0
+DistanciaRecorrida 0.0999292
+Tpo (secs): 1221.4
+minimos: 5 5 3.5 3.5 3.5 5 
+maximos: 5 5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,1.25)
+Round: 305
+qvalAcumulado 0
+DistanciaRecorrida 0.140631
+Tpo (secs): 1224.6
+minimos: 5 5 3.5 3.5 3.5 5 
+maximos: 5 5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 306
+qvalAcumulado 0
+DistanciaRecorrida 0.151466
+Tpo (secs): 1227.9
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 307
+qvalAcumulado 0
+DistanciaRecorrida 0.158166
+Tpo (secs): 1231.2
+minimos: 5 3.5 5 3.5 3.5 5 
+maximos: 5 3.5 5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 308
+qvalAcumulado 0
+DistanciaRecorrida 0.183968
+Tpo (secs): 1234.5
+minimos: 5 3.5 3.5 5 3.5 5 
+maximos: 5 3.5 3.5 5 3.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 309
+qvalAcumulado 0
+DistanciaRecorrida 0.100107
+Tpo (secs): 1237.7
+minimos: 5 3.5 5 3.5 3.5 5 
+maximos: 5 3.5 5 3.5 3.5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 310
+qvalAcumulado 0
+DistanciaRecorrida 0.124043
+Tpo (secs): 1247.5
+minimos: 5 3.5 5 3.5 3.5 5 
+maximos: 5 3.5 5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 311
+qvalAcumulado 0
+DistanciaRecorrida 0.0998329
+Tpo (secs): 1250.8
+minimos: 5 3.5 5 3.5 3.5 5 
+maximos: 5 3.5 5 3.5 3.5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 312
+qvalAcumulado 0
+DistanciaRecorrida 0.0998769
+Tpo (secs): 1254
+minimos: 5 3.5 2.5 5 3.5 5 
+maximos: 5 3.5 2.5 5 3.5 5 
+
+Resultado luego de 195 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,6.25)
+Round: 312
+qvalAcumulado 0
+DistanciaRecorrida 0.100078
+Tpo (secs): 1263.9
+minimos: 5 5 2.5 3.5 5 5 
+maximos: 5 5 2.5 3.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 313
+qvalAcumulado 0
+DistanciaRecorrida 0.178414
+Tpo (secs): 1267.1
+minimos: 5 3.5 2.5 5 2.5 5 
+maximos: 5 3.5 2.5 5 2.5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 314
+qvalAcumulado 0
+DistanciaRecorrida 0.187917
+Tpo (secs): 1270.4
+minimos: 5 5 2.5 2.5 2.5 5 
+maximos: 5 5 2.5 2.5 2.5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 315
+qvalAcumulado 0
+DistanciaRecorrida 0.0998413
+Tpo (secs): 1273.6
+minimos: 5 2.5 2.5 2.5 5 5 
+maximos: 5 2.5 2.5 2.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 316
+qvalAcumulado 0
+DistanciaRecorrida 0.10975
+Tpo (secs): 1276.9
+minimos: 5 2.5 5 2.5 5 5 
+maximos: 5 2.5 5 2.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 317
+qvalAcumulado 0
+DistanciaRecorrida 0.100091
+Tpo (secs): 1280.1
+minimos: 5 2.5 5 2.5 5 5 
+maximos: 5 2.5 5 2.5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 318
+qvalAcumulado 0
+DistanciaRecorrida 0.100434
+Tpo (secs): 1289.9
+minimos: 5 2.5 5 2.5 5 5 
+maximos: 5 2.5 5 2.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 319
+qvalAcumulado 0
+DistanciaRecorrida 0.0999527
+Tpo (secs): 1293.2
+minimos: 5 2.5 5 2.5 5 5 
+maximos: 5 2.5 5 2.5 5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 320
+qvalAcumulado 0
+DistanciaRecorrida 0.108298
+Tpo (secs): 1296.4
+minimos: 5 2.5 2.5 2.5 5 5 
+maximos: 5 2.5 2.5 2.5 5 5 
+
+Resultado luego de 200 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 320
+qvalAcumulado 0
+DistanciaRecorrida 0.0998638
+Tpo (secs): 1306.3
+minimos: 5 5 2.5 5 5 5 
+maximos: 5 5 2.5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 321
+qvalAcumulado 0
+DistanciaRecorrida 0.134853
+Tpo (secs): 1309.6
+minimos: 5 5 2.5 5 5 3.5 
+maximos: 5 5 2.5 5 5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 322
+qvalAcumulado 0
+DistanciaRecorrida 0.166444
+Tpo (secs): 1312.8
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 323
+qvalAcumulado 0
+DistanciaRecorrida 0.1601
+Tpo (secs): 1316.1
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 324
+qvalAcumulado 0
+DistanciaRecorrida 0.14386
+Tpo (secs): 1319.3
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(6.25,6.25)
+Round: 325
+qvalAcumulado 0
+DistanciaRecorrida 0.122266
+Tpo (secs): 1322.6
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 326
+qvalAcumulado 0
+DistanciaRecorrida 0.1001
+Tpo (secs): 1332.4
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 327
+qvalAcumulado 0
+DistanciaRecorrida 0.114622
+Tpo (secs): 1335.7
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 328
+qvalAcumulado 0
+DistanciaRecorrida 0.100226
+Tpo (secs): 1338.9
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+Resultado luego de 205 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(1.25,6.25)
+Round: 328
+qvalAcumulado 0
+DistanciaRecorrida 0.117861
+Tpo (secs): 1348.8
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 329
+qvalAcumulado 0
+DistanciaRecorrida 0.107703
+Tpo (secs): 1352
+minimos: 5 2.5 5 5 5 5 
+maximos: 5 2.5 5 5 5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 330
+qvalAcumulado 0
+DistanciaRecorrida 0.142678
+Tpo (secs): 1355.3
+minimos: 5 2.5 5 3.5 5 5 
+maximos: 5 2.5 5 3.5 5 5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 331
+qvalAcumulado 0
+DistanciaRecorrida 0.12057
+Tpo (secs): 1358.6
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 332
+qvalAcumulado 0
+DistanciaRecorrida 0.0997698
+Tpo (secs): 1361.8
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 333
+qvalAcumulado 0
+DistanciaRecorrida 0.0999409
+Tpo (secs): 1365.1
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 334
+qvalAcumulado 0
+DistanciaRecorrida 0.153857
+Tpo (secs): 1374.9
+minimos: 5 5 3.5 3.5 3.5 5 
+maximos: 5 5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 335
+qvalAcumulado 0
+DistanciaRecorrida 0.0997218
+Tpo (secs): 1378.2
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 336
+qvalAcumulado 0
+DistanciaRecorrida 0.100103
+Tpo (secs): 1381.5
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+Resultado luego de 210 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(1.25,6.25)
+Round: 336
+qvalAcumulado 0
+DistanciaRecorrida 0.10007
+Tpo (secs): 1391.3
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 337
+qvalAcumulado 0
+DistanciaRecorrida 0.109523
+Tpo (secs): 1394.6
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 338
+qvalAcumulado 0
+DistanciaRecorrida 0.0999049
+Tpo (secs): 1397.8
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 339
+qvalAcumulado 0
+DistanciaRecorrida 0.134168
+Tpo (secs): 1401.1
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(1.25,6.25)
+Round: 340
+qvalAcumulado 0
+DistanciaRecorrida 0.111306
+Tpo (secs): 1404.4
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 341
+qvalAcumulado 0
+DistanciaRecorrida 0.100042
+Tpo (secs): 1407.7
+minimos: 5 3.5 3.5 3.5 3.5 5 
+maximos: 5 3.5 3.5 3.5 3.5 5 
+
+OBJETIVO:(6.25,-1.25)
+Round: 342
+qvalAcumulado 0
+DistanciaRecorrida 0.156615
+Tpo (secs): 1417.5
+minimos: 5 3.5 3.5 3.5 3.5 3.5 
+maximos: 5 3.5 3.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 343
+qvalAcumulado 0
+DistanciaRecorrida 0.099718
+Tpo (secs): 1420.8
+minimos: 5 3.5 5 3.5 3.5 3.5 
+maximos: 5 3.5 5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 344
+qvalAcumulado 0
+DistanciaRecorrida 0.0997539
+Tpo (secs): 1424.1
+minimos: 5 3.5 3.5 3.5 2.5 3.5 
+maximos: 5 3.5 3.5 3.5 2.5 3.5 
+
+Resultado luego de 215 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,1.25)
+Round: 344
+qvalAcumulado 0
+DistanciaRecorrida 0.0999456
+Tpo (secs): 1434
+minimos: 5 5 3.5 3.5 2.5 3.5 
+maximos: 5 5 3.5 3.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 345
+qvalAcumulado 0
+DistanciaRecorrida 0.0998127
+Tpo (secs): 1437.3
+minimos: 5 5 3.5 5 2.5 2.5 
+maximos: 5 5 3.5 5 2.5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 346
+qvalAcumulado 0
+DistanciaRecorrida 0.0997852
+Tpo (secs): 1440.6
+minimos: 5 5 3.5 3.5 2.5 2.5 
+maximos: 5 5 3.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 347
+qvalAcumulado 0
+DistanciaRecorrida 0.139829
+Tpo (secs): 1443.9
+minimos: 5 5 3.5 5 2.5 2.5 
+maximos: 5 5 3.5 5 2.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 348
+qvalAcumulado 0
+DistanciaRecorrida 0.180469
+Tpo (secs): 1447.2
+minimos: 5 5 3.5 3.5 2.5 2.5 
+maximos: 5 5 3.5 3.5 2.5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 349
+qvalAcumulado 0
+DistanciaRecorrida 0.0997781
+Tpo (secs): 1450.4
+minimos: 5 3.5 3.5 2.5 2.5 3.5 
+maximos: 5 3.5 3.5 2.5 2.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 350
+qvalAcumulado 0
+DistanciaRecorrida 0.14024
+Tpo (secs): 1460.2
+minimos: 5 3.5 3.5 3.5 2.5 2.5 
+maximos: 5 3.5 3.5 3.5 2.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 351
+qvalAcumulado 0
+DistanciaRecorrida 0.0998564
+Tpo (secs): 1463.6
+minimos: 5 5 3.5 5 2.5 2.5 
+maximos: 5 5 3.5 5 2.5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 352
+qvalAcumulado 0
+DistanciaRecorrida 0.107092
+Tpo (secs): 1466.8
+minimos: 5 5 3.5 5 2.5 2.5 
+maximos: 5 5 3.5 5 2.5 2.5 
+
+Resultado luego de 220 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,-6.25)
+Round: 352
+qvalAcumulado 0
+DistanciaRecorrida 0.100089
+Tpo (secs): 1476.7
+minimos: 5 5 2.5 3.5 3.5 2.5 
+maximos: 5 5 2.5 3.5 3.5 2.5 
+
+OBJETIVO:(-1.25,-6.25)
+Round: 353
+qvalAcumulado 0
+DistanciaRecorrida 0.100033
+Tpo (secs): 1480
+minimos: 5 5 3.5 2.5 3.5 2.5 
+maximos: 5 5 3.5 2.5 3.5 2.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 354
+qvalAcumulado 0
+DistanciaRecorrida 0.0999979
+Tpo (secs): 1483.2
+minimos: 5 5 5 2.5 5 2.5 
+maximos: 5 5 5 2.5 5 2.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 355
+qvalAcumulado 0
+DistanciaRecorrida 0.18036
+Tpo (secs): 1486.6
+minimos: 5 5 5 2.5 3.5 2.5 
+maximos: 5 5 5 2.5 3.5 2.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 356
+qvalAcumulado 0
+DistanciaRecorrida 0.0998255
+Tpo (secs): 1489.8
+minimos: 5 5 5 2.5 2.5 3.5 
+maximos: 5 5 5 2.5 2.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 357
+qvalAcumulado 0
+DistanciaRecorrida 0.0998464
+Tpo (secs): 1493.1
+minimos: 5 3.5 5 5 2.5 5 
+maximos: 5 3.5 5 5 2.5 5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 358
+qvalAcumulado 0
+DistanciaRecorrida 0.130816
+Tpo (secs): 1502.7
+minimos: 5 5 5 2.5 2.5 3.5 
+maximos: 5 5 5 2.5 2.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 359
+qvalAcumulado 0
+DistanciaRecorrida 0.114355
+Tpo (secs): 1506
+minimos: 5 5 5 2.5 3.5 3.5 
+maximos: 5 5 5 2.5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 360
+qvalAcumulado 0
+DistanciaRecorrida 0.107557
+Tpo (secs): 1509.3
+minimos: 5 5 5 2.5 5 3.5 
+maximos: 5 5 5 2.5 5 3.5 
+
+Resultado luego de 225 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(-6.25,6.25)
+Round: 360
+qvalAcumulado 0
+DistanciaRecorrida 0.114632
+Tpo (secs): 1518.9
+minimos: 5 5 2 2.5 3.5 3.5 
+maximos: 5 5 2 2.5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 361
+qvalAcumulado 0
+DistanciaRecorrida 0.0999314
+Tpo (secs): 1522.2
+minimos: 5 5 2 3.5 3.5 3.5 
+maximos: 5 5 2 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,6.25)
+Round: 362
+qvalAcumulado 0
+DistanciaRecorrida 0.0998596
+Tpo (secs): 1525.5
+minimos: 5 5 2 5 3.5 3.5 
+maximos: 5 5 2 5 3.5 3.5 
+
+OBJETIVO:(1.25,6.25)
+Round: 363
+qvalAcumulado 0
+DistanciaRecorrida 0.157129
+Tpo (secs): 1528.8
+minimos: 5 2 2.5 3.5 3.5 3.5 
+maximos: 5 2 2.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 364
+qvalAcumulado 0
+DistanciaRecorrida 0.133281
+Tpo (secs): 1532.2
+minimos: 5 2 2.5 3.5 3.5 3.5 
+maximos: 5 2 2.5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,6.25)
+Round: 365
+qvalAcumulado 0
+DistanciaRecorrida 0.136802
+Tpo (secs): 1535.6
+minimos: 5 2 5 3.5 3.5 3.5 
+maximos: 5 2 5 3.5 3.5 3.5 
+
+OBJETIVO:(6.25,-6.25)
+Round: 366
+qvalAcumulado 0
+DistanciaRecorrida 0.100195
+Tpo (secs): 1545.3
+minimos: 5 2 2.5 3.5 3.5 3.5 
+maximos: 5 2 2.5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 367
+qvalAcumulado 0
+DistanciaRecorrida 0.0999281
+Tpo (secs): 1548.5
+minimos: 5 2 5 3.5 3.5 3.5 
+maximos: 5 2 5 3.5 3.5 3.5 
+
+OBJETIVO:(-6.25,-6.25)
+Round: 368
+qvalAcumulado 0
+DistanciaRecorrida 0.120983
+Tpo (secs): 1548.5
+minimos: 5 2.5 3.5 3.5 3.5 5 
+maximos: 5 2.5 3.5 3.5 3.5 5 
+
+Resultado luego de 230 rondas
+qvalAcumulado 0
+DistanciaRecorrida 0
+Tpo (secs): 0
+minimos: 0 0 0 0 0 0 
+maximos: 0 0 0 0 0 0 
+
+
+OBJETIVO:(6.25,6.25)

@@ -39,6 +39,15 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 	return 1;
 }
 
+int Factory::freeBehaviors(std::vector<SteeringBehavior*>* behaviors)
+{
+	while (!(*behaviors).empty()) {
+		free(behaviors->back());
+		behaviors->pop_back();
+	}
+	return 1;
+}
+
 
 SteeringBehavior* Factory::pickBehavior(std::string behaviorName, int id, std::string pre)
 {
@@ -67,39 +76,18 @@ Setting* Factory::getTypeSetting(std::string type)
 	Setting& sets = cfg ->lookup(agType.str());
 	return &sets;
 }
-/*Weights* Factory::pickWeights(std::string weightsType, Setting& weightsVect, std::vector<SteeringBehavior*> behaviors, std::vector< std::vector<float> >* state)
+
+Setting* Factory::getExperimentSetting()
 {
-	Weights* auxWeights;
-	if (weightsType == "qvalueW")
-	{
-		//generar el vector con los vectores de valores posibles para generar la tabla
-		Setting& sets = cfg ->lookup("weights.qvalueW");
-		//Genero un vector con los posibles valores para cada elemento del vector de estado, asi es posible generar las combinaciones para la qTable
-		std::vector< std::vector< std::vector<float> > > statePosibilities;
-		for (int i = 0; i < (*state).size(); ++i)
-		{
-			std::vector< std::vector<float> > auxv;
-			for (int j = 0; j < (*state)[i].size(); ++j)
-			{
-				auxv.push_back(behaviors[i]->getPosibleValues());
-			}
-			statePosibilities.push_back(auxv);
-		}
-		auxWeights = new Weights(statePosibilities, &sets);
-	}
-	else if (weightsType == "constQvalueW")
-	{
-		//generar el vector con los vectores de valores posibles para generar la tabla
-		Setting& sets = cfg ->lookup("weights.constQvalueW");
+	string aux = cfg ->lookup("experimento");
+	std::stringstream expType;
+	expType << "experimentos." << aux;
+	cout << expType.str() << " cfg returned" << endl;
+	Setting& sets = cfg ->lookup(expType.str());
+	return &sets;
+}
 
-		auxWeights = new Weights(&sets);
-	}
-	else if (weightsType == "qvalueWFile")
-	{
-		//generar el vector con los vectores de valores posibles para generar la tabla
-		Setting& sets = cfg ->lookup("weights.qvalueWFile");
-
-		auxWeights = new Weights(&sets);
-	}
-	return auxWeights;
-}*/
+std::string Factory::getCommand(){
+	string aux = cfg ->lookup("simulacion");
+	return aux;
+}

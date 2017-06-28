@@ -31,3 +31,41 @@ void AgentReactive::updateWeights(std::vector<float> estado)
 		cout << *itb << " ";
 	}*/
 }
+
+int AgentReactive::update()
+{
+
+	int behaviorFlag[behaviors.size()];
+	twists.clear();
+	bool llegada = false;
+
+	for (int i = 0; i < behaviors.size(); ++i)
+	{
+		geometry_msgs::Twist tw;
+		behaviorFlag[i] = behaviors[i]->update();
+		if (behaviors[i]->getType()=="seek")
+		{
+			if (behaviorFlag[i] == 0) {
+				llegada = true;
+			}
+			tw.angular.z = behaviors[i]->getDesiredO();
+			tw.linear.x = behaviors[i]->getDesiredV();
+			twists.push_back(tw);
+		}
+		else if (behaviors[i]->getType()=="avoidObstacles")
+		{
+			if(behaviorFlag[i] != 0) {
+				tw.angular.z = behaviors[i]->getDesiredO();
+				tw.linear.x = behaviors[i]->getDesiredV();
+				twists.push_back(tw);
+			}
+		}
+	}
+
+	blend();
+
+	if (llegada) {
+		return 0;
+	}
+	return 1;
+}

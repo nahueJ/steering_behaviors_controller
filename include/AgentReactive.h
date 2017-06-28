@@ -33,6 +33,8 @@ public:
 
 	~AgentReactive();
 
+	int update();
+
 private:
 
 	virtual void updateWeights(std::vector<float> estado);
