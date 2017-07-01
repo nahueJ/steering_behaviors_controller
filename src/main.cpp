@@ -191,6 +191,7 @@ int main(int argc, char **argv)
 	//Paths de los mapas para las simulaciones
 	sets.push_back("bitmap \"setD.png\"");
 	sets.push_back("bitmap \"setE.png\"");
+	sets.push_back("bitmap \"setF.png\"");
 
 	// posiciones iniciales xyz del robot en el mapa
 	std::vector<string> robotPoseAux;
@@ -325,13 +326,15 @@ int main(int argc, char **argv)
 
 				//si hay q cambiar de control de agente
 				if (roundCounter == rondasAprendizaje) {
-					free(agent);
+					Agent* auxagent=agent;
+					delete auxagent;
 					agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
 					stats.clear();
 				}else if (roundCounter == (rondasAprendizaje+rondasTest)) {
 					ciclos++;
 					statsToFile(stats,(rondasAprendizaje*ciclos),refuerzos); //promedia los resultados y los imprime en un csv
-					free(agent);
+					Agent* auxagent=agent;
+					delete auxagent;
 					agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
 					roundCounter = -1;
 				}
