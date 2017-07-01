@@ -47,6 +47,7 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 	myfactory = factoryPtr;
 	//Pido la configuracion para el tipo de agente
 	configurationPtr = factoryPtr->getTypeSetting(myType);
+	tOut = (*configurationPtr)["timeOut"];	//tiempo max para las simulaciones
 
 	//Generar prefijo del nombre de los topics del robot del simulador para futuras suscripciones
 	pretopicname = new std::stringstream;
@@ -81,6 +82,7 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 
 Agent::~Agent()
 {
+	cout << "flag2" << endl;
 	delete rosNode;
 	delete ctrlPublisher;
 	delete odomSubscriber;
@@ -188,6 +190,9 @@ qlearningStats Agent::getStats()
 	qlearningStats aux;
 	aux.distanciaRecorrida = sqrt(pow(distx,2)+pow(disty,2));;
 	aux.tiempo = ros::Time::now().toSec();
+	if(aux.tiempo > tOut){
+		aux.tiempo = -1;
+	}
 	aux.mins = minState;
 	aux.maxs = maxState;
 	aux.qvalTotal = qvalAcumulado;

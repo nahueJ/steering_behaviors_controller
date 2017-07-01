@@ -63,6 +63,7 @@ protected:
 	float qvalAcumulado;
 	std::vector<float> getOneVectorState();
 	std::vector< std::vector<float> > getIndividualVectorState();
+	int tOut;
 
 	void blend();
 

@@ -53,8 +53,10 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 
 AgentQLTraining::~AgentQLTraining()
 {
+	cout << "flag1" << endl;
 	if (myType != "qlTest") {
-		writeQTableToFile();
+		int aux = writeQTableToFile();
+		//cout << aux << " entradas actualizadas." << endl;
 	}
 	qTable.get_allocator().deallocate(allocP,allocateNb);
 }
@@ -220,6 +222,7 @@ int AgentQLTraining::writeQTableToFile() {
 		count++;
 	}
 	fclose(fp);
+	//cout << count << " entradas actualizadas." << endl;
 	return count;
 }
 
@@ -412,7 +415,7 @@ int AgentQLTraining::update()
 		cout << "Objetivo alcanzado" << endl;
 		return 0;
 	}
-	if (moment>60*2) {
+	if (moment>tOut) {
 		cout << "tiempo superado " << moment << endl;
 		return 0;
 	}
@@ -446,6 +449,7 @@ void AgentQLTraining::criticCheck()
 		}else{
 			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
 			actualizarQTable(refuerzo);
+			writeQTableToFile();
 		}
 	}
 }

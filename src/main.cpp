@@ -128,12 +128,15 @@ void statsToFile(std::vector<qlearningStats> stats, int rondas,std::vector< std:
 	//cargo
 	int divPromedio = stats.size();
 	for (int i = 0; i < stats.size(); i++) {
-		if (stats[i].tiempo>120) {
+		if (stats[i].tiempo == -1) {
 			divPromedio--;
 		}
 	}
+	if(divPromedio != stats.size()){
+		cout << "Se recibieron " << stats.size() << " estadisticas finales, pero solo " << divPromedio << "son validas" << endl;
+	}
 	for (int i = 0; i < stats.size(); i++) {
-		if (!(stats[i].tiempo>120)) {
+		if (stats[i].tiempo != -1) {
 			promedio.distanciaRecorrida += stats[i].distanciaRecorrida / divPromedio;
 			promedio.tiempo += stats[i].tiempo / divPromedio;
 			for (int j = 0; j < stats[0].mins.size(); j++) {
@@ -274,7 +277,7 @@ int main(int argc, char **argv)
 	{
 		// system("clear"); //limpia la consola
 		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-		
+
 		int flag = agent->update();
 
 		if (flag == 0) {

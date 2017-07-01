@@ -74,7 +74,7 @@ private:
 	float gamma;
 	int maxVisitasDif;
 	float dtCastigo;
-
+	
 	//Fcs auxiliares a getWeights
 	std::vector<float> getBestWfromQTable(std::vector<float>);
 

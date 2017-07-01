@@ -28,4 +28,5 @@
 *.app
 
 *.txt
+*.csv
 uml/*.*
