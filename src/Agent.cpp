@@ -83,10 +83,10 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 Agent::~Agent()
 {
 	cout << "flag2" << endl;
-	delete rosNode;
-	delete ctrlPublisher;
-	delete odomSubscriber;
-	myfactory->freeBehaviors(&behaviors);
+	// delete rosNode;
+	// delete ctrlPublisher;
+	// delete odomSubscriber;
+	//myfactory->freeBehaviors(&behaviors);
 }
 
 /*--------------------------- Update ------------------------------------

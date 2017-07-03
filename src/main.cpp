@@ -111,7 +111,7 @@ void printEndStats(qlearningStats stat){
 	{
 		cout << *ita << " ";
 	}
-	cout << endl;
+	cout << endl << endl;
 }
 
 void statsToFile(std::vector<qlearningStats> stats, int rondas,std::vector< std::pair< std::string , int > > refuerzos)
@@ -133,7 +133,7 @@ void statsToFile(std::vector<qlearningStats> stats, int rondas,std::vector< std:
 		}
 	}
 	if(divPromedio != stats.size()){
-		cout << "Se recibieron " << stats.size() << " estadisticas finales, pero solo " << divPromedio << "son validas" << endl;
+		cout << "Se recibieron " << stats.size() << " estadisticas finales, pero solo " << divPromedio << " son validas" << endl;
 	}
 	for (int i = 0; i < stats.size(); i++) {
 		if (stats[i].tiempo != -1) {
@@ -171,6 +171,44 @@ void statsToFile(std::vector<qlearningStats> stats, int rondas,std::vector< std:
 	cout << endl;
 }
 
+std::vector< std::pair<int, int> >  populateSet(int firstSize, int secondSize, int setSize, std::vector< std::pair<int, int> > forbidden)
+{
+	std::vector< std::pair<int, int> > response;
+	std::vector<std::pair<int, int> >::iterator it;
+	std::pair<int, int> prospect;
+	while (response.size() < setSize) {
+		if (!forbidden.empty()) {
+			do {
+				int auxfirst = rand()% firstSize;
+				int auxsecond = rand()% secondSize;
+				prospect = std::make_pair(auxfirst, auxsecond);
+				//testear que el prospecto no esta en los forbidden ni en los anteriores
+				it = std::find(forbidden.begin(), forbidden.end(), prospect);
+				/*if (*it == prospect) {
+					cout << "forbidden: " << prospect.first << " ; " << prospect.second << endl;
+				}*/
+			} while(*it == prospect);
+		} else {
+			int auxfirst = rand()% firstSize;
+			int auxsecond = rand()% secondSize;
+			prospect = std::make_pair(auxfirst, auxsecond);
+		}
+		response.push_back(prospect);
+	}
+	return response;
+}
+
+/*void printSets(std::vector< std::pair<int, int> > setValidation, std::vector< std::pair<int, int> > setTrain){
+	cout << "Validation Set: " << endl;
+	for (size_t i = 0; i < setValidation.size(); i++) {
+		cout << i << ": " << setValidation[i].first << " ; " << setValidation[i].second << endl;
+	}
+	cout << endl << "Train Set: " << endl;
+	for (size_t i = 0; i < setTrain.size(); i++) {
+		cout << i << ": " << setTrain[i].first << " ; " << setTrain[i].second << endl;
+	}
+
+}*/
 
 int main(int argc, char **argv)
 {
@@ -186,6 +224,8 @@ int main(int argc, char **argv)
 	std::pair<float, float> auxPair;
 	std::vector< std::pair< std::string , int > > refuerzos;
 
+	std::vector< std::pair<int, int> > setTrain;
+	std::vector< std::pair<int, int> > setValidation;
 
 	//Simulation parameters
 	//Paths de los mapas para las simulaciones
@@ -241,29 +281,38 @@ int main(int argc, char **argv)
 	Factory* factoryPtr;
 	factoryPtr = new Factory(); //pasar direccion de un archivo de conf?
 
-	//eleccion aleatoria del mapa
-	int randnroS = rand()% sets.size();
-	//eleccion aleatoria de posicion
-	int randnroP = rand()% robotPose.size();
-	std::string auxstring = factoryPtr->getCommand();
-	newSession(sets[randnroS], robotPose[randnroP], auxstring);
-
-	sleep(1);
-
+	std::string stageCommand = factoryPtr->getCommand();
 	//sets experimento
 	Setting* configurationPtr = factoryPtr->getExperimentSetting();
-	int roundCounter = 1;
-	int rondasAprendizaje;
-	int rondasTest;
+	std::string qlState = "train";
+	int roundCounter = 0;
 	int ciclos=0;
 	std::vector<qlearningStats> stats;
 	int nbExp = (*configurationPtr)["nbExp"];
 	Agent* agent;
+
 	if (nbExp == 0) {
+		//eleccion aleatoria del mapa
+		int randnroS = rand()% sets.size();
+		//eleccion aleatoria de posicion
+		int randnroP = rand()% robotPose.size();
+		newSession(sets[randnroS], robotPose[randnroP], stageCommand);
+		auxPair = calcObjective(robotPose[randnroP], initPosition);
+
+		sleep(1);
+
 		agent = new AgentReactive(0,"blendConstante",factoryPtr);  //agente que toma pesos constantes para el blend
 	}else if (nbExp == 1) {
-		rondasAprendizaje = (*configurationPtr)["rondasAprendizaje"];
-		rondasTest = (*configurationPtr)["rondasTest"];
+		int sizeValidation = (*configurationPtr)["validSize"];
+		int sizeTrain = (*configurationPtr)["epocSize"];
+		setValidation = populateSet(sets.size(), robotPose.size(),sizeValidation,setValidation);
+		setTrain = populateSet(sets.size(), robotPose.size(),sizeTrain,setValidation);
+
+		//printSets(setValidation, setTrain);
+
+		newSession(sets[setTrain[roundCounter].first], robotPose[setTrain[roundCounter].second], stageCommand);
+		auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
+
 		int freshStart = (*configurationPtr)["fresh"];
 		if (freshStart==0) {
 			agent = new AgentQLTraining(0,"qlInit",factoryPtr); //agente que entrena la qtable
@@ -271,35 +320,37 @@ int main(int argc, char **argv)
 			agent = new AgentQLTraining(0,"qlLoad",factoryPtr);
 		}
 	}
-	auxPair = calcObjective(robotPose[randnroP], initPosition);
 	agent->setNewObjective(auxPair);
 	//rutina de trabajo
-	while(ros::ok())
-	{
-		// system("clear"); //limpia la consola
-		//actualizar cada controlador, analizar el entorno por cada behavior, sumar, ponderar y actualizar la actuacion
-
-		int flag = agent->update();
-
-		if (flag == 0) {
-			//se termino el ejercicio
-			//siguiente
-			if (nbExp == 0) {
-				cout << "Round: " << roundCounter << endl;
-			} else if (nbExp == 1) {
-				cout << "Round: " << (roundCounter+((rondasAprendizaje+rondasTest)*ciclos)) << endl;
+	if (nbExp == 0) {
+		while(ros::ok())
+		{
+			int flag = agent->update();
+			if (flag == 0) {
+				roundCounter++;
+				cout << endl << "Round: " << roundCounter << endl;
+				//eleccion aleatoria del mapa y posicion
+				int randnroS = rand()% sets.size();
+				int randnroP = rand()% robotPose.size();
+				newSession(sets[randnroS], robotPose[randnroP], stageCommand);
+				//set objetivo aleatorio
+				auxPair = calcObjective(robotPose[randnroP], initPosition);
+				agent->setNewObjective(auxPair);
 			}
-			//eleccion aleatoria del mapa
-			randnroS = rand()% sets.size();
-			//eleccion aleatoria de posicion
-			randnroP = rand()% robotPose.size();
-			std::string auxstring = factoryPtr->getCommand();
-			newSession(sets[randnroS], robotPose[randnroP], auxstring);
+			ros::spinOnce();
+			loop_rate.sleep(); //sleep por el resto del ciclo
+		}
+	} else if (nbExp == 1) {
+		while(ros::ok())
+		{
+			int flag = agent->update();
 
-			if (nbExp == 1) {
-				//print stats
+			if (flag == 0) {
 				qlearningStats finalStats;
-				if (roundCounter <= rondasAprendizaje) {
+				if (qlState == "train") {
+					//print stats del ciclo terminado
+					cout << endl << "Training round: " << roundCounter << " Ciclo: " << ciclos << endl;
+					//Recupero los refuerzos aplicados para el record de refs acumulados
 					std::vector< std::pair< std::string , int > > auxrefs = agent->getRefsAcumulados();
 					if(refuerzos.empty()){
 						refuerzos = auxrefs;
@@ -315,41 +366,60 @@ int main(int argc, char **argv)
 							}
 						}
 					}
+					//y recupero los stats
 					finalStats = agent->getStats();
 					printEndStats(finalStats);
-				} else if (roundCounter > rondasAprendizaje) {
+					roundCounter++;
+					if (roundCounter == setTrain.size()) {
+						//si el set de entrenamiento se termina, instancio el agente de validacion
+						//Agent* auxagent = agent;
+						//delete auxagent;
+
+						agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
+						stats.clear();
+						roundCounter = 0;
+						qlState = "validate";
+						//inicio la primer sesion de validacion
+						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], stageCommand);
+						auxPair = calcObjective(robotPose[setValidation[roundCounter].second], initPosition);
+					} else {
+						//paso al siguiente entrenamiento
+						newSession(sets[setTrain[roundCounter].first], robotPose[setTrain[roundCounter].second], stageCommand);
+						auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
+					}
+					agent->setNewObjective(auxPair);
+
+				} else if (qlState == "validate") {
+					//print stats del ciclo terminado
+					cout << endl << "Validate round: " << roundCounter << " Ciclo: " << ciclos << endl;
+					//si fue sesion de validacion recupero los stats solamente
 					finalStats = agent->getStats();
 					printEndStats(finalStats);
 					stats.push_back(finalStats);
+					roundCounter++;
+					if (roundCounter == setValidation.size()) {
+						//si el set de validacion se termina, instancio el agente de entrenamiento
+						statsToFile(stats,(setTrain.size()*(ciclos+1)),refuerzos); //promedia los resultados y los imprime en un csv
+						Agent* auxagent=agent;
+						delete auxagent;
+						agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
+						roundCounter = 0;
+						ciclos++;
+						qlState = "train";
+						//inicio la primer sesion de entrenamiento
+						newSession(sets[setTrain[roundCounter].first], robotPose[setTrain[roundCounter].second], stageCommand);
+						auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
+					} else {
+						//paso a la siguiente validacion
+						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], stageCommand);
+						auxPair = calcObjective(robotPose[setValidation[roundCounter].second], initPosition);
+					}
+					agent->setNewObjective(auxPair);
 				}
-
-
-				//si hay q cambiar de control de agente
-				if (roundCounter == rondasAprendizaje) {
-					Agent* auxagent=agent;
-					delete auxagent;
-					agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
-					stats.clear();
-				}else if (roundCounter == (rondasAprendizaje+rondasTest)) {
-					ciclos++;
-					statsToFile(stats,(rondasAprendizaje*ciclos),refuerzos); //promedia los resultados y los imprime en un csv
-					Agent* auxagent=agent;
-					delete auxagent;
-					agent = new AgentQLTraining(0,"qlLoad",factoryPtr); //agente que entrena la qtable
-					roundCounter = -1;
-				}
-				sleep(2);
 			}
-			//siguiente round
-			roundCounter++;
-			cout << endl;
-			//set objetivo aleatorio
-			auxPair = calcObjective(robotPose[randnroP], initPosition);
-			agent->setNewObjective(auxPair);
+			ros::spinOnce();
+			loop_rate.sleep(); //sleep por el resto del ciclo
 		}
-		ros::spinOnce();
-		loop_rate.sleep(); //sleep por el resto del ciclo
 	}
-
 	return 0;
 }

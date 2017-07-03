@@ -48,7 +48,7 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 			}
 		}
 	}
-
+	cout << "Agent " << type << " succesfuly instantiated." << endl;
 }
 
 AgentQLTraining::~AgentQLTraining()
@@ -449,6 +449,7 @@ void AgentQLTraining::criticCheck()
 		}else{
 			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
 			actualizarQTable(refuerzo);
+			//CUANDO FUNCIONE BIEN EL DESTRUCTOR ELIMINAR EL WRITE TO FILE
 			writeQTableToFile();
 		}
 	}
