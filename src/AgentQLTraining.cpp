@@ -30,6 +30,7 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 		gamma = (*trainCfgPtr)["gamma"];
 		maxVisitasDif = (*trainCfgPtr)["minDeltaVisitas"];
 		dtCastigo = (*trainCfgPtr)["dTpunish"];
+		lastMemoriaSize = 0;
 		//se cargan los estados a los que corresponden los refuerzos
 		critic.clear();
 		int nbReinforcements = (*trainCfgPtr)["refuerzos"].getLength();
@@ -48,14 +49,13 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 			}
 		}
 	}
-	cout << "Agent " << type << " succesfuly instantiated." << endl;
 }
 
 AgentQLTraining::~AgentQLTraining()
 {
 	cout << "flag1" << endl;
 	if (myType != "qlTest") {
-		int aux = writeQTableToFile();
+		int aux = writeQTableToFile(); //no funciona por el momento
 		//cout << aux << " entradas actualizadas." << endl;
 	}
 	qTable.get_allocator().deallocate(allocP,allocateNb);
@@ -63,12 +63,17 @@ AgentQLTraining::~AgentQLTraining()
 
 int AgentQLTraining::loadQTable(std::string file, int weightSize)
 {
+	//cout << "@loadQTable" << endl;
+	float absQval = 0.0;
+	int totalVisits= 0;
+	int stateVisited = 0;
 	std::vector<float> behaviorState = getOneVectorState();
 	int stateSize = behaviorState.size();
 	int inputSize = stateSize + weightSize;
 
 	std::ifstream aFile (file.c_str());
 	int numberOfNodes=std::count(std::istreambuf_iterator<char>(aFile), std::istreambuf_iterator<char>(), '\n');
+	//cout << "numberOfNodes " << numberOfNodes << endl;
 	int nodeSize = sizeof(std::map<std::vector<float> , qTableOutput>::value_type);
 	allocateNb = nodeSize * numberOfNodes;
 	allocP = qTable.get_allocator().allocate( allocateNb );
@@ -88,7 +93,13 @@ int AgentQLTraining::loadQTable(std::string file, int weightSize)
 		aFile >> dummy >> outAux.visits >> outAux.qValue ;
 		//lo cargo al mapa
 		qTable[inV] = outAux;
+		absQval += fabs(outAux.qValue);
+		totalVisits += outAux.visits;
+		if (outAux.visits != 0 ) {
+			stateVisited++;
+		}
 	}
+	cout << "Qtable cargada con " << totalVisits << " visitas y QvalAbs " << absQval << ". Total Inputs visited " << stateVisited << "/" << qTable.size() << endl;
 	return qTable.size();
 }
 
@@ -203,7 +214,6 @@ void AgentQLTraining::sPermutaciones(std::vector< std::vector<float> > valores, 
 }
 
 int AgentQLTraining::writeQTableToFile() {
-	int count = 0;
 	if (qTable.empty()){
 		cout << "ERROR Qtable empty AgentQLTraining::writeQTableToFile" << endl;
 		return 0;
@@ -212,28 +222,29 @@ int AgentQLTraining::writeQTableToFile() {
 	if (!fp){
 		return -errno;
 	}
-	for(std::map<std::vector<float> , qTableOutput>::iterator itm = qTable.begin(); itm != qTable.end(); itm++) {
+	int count = 0;
+	for(std::map<std::vector<float> , qTableOutput>::iterator itm = qTable.begin(); itm != qTable.end(); itm++, count++) {
 		std::vector<float> auxv = itm->first;
 		for (std::vector<float>::iterator itv = auxv.begin(); itv != auxv.end(); ++itv)
 		{
 			fprintf(fp, "%2.3f ", *itv);
 		}
 		fprintf(fp, "= %i %1.3f\n", itm->second.visits, itm->second.qValue);
-		count++;
 	}
 	fclose(fp);
-	//cout << count << " entradas actualizadas." << endl;
+	cout << count << " entradas actualizadas." << endl;
 	return count;
 }
 
-void AgentQLTraining::updateWeights(std::vector<float> estado)
+void AgentQLTraining::updateWeights(std::vector<float> state)
 {
 	if (myType == "qlTest") {
-		pesos = getBestWfromQTable(estado);
+		pesos = getBestWfromQTable(state);
 	} else {
 		dtPunish();
-		pesos = getRandomWfromQTable(estado);
-
+		pesos = getRandomWfromQTable(state);
+		//Verifico que el estado no corresponde a ningun refuerzo // en vez de revisar por el estado podría mapear del int que devuelve el agent::update
+		criticCheck();
 	}
 }
 
@@ -266,7 +277,7 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 	std::vector<qTableOutput> outputs;
 	for (std::vector< std::vector<float> >::iterator iti = options.begin(); iti != options.end(); ++iti)
 	{
-		outputs.push_back(qTable[*iti]);
+		outputs.push_back(qTable.find(*iti)->second);
 	}
 	//Evaluando las salidas elijo la mejor opcion para el estado actual
 	int best = 0;
@@ -280,6 +291,18 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 			bestQval =ito->qValue;
 		}
 	}
+	state.insert( state.end(), wCombinacionesPosibles[best].begin(), wCombinacionesPosibles[best].end() );
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
+	if(!(std::find(memoria.begin(), memoria.end(), itaux) != memoria.end()))
+	{
+		cout << "S: ";
+		for (std::vector<float>::iterator num = state.begin(); num != state.end(); ++num)
+		{
+			cout << *num << " ";
+		}
+		cout << endl;
+	}
+	memoria.push_back(itaux);
 	//cout<< "lo mejor que habia " << bestQval<< endl;
 	qvalAcumulado += bestQval;
 	return wCombinacionesPosibles[best];
@@ -289,6 +312,11 @@ void AgentQLTraining::actualizarQTable(int refuerzo)
 {
 	int count = 0;
 	int refs = 0;
+	float propagation;
+	float temporalDifference;
+	float alpha;
+	std::map<std::vector<float> , qTableOutput>::iterator ansInput;
+
 	for (std::vector< std::map<std::vector<float> , qTableOutput>::iterator >::reverse_iterator itmem = memoria.rbegin() ; itmem != memoria.rend(); itmem++, count++)
 	{
 		// std::vector<float> printv = (*itmem)->first;
@@ -299,25 +327,29 @@ void AgentQLTraining::actualizarQTable(int refuerzo)
 		// cout << "prevQVal=" << (*itmem)->second.qValue ;
 
 		//NONDETERMINISTIC REWARDS & TEMPORAL DIFFERENCE LEARNING
-		float alpha = 1/(1+(*itmem)->second.visits);
-
-		float temporalDifference =  pow(gamma,count) *critic[refuerzo].reinforcementValue;
-
-		if (fabs(temporalDifference) > 0.05) {
-			refs++;
-			(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue + alpha*temporalDifference;
+		alpha = 1/(1+(*itmem)->second.visits);
+		propagation = pow(gamma,count);
+		if (count == 0) {
+			temporalDifference =  critic[refuerzo].reinforcementValue; // pow(gamma,count) = 1if
 		} else {
-			(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue;
+			temporalDifference = propagation * ansInput->second.qValue;
 		}
+
+		(*itmem)->second.qValue = (1-alpha)*(*itmem)->second.qValue + alpha*temporalDifference;
 
 		(*itmem)->second.visits++;
 
+		ansInput = (*itmem);
+
+		if (propagation > 0.01) {
+			refs++;
+		}
 		// cout << " actQVal=" << (*itmem)->second.qValue << " visits=" << (*itmem)->second.visits << " TD: " << fabs(temporalDifference) <<endl;
 
 	}
 	cout << "Aplicando refuerzo " << critic[refuerzo].message << " a " << refs << "/" << memoria.size() << " estados" << endl;
 	refuerzosAcumulados[refuerzo].second++;
-	memoria.clear();
+
 }
 
 int AgentQLTraining::checkVisits(std::vector<float> state)
@@ -331,13 +363,13 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 	}
 	//Evaluo las visitas a las diferentes estados
 	int lessIndex = 0;
-	qTableOutput output = qTable[options[lessIndex]];
+	qTableOutput output = qTable.find(options[lessIndex])->second;
 	int most = output.visits;
 	int less = output.visits;
 	int index = 0;
 	for (std::vector< std::vector<float> >::iterator iti = options.begin(); iti != options.end(); ++iti, index++)
 	{
-		output = qTable[*iti];
+		output = qTable.find(*iti)->second;
 		if (less > output.visits) {
 			less = output.visits;
 			lessIndex = index;
@@ -406,16 +438,25 @@ int AgentQLTraining::update()
 
 	blend();
 
-	//Verifico que el estado no corresponde a ningun refuerzo // en vez de revisar por el estado podría mapear del int que devuelve el agent::update
-
-	if (myType != "qlTest") {
-		criticCheck();
-	}
 	if (llegada) {
+		memoria.clear();
+		ultimaColision.clear();
+		lastMemoriaSize = memoria.size();
+		if (myType != "qlTest") {
+			//CUANDO FUNCIONE BIEN EL DESTRUCTOR ELIMINAR EL WRITE TO FILE
+			writeQTableToFile();
+		}
 		cout << "Objetivo alcanzado" << endl;
 		return 0;
 	}
 	if (moment>tOut) {
+		memoria.clear();
+		ultimaColision.clear();
+		lastMemoriaSize = memoria.size();
+		if (myType != "qlTest") {
+			//CUANDO FUNCIONE BIEN EL DESTRUCTOR ELIMINAR EL WRITE TO FILE
+			writeQTableToFile();
+		}
 		cout << "tiempo superado " << moment << endl;
 		return 0;
 	}
@@ -425,18 +466,18 @@ int AgentQLTraining::update()
 void AgentQLTraining::criticCheck()
 {
 	std::vector< std::vector<float> > state = getIndividualVectorState();
-
 	int refuerzo = -1;
 	int index = 0;
 	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
 	{
 		for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
 		{
-			/*if ((*icritic).behaviorNb == 0) {
-				cout << *istate << " " << (*icritic).reinforcementState << endl;
-			}*/
-			if (*istate == (*icritic).reinforcementState)
+			// if ((*icritic).behaviorNb == 0) {
+			// 	cout << *istate << " vs " << (*icritic).reinforcementState << endl;
+			// }
+			if ((*istate-(*icritic).reinforcementState)<0.1)
 			{
+				//cout << "refuerzo detectado " << index << endl;
 				refuerzo = index;
 				//si se encuentra en un estado de refuerzo, se devuelve el indice del refuerzo en cuestion
 				break;
@@ -444,13 +485,27 @@ void AgentQLTraining::criticCheck()
 		}
 	}
 	if (refuerzo != -1) {
-		if (memoria.size()<=1) {
+
+		if (memoria.size()<=1) {	//para evitar estados iniciales erroneos
 			memoria.clear();
-		}else{
+			ultimaColision.clear();
+		}else if (memoria.size() > (lastMemoriaSize+3)) {	//para evitar aplicar repetitivamente refuerzos
 			//si corresponde a algun refuerzo, se actualizan los valores de la tabla,
-			actualizarQTable(refuerzo);
-			//CUANDO FUNCIONE BIEN EL DESTRUCTOR ELIMINAR EL WRITE TO FILE
-			writeQTableToFile();
+			if (critic[refuerzo].message == "peligroDeColision") {
+				int colisionRepetitiva = 1;
+				if(ultimaColision.empty()){
+					ultimaColision = getOneVectorState();
+				}else if (ultimaColision == getOneVectorState()) {
+					colisionRepetitiva = 0;
+				}
+				if (colisionRepetitiva) {
+					actualizarQTable(refuerzo);
+					lastMemoriaSize = memoria.size();
+				}
+			} else {
+				actualizarQTable(refuerzo);
+				lastMemoriaSize = memoria.size();
+			}
 		}
 	}
 }
@@ -470,6 +525,9 @@ void AgentQLTraining::dtPunish()
 		// cout << "prevQVal=" << memoria.back()->second.qValue ;
 
 		memoria.back()->second.qValue += reinforcement;
+		if (memoria.back()->second.qValue < -1) {
+			memoria.back()->second.qValue = -1;
+		}
 
 		//cout << " actQVal=" << memoria.back()->second.qValue << endl;
 	}

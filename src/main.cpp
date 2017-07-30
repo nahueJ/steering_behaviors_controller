@@ -282,6 +282,7 @@ int main(int argc, char **argv)
 	factoryPtr = new Factory(); //pasar direccion de un archivo de conf?
 
 	std::string stageCommand = factoryPtr->getCommand();
+	std::string viewCommand = "rosrun stage_ros stageros /home/nahuel/catkin_ws/src/steering_behaviors_controller/world/set.world > /dev/null &";
 	//sets experimento
 	Setting* configurationPtr = factoryPtr->getExperimentSetting();
 	std::string qlState = "train";
@@ -372,15 +373,14 @@ int main(int argc, char **argv)
 					roundCounter++;
 					if (roundCounter == setTrain.size()) {
 						//si el set de entrenamiento se termina, instancio el agente de validacion
-						//Agent* auxagent = agent;
-						//delete auxagent;
-
+						Agent* auxagent = agent;
+						delete auxagent;
 						agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
 						stats.clear();
 						roundCounter = 0;
 						qlState = "validate";
 						//inicio la primer sesion de validacion
-						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], stageCommand);
+						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], viewCommand);
 						auxPair = calcObjective(robotPose[setValidation[roundCounter].second], initPosition);
 					} else {
 						//paso al siguiente entrenamiento
@@ -411,7 +411,7 @@ int main(int argc, char **argv)
 						auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
 					} else {
 						//paso a la siguiente validacion
-						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], stageCommand);
+						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], viewCommand);
 						auxPair = calcObjective(robotPose[setValidation[roundCounter].second], initPosition);
 					}
 					agent->setNewObjective(auxPair);

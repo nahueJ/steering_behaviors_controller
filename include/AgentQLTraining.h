@@ -74,7 +74,8 @@ private:
 	float gamma;
 	int maxVisitasDif;
 	float dtCastigo;
-	
+	int lastMemoriaSize;
+
 	//Fcs auxiliares a getWeights
 	std::vector<float> getBestWfromQTable(std::vector<float>);
 
@@ -88,7 +89,7 @@ private:
 
 
 	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
-
+	std::vector<float> ultimaColision;
 };
 
 #endif //_AGENTQLTRAINING_H

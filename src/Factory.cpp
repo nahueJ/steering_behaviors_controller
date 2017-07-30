@@ -39,11 +39,12 @@ int Factory::instanciateBehaviors(	unsigned int id, std::string pre,
 	return 1;
 }
 
-int Factory::freeBehaviors(std::vector<SteeringBehavior*>* behaviors)
+int Factory::deleteBehaviors(std::vector<SteeringBehavior*>* behaviors)
 {
 	while (!(*behaviors).empty()) {
-		free(behaviors->back());
+		SteeringBehavior* auxBhPtr = behaviors->back();
 		behaviors->pop_back();
+		delete auxBhPtr;
 	}
 	return 1;
 }

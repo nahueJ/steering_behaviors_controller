@@ -40,7 +40,7 @@ public:
 
 	std::string getCommand();
 
-	int freeBehaviors(std::vector<SteeringBehavior*>* behaviors);
+	int deleteBehaviors(std::vector<SteeringBehavior*>* behaviors);
 
 private:
 
