@@ -72,6 +72,8 @@ int ObstacleAvoidance::update()
 	updateState();
 	oIdeal();//calcular la orientacion ideal
 	int flag = vIdeal();//calcular la velocidad ideal
+	//discretizo el valor de estado continuo
+	discretizarEstado();
 	return flag;
 }
 
@@ -101,8 +103,7 @@ void ObstacleAvoidance::updateState()
 			minSector = i;
 		}
 	}
-	//discretizo el valor de estado continuo
-	discretizarEstado();
+
 }
 
 void ObstacleAvoidance::oIdeal()

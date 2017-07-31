@@ -58,6 +58,7 @@ int Seek::update()
 	updateState();//actualizar estado
 	oIdeal();//calcular la orientacion ideal
 	int flag = vIdeal();//calcular la velocidad ideal
+	discretizarEstado();
 	return flag;
 }
 
@@ -97,7 +98,7 @@ void Seek::updateState()
 	errorx = target.position.x - x;
 	errory = target.position.y - y;
 	stateContinuous[0]=sqrt(pow(errorx,2)+pow(errory,2));
-	discretizarEstado();
+
 	//cout << stateContinuous[0] << " -> " << stateDiscrete[0] << endl;
 }
 

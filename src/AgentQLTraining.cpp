@@ -110,11 +110,13 @@ int AgentQLTraining::newQTable(){
 	std::vector< std::vector< std::vector<float> > > statePosibilities;
 	for (int i = 0; i < state.size(); ++i) //para el estado de cada comportamiento
 	{
-		std::vector< std::vector<float> > auxv;
-		for (int j = 0; j < state[i].size(); ++j) //para cada variable de estado del comportamientos
-		{
-			auxv.push_back(behaviors[i]->getPosibleValues());
-		}
+		std::vector< std::vector<float> > auxv = behaviors[i]->getPosibleValues();
+		// for (int j = 0; j < state[i].size(); ++j) //para cada variable de estado del comportamientos
+		// {
+		// 	auxv.push_back(behaviors[i]->getPosibleValues());
+		// }
+		// auxv.push_back(behaviors[i]->getPosibleVelCtrlActValues());
+		// auxv.push_back(behaviors[i]->getPosibleOCtrlActValues());
 		statePosibilities.push_back(auxv);
 	}
 	//	posibles estados

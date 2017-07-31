@@ -53,8 +53,18 @@ SteeringBehavior::SteeringBehavior(
 			valoresEstado.push_back(minValState+i*stepValState);
 		}
 	}
+	int velDiscretization = 3;
+	float velMaxVal = 1.00;
+	for (int i = 1; i <= velDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
+		desiredVValues.push_back(velMaxVal*i/velDiscretization);
+	}
+	int orientDiscretization = 4;
+	float orientMaxVal = 2*PI;
+	for (int i = 0; i <= orientDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
+		desiredVValues.push_back(orientMaxVal*i/orientDiscretization);
+	}
 	//inicializo el vector de estado con algun valor de los posibles valores
-	for (int i = 0; i < nbVar; i++) {
+	for (int i = 0; i < nbVar+2; i++) { //plus two to module and orientation of control action
 		stateContinuous.push_back(0.0);
 		stateDiscrete.push_back(0.0);
 	}
@@ -126,7 +136,6 @@ void SteeringBehavior::setGoal(float xg, float yg){
 
 void SteeringBehavior::discretizarEstado ()
 {
-	//cout << myType << " state: " ;
 	for (int i = 0; i < nbVar; i++) {
 		//buscar dentro de los posibles valores aquel mas proximo al valor continuo
 		int indexMin = 0;
@@ -146,12 +155,61 @@ void SteeringBehavior::discretizarEstado ()
 			}
 		}
 		stateDiscrete[i] = valoresEstado[indexMin];
-//		cout << i << "=" << stateContinuous[i] << "->" << stateDiscrete[i] << "  ";
 	}
-//	cout << endl;
+	int indexMinVel = 0;
+	float minVel = stateContinuous[nbVar] - desiredVValues[indexMinVel];
+	for (int j = 1; j < desiredVValues.size(); ++j)
+	{
+		if ((stateContinuous[nbVar] - desiredVValues[j]) > 0)
+		{
+			if ((stateContinuous[nbVar] - desiredVValues[j])<minVel)
+			{
+				minVel = stateContinuous[nbVar] - desiredVValues[j];
+				indexMinVel=j;
+			}
+		}
+		else{
+			break;
+		}
+	}
+	stateDiscrete[nbVar] = desiredVValues[indexMinVel];
+
+	int indexMinO = 0;
+	float minO = stateContinuous[nbVar+1] - desiredOValues[indexMinO];
+	for (int j = 1; j < desiredOValues.size(); ++j)
+	{
+		if ((stateContinuous[nbVar+1] - desiredOValues[j]) > 0)
+		{
+			if ((stateContinuous[nbVar+1] - desiredOValues[j])<minO)
+			{
+				minO = stateContinuous[nbVar+1] - desiredOValues[j];
+				indexMinO=j;
+			}
+		}
+		else{
+			break;
+		}
+	}
+	stateDiscrete[nbVar+1] = desiredOValues[indexMinO];
 }
 
-std::vector<float> SteeringBehavior::getPosibleValues()
+std::vector< std::vector<float> > SteeringBehavior::getPosibleValues()
 {
-	return valoresEstado;
+	std::vector< std::vector<float> > aux;
+	for (int i = 0; i < nbVar; i++) {
+		aux.push_back(valoresEstado);
+	}
+	aux.push_back(desiredVValues);
+	aux.push_back(desiredOValues);
+	return aux;
+}
+
+std::vector<float> SteeringBehavior::getPosibleVelCtrlActValues()
+{
+	return desiredVValues;
+}
+
+std::vector<float> SteeringBehavior::getPosibleOCtrlActValues()
+{
+	return desiredOValues;
 }
