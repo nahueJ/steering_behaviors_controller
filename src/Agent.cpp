@@ -82,7 +82,6 @@ Agent::Agent(unsigned int id, string type, Factory* factoryPtr)
 
 Agent::~Agent()
 {
-	cout << "flag2" << endl;
 	delete rosNode;
 	delete ctrlPublisher;
 	delete odomSubscriber;
@@ -156,7 +155,9 @@ void Agent::blend()
 		//nothing to blend
 		ctrlPublisher->publish(twists[0]);
 	} else {
-		ansState=actualState;
+		if (! actualState.empty()) {
+			ansState=actualState;
+		}
 		actualState=behaviorState;
 
 		//Estadisticas
@@ -169,7 +170,7 @@ void Agent::blend()
 		}
 
 		if (ansState != actualState) {
-			updateWeights(behaviorState);
+			updateWeights(actualState);
 		}
 
 		float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
@@ -198,6 +199,7 @@ qlearningStats Agent::getStats()
 	aux.qvalTotal = qvalAcumulado;
 	minState.clear();
 	maxState.clear();
+	//al final de la simulacion se piden las estadisticas y reinicio el contador
 	qvalAcumulado = 0;
 	return aux;
 }

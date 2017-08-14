@@ -49,7 +49,11 @@ public:
 
 	int update();
 
-private:
+	std::vector< std::vector<float> >* wCombinacionesPosibles;
+	std::vector<reinforcement> critic;
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
+
+//private:
 
 	virtual void updateWeights(std::vector<float>);
 
@@ -65,16 +69,19 @@ private:
 
 	//variables para la qtable
 	std::string file;
-	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
+
 	int allocateNb;
 	std::pair< std::vector<float> , qTableOutput>* allocP;
-	std::vector< std::vector<float> > wCombinacionesPosibles;
-	std::vector<reinforcement> critic;
+
+
 	std::vector<int> refuerzosAplicados;
 	float gamma;
 	int maxVisitasDif;
 	float dtCastigo;
 	int lastMemoriaSize;
+
+	int wCantDiscretizacion;
+	int weightSize;
 
 	//Fcs auxiliares a getWeights
 	std::vector<float> getBestWfromQTable(std::vector<float>);
@@ -90,6 +97,9 @@ private:
 
 	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
 	std::vector<float> ultimaColision;
+
+	void printPerm(std::vector< std::vector<float> > perm );
+
 };
 
 #endif //_AGENTQLTRAINING_H

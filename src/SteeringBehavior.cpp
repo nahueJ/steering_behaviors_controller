@@ -50,18 +50,18 @@ SteeringBehavior::SteeringBehavior(
 
 		for (int i = 0; i < nbVarPosibles; ++i)
 		{
-			valoresEstado.push_back(minValState+i*stepValState);
+			valoresEstado.push_back(ceil(minValState+i*stepValState*1000)/1000);
 		}
 	}
-	int velDiscretization = 3;
+	int velDiscretization = 2;
 	float velMaxVal = 1.00;
 	for (int i = 1; i <= velDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
-		desiredVValues.push_back(velMaxVal*i/velDiscretization);
+		desiredVValues.push_back( ceil(velMaxVal*i/velDiscretization*1000)/1000 );
 	}
 	int orientDiscretization = 4;
 	float orientMaxVal = 2*PI;
-	for (int i = 0; i <= orientDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
-		desiredVValues.push_back(orientMaxVal*i/orientDiscretization);
+	for (int i = 1; i <= orientDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
+		desiredOValues.push_back( ceil(orientMaxVal*i/orientDiscretization*1000)/1000 );
 	}
 	//inicializo el vector de estado con algun valor de los posibles valores
 	for (int i = 0; i < nbVar+2; i++) { //plus two to module and orientation of control action
@@ -154,7 +154,7 @@ void SteeringBehavior::discretizarEstado ()
 				break;
 			}
 		}
-		stateDiscrete[i] = valoresEstado[indexMin];
+		stateDiscrete[i] = ceil(valoresEstado[indexMin]*1000)/1000;
 	}
 	int indexMinVel = 0;
 	float minVel = stateContinuous[nbVar] - desiredVValues[indexMinVel];
@@ -172,7 +172,7 @@ void SteeringBehavior::discretizarEstado ()
 			break;
 		}
 	}
-	stateDiscrete[nbVar] = desiredVValues[indexMinVel];
+	stateDiscrete[nbVar] = ceil(desiredVValues[indexMinVel]*1000)/1000;
 
 	int indexMinO = 0;
 	float minO = stateContinuous[nbVar+1] - desiredOValues[indexMinO];
@@ -190,7 +190,7 @@ void SteeringBehavior::discretizarEstado ()
 			break;
 		}
 	}
-	stateDiscrete[nbVar+1] = desiredOValues[indexMinO];
+	stateDiscrete[nbVar+1] = ceil(desiredOValues[indexMinO]*1000)/1000;
 }
 
 std::vector< std::vector<float> > SteeringBehavior::getPosibleValues()

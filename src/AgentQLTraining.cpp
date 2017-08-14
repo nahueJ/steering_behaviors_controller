@@ -13,8 +13,8 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 	file = (*configurationPtr)["file"].c_str();
 
 	//Valores de salidas de la Qtable (permutaciones de los pesos)
-	int wCantDiscretizacion = (*configurationPtr)["wPosibles"];
-	int weightSize = (*configurationPtr)["behaviors"].getLength();
+	wCantDiscretizacion = (*configurationPtr)["wPosibles"];
+	weightSize = (*configurationPtr)["behaviors"].getLength();
 	instanciarWcombinaciones(wCantDiscretizacion, weightSize);
 	if (myType == "qlInit") {
 		newQTable();
@@ -49,11 +49,12 @@ AgentQLTraining::AgentQLTraining(unsigned int id, string type, Factory* factoryP
 			}
 		}
 	}
+
+	cout << myType << " instantiated" << endl;
 }
 
 AgentQLTraining::~AgentQLTraining()
 {
-	cout << "flag1" << endl;
 	if (myType != "qlTest") {
 		int aux = writeQTableToFile(); //no funciona por el momento
 		//cout << aux << " entradas actualizadas." << endl;
@@ -73,7 +74,6 @@ int AgentQLTraining::loadQTable(std::string file, int weightSize)
 
 	std::ifstream aFile (file.c_str());
 	int numberOfNodes=std::count(std::istreambuf_iterator<char>(aFile), std::istreambuf_iterator<char>(), '\n');
-	//cout << "numberOfNodes " << numberOfNodes << endl;
 	int nodeSize = sizeof(std::map<std::vector<float> , qTableOutput>::value_type);
 	allocateNb = nodeSize * numberOfNodes;
 	allocP = qTable.get_allocator().allocate( allocateNb );
@@ -85,7 +85,7 @@ int AgentQLTraining::loadQTable(std::string file, int weightSize)
 		for (size_t in = 0; in < inputSize; in++) {
 			float aux;
 			aFile >> aux;
-			inV.push_back(aux);
+			inV.push_back(ceil(aux*1000)/1000);
 		}
 		//extraigo el Output
 		char dummy; //para el "="
@@ -93,13 +93,19 @@ int AgentQLTraining::loadQTable(std::string file, int weightSize)
 		aFile >> dummy >> outAux.visits >> outAux.qValue ;
 		//lo cargo al mapa
 		qTable[inV] = outAux;
-		absQval += fabs(outAux.qValue);
-		totalVisits += outAux.visits;
-		if (outAux.visits != 0 ) {
+
+	}
+
+	for (std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itqtable = qTable.begin(); itqtable != qTable.end(); ++itqtable)
+	{
+		absQval += fabs(itqtable->second.qValue);
+		totalVisits += itqtable->second.visits;
+		if (itqtable->second.visits != 0 ) {
 			stateVisited++;
 		}
 	}
-	cout << "Qtable cargada con " << totalVisits << " visitas y QvalAbs " << absQval << ". Total Inputs visited " << stateVisited << "/" << qTable.size() << endl;
+
+	cout << "Qtable load con " << totalVisits << " visitas y QvalAbs " << absQval << ". Total Inputs visited " << stateVisited << "/" << qTable.size() << endl;
 	return qTable.size();
 }
 
@@ -127,17 +133,17 @@ int AgentQLTraining::newQTable(){
 		for (std::vector< std::vector<float> >::iterator itb = ita->begin(); itb != ita->end(); ++itb)
 		{
 			sValPosibles.push_back(*itb);
+
 		}
 	}
 	std::vector<float> individuo;
 	sPermutaciones(sValPosibles, individuo, sValPosibles.size(), &sCombinacionesPosibles);
 	//	Instanciación de la estructura map para almacenar la qTable
-
 	//Lista de inputs para la qTable
 	std::vector<std::vector<float> > inputs;
 	for (std::vector< std::vector<float> >::iterator its = sCombinacionesPosibles.begin(); its != sCombinacionesPosibles.end(); ++its)
 	{
-		for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles.begin(); itw != wCombinacionesPosibles.end(); ++itw)
+		for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles->begin(); itw != wCombinacionesPosibles->end(); ++itw)
 		{
 			std::vector<float> auxInput;
 			auxInput = *its;
@@ -171,13 +177,16 @@ void AgentQLTraining::instanciarWcombinaciones(int wCantDiscretizacion, int cant
 	std::vector<float> wValPosibles;
 	for (int i = 0; i < wCantDiscretizacion; ++i)
 	{
-		wValPosibles.push_back(step * i + 0.1);
+		wValPosibles.push_back( ceil((step * i + 0.1)*1000)/1000 );
 		// cout << step * i + 0.1 << " " ;
 	}
 	//la suma de los pesos (en primera instancia) debe ser 1. La estrategia es hacer todas las combinaciones posibles de valores
 	//multiplos del step entre 0 y 1 (para step 0.2 [0.0 0.2 0.4 0.6 0.8 1.0]) y almacenar aquellas combinaciones donde la suma sea 1
 	std::vector<float> individuo;
-	wPermutaciones(wValPosibles, individuo, cantComportamientos, &wCombinacionesPosibles);
+	wCombinacionesPosibles = new std::vector< std::vector<float> >;
+	//wCombinacionesPosibles.reserve(wCantDiscretizacion);
+
+	wPermutaciones(wValPosibles, individuo, cantComportamientos, wCombinacionesPosibles);
 }
 
 void AgentQLTraining::wPermutaciones(std::vector<float> valores, std::vector<float> individuo , int longitud, std::vector< std::vector<float> >* contenedor){
@@ -215,7 +224,24 @@ void AgentQLTraining::sPermutaciones(std::vector< std::vector<float> > valores, 
 	}
 }
 
+void AgentQLTraining::printPerm(std::vector< std::vector<float> > perm )
+{
+	cout << "Combinaciones posibles: " << endl;
+	for (std::vector< std::vector<float> >::iterator ita = perm.begin(); ita < perm.end(); ++ita)
+	{
+		for (std::vector<float>::iterator itb = (*ita).begin(); itb < (*ita).end(); ++itb)
+		{
+			cout << *itb << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
+
 int AgentQLTraining::writeQTableToFile() {
+	float absQval = 0.0;
+	int totalVisits= 0;
+	int stateVisited = 0;
 	if (qTable.empty()){
 		cout << "ERROR Qtable empty AgentQLTraining::writeQTableToFile" << endl;
 		return 0;
@@ -232,8 +258,16 @@ int AgentQLTraining::writeQTableToFile() {
 			fprintf(fp, "%2.3f ", *itv);
 		}
 		fprintf(fp, "= %i %1.3f\n", itm->second.visits, itm->second.qValue);
+		absQval += fabs(itm->second.qValue);
+		totalVisits += itm->second.visits;
+		if (itm->second.visits != 0 ) {
+			stateVisited++;
+		}
 	}
 	fclose(fp);
+
+	cout << "Qtable write con " << totalVisits << " visitas y QvalAbs " << absQval << ". Total Inputs visited " << stateVisited << "/" << qTable.size() << endl;
+
 	cout << count << " entradas actualizadas." << endl;
 	return count;
 }
@@ -255,21 +289,22 @@ std::vector<float> AgentQLTraining::getRandomWfromQTable(std::vector<float> stat
 	//Eleccion: si la diferencia de visitas a diferentes acciones en el mismo estado es mayor q la dada en la configuracion, se elije la menos visitada, si no se elije aleatoriamente
 	int eleccion = checkVisits(state);
 	//Genero el input para la qTable
-	state.insert( state.end(), wCombinacionesPosibles[eleccion].begin(), wCombinacionesPosibles[eleccion].end() );
+	state.insert( state.end(), (*wCombinacionesPosibles)[eleccion].begin(), (*wCombinacionesPosibles)[eleccion].end() );
 	//Agrego el elegido a la lista de estados visitados, para la posterior actualizacion de los qValues correspondientes en funcion de los refuerzos recibidos en un futuro
-	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
-	memoria.push_back(itaux);
 
+	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
+
+	memoria.push_back(itaux);
 	chooseTime = ros::Time::now().toSec();
-	return wCombinacionesPosibles[eleccion];
+	return (*wCombinacionesPosibles)[eleccion];
 }
 
 std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 {
-
+	cout << "qtable: " << qTable.size() << endl;
 	//Genero todos los posibles inputs estado/pesos, correspondientes al estado actual
 	std::vector< std::vector<float> > options;
-	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles.begin(); itw != wCombinacionesPosibles.end(); ++itw)
+	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles->begin(); itw != wCombinacionesPosibles->end(); ++itw)
 	{
 		std::vector<float> aux = state;
 		aux.insert( aux.end(), itw->begin(), itw->end() );
@@ -279,7 +314,45 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 	std::vector<qTableOutput> outputs;
 	for (std::vector< std::vector<float> >::iterator iti = options.begin(); iti != options.end(); ++iti)
 	{
-		outputs.push_back(qTable.find(*iti)->second);
+		// cout << "looking for: " ;
+		// for (std::vector<float>::iterator it = (*iti).begin(); it != (*iti).end(); ++it) {
+		// 	cout << *it << " ";
+		// }
+		// cout << endl;
+		//
+		// for (std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itqtable = qTable.begin(); itqtable != qTable.end(); ++itqtable)
+		// {
+		// 	if (itqtable->first == *iti) {
+		// 		cout << "found!" << endl;
+		// 		std::vector<float> aux = itqtable->first;
+		// 		for (std::vector<float>::iterator it = aux.begin(); it != aux.end(); ++it) {
+		// 			cout << *it << " ";
+		// 		}
+		// 		cout << endl;
+		// 	}
+		// 	else{
+		// 		std::vector<float> auxv = itqtable->first;
+		// 		for (std::vector<float>::iterator it = auxv.begin(); it != auxv.end(); ++it) {
+		// 			cout << *it << " ";
+		// 		}
+		// 		cout << endl;
+		// 	}
+		// }
+		std::vector<float> aux = *iti;	//qTable.find(*iti)->first;
+		std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator entry;
+		entry = qTable.find(aux);
+
+		if (entry != qTable.end()){
+			std::pair<std::vector<float> , qTableOutput> auxent = *entry;
+			outputs.push_back(auxent.second);
+		}
+		else{
+			for (std::vector<float>::iterator it = (*iti).begin(); it != (*iti).end(); ++it) {
+				cout << *it << " ";
+			}
+			cout << endl << "no lo encuentra!" << endl;
+		}
+
 	}
 	//Evaluando las salidas elijo la mejor opcion para el estado actual
 	int best = 0;
@@ -293,21 +366,14 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 			bestQval =ito->qValue;
 		}
 	}
-	state.insert( state.end(), wCombinacionesPosibles[best].begin(), wCombinacionesPosibles[best].end() );
+	state.insert( state.end(), (*wCombinacionesPosibles)[best].begin(), (*wCombinacionesPosibles)[best].end() );
+
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
-	if(!(std::find(memoria.begin(), memoria.end(), itaux) != memoria.end()))
-	{
-		cout << "S: ";
-		for (std::vector<float>::iterator num = state.begin(); num != state.end(); ++num)
-		{
-			cout << *num << " ";
-		}
-		cout << endl;
-	}
+
 	memoria.push_back(itaux);
-	//cout<< "lo mejor que habia " << bestQval<< endl;
-	qvalAcumulado += bestQval;
-	return wCombinacionesPosibles[best];
+	// cout << " b" << bestQval;
+	// qvalAcumulado += bestQval;
+	return (*wCombinacionesPosibles)[best];
 }
 
 void AgentQLTraining::actualizarQTable(int refuerzo)
@@ -358,7 +424,8 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 {
 	//Genero todos los posibles inputs estado/pesos, correspondientes al estado actual
 	std::vector< std::vector<float> > options;
-	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles.begin(); itw != wCombinacionesPosibles.end(); ++itw){
+
+	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles->begin(); itw != wCombinacionesPosibles->end(); ++itw){
 		std::vector<float> aux = state;
 		aux.insert( aux.end(), itw->begin(), itw->end() );
 		options.push_back(aux);
@@ -384,12 +451,13 @@ int AgentQLTraining::checkVisits(std::vector<float> state)
 		//cout << "opcion con " << less << " visitas" << endl;
 		return lessIndex;
 	} else{
-		return rand()% wCombinacionesPosibles.size();
+		return rand()% wCombinacionesPosibles->size();
 	}
 }
 
 int AgentQLTraining::update()
 {
+
 	float moment = ros::Time::now().toSec();
 	int behaviorFlag[behaviors.size()];
 	twists.clear();
@@ -470,22 +538,25 @@ void AgentQLTraining::criticCheck()
 	std::vector< std::vector<float> > state = getIndividualVectorState();
 	int refuerzo = -1;
 	int index = 0;
+
 	for (std::vector<reinforcement>::iterator icritic = critic.begin(); icritic != critic.end(); ++icritic, index++)
 	{
-		for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
-		{
+		float reinforcementVal = (state[(*icritic).behaviorNb]).front();
+		// for (std::vector<float>::iterator istate = (state[(*icritic).behaviorNb]).begin(); istate != (state[(*icritic).behaviorNb]).end(); ++istate)
+		// {
 			// if ((*icritic).behaviorNb == 0) {
 			// 	cout << *istate << " vs " << (*icritic).reinforcementState << endl;
 			// }
-			if ((*istate-(*icritic).reinforcementState)<0.1)
+			if ((reinforcementVal-(*icritic).reinforcementState)<0.1)
 			{
 				//cout << "refuerzo detectado " << index << endl;
 				refuerzo = index;
 				//si se encuentra en un estado de refuerzo, se devuelve el indice del refuerzo en cuestion
 				break;
 			}
-		}
+		// }
 	}
+
 	if (refuerzo != -1) {
 
 		if (memoria.size()<=1) {	//para evitar estados iniciales erroneos
