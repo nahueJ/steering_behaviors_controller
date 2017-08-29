@@ -277,7 +277,7 @@ void AgentQLTraining::updateWeights(std::vector<float> state)
 	if (myType == "qlTest") {
 		pesos = getBestWfromQTable(state);
 	} else {
-		dtPunish();
+		//dtPunish();
 		pesos = getRandomWfromQTable(state);
 		//Verifico que el estado no corresponde a ningun refuerzo // en vez de revisar por el estado podría mapear del int que devuelve el agent::update
 		criticCheck();
@@ -301,7 +301,6 @@ std::vector<float> AgentQLTraining::getRandomWfromQTable(std::vector<float> stat
 
 std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 {
-	cout << "qtable: " << qTable.size() << endl;
 	//Genero todos los posibles inputs estado/pesos, correspondientes al estado actual
 	std::vector< std::vector<float> > options;
 	for (std::vector< std::vector<float> >::iterator itw = wCombinacionesPosibles->begin(); itw != wCombinacionesPosibles->end(); ++itw)
@@ -314,30 +313,6 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 	std::vector<qTableOutput> outputs;
 	for (std::vector< std::vector<float> >::iterator iti = options.begin(); iti != options.end(); ++iti)
 	{
-		// cout << "looking for: " ;
-		// for (std::vector<float>::iterator it = (*iti).begin(); it != (*iti).end(); ++it) {
-		// 	cout << *it << " ";
-		// }
-		// cout << endl;
-		//
-		// for (std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itqtable = qTable.begin(); itqtable != qTable.end(); ++itqtable)
-		// {
-		// 	if (itqtable->first == *iti) {
-		// 		cout << "found!" << endl;
-		// 		std::vector<float> aux = itqtable->first;
-		// 		for (std::vector<float>::iterator it = aux.begin(); it != aux.end(); ++it) {
-		// 			cout << *it << " ";
-		// 		}
-		// 		cout << endl;
-		// 	}
-		// 	else{
-		// 		std::vector<float> auxv = itqtable->first;
-		// 		for (std::vector<float>::iterator it = auxv.begin(); it != auxv.end(); ++it) {
-		// 			cout << *it << " ";
-		// 		}
-		// 		cout << endl;
-		// 	}
-		// }
 		std::vector<float> aux = *iti;	//qTable.find(*iti)->first;
 		std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator entry;
 		entry = qTable.find(aux);
@@ -352,7 +327,6 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 			}
 			cout << endl << "no lo encuentra!" << endl;
 		}
-
 	}
 	//Evaluando las salidas elijo la mejor opcion para el estado actual
 	int best = 0;
@@ -371,8 +345,12 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > >::iterator itaux = qTable.find(state);
 
 	memoria.push_back(itaux);
-	// cout << " b" << bestQval;
-	// qvalAcumulado += bestQval;
+	std::vector<float> auxvec = itaux->first;
+	for (std::vector<float>::iterator it = auxvec.begin(); it != auxvec.end(); ++it) {
+		cout << *it << " ";
+	}
+	cout << " v: " << itaux->second.visits << " qV: " << itaux->second.qValue << endl;
+	qvalAcumulado += bestQval;
 	return (*wCombinacionesPosibles)[best];
 }
 
