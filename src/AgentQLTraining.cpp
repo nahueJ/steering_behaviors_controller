@@ -346,10 +346,10 @@ std::vector<float> AgentQLTraining::getBestWfromQTable(std::vector<float> state)
 
 	memoria.push_back(itaux);
 	std::vector<float> auxvec = itaux->first;
-	for (std::vector<float>::iterator it = auxvec.begin(); it != auxvec.end(); ++it) {
+	/*for (std::vector<float>::iterator it = auxvec.begin(); it != auxvec.end(); ++it) {
 		cout << *it << " ";
 	}
-	cout << " v: " << itaux->second.visits << " qV: " << itaux->second.qValue << endl;
+	cout << " v: " << itaux->second.visits << " qV: " << itaux->second.qValue << endl;*/
 	qvalAcumulado += bestQval;
 	return (*wCombinacionesPosibles)[best];
 }

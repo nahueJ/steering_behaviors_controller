@@ -53,18 +53,9 @@ SteeringBehavior::SteeringBehavior(
 			valoresEstado.push_back(ceil(minValState+i*stepValState*1000)/1000);
 		}
 	}
-	int velDiscretization = 2;
-	float velMaxVal = 1.00;
-	for (int i = 1; i <= velDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
-		desiredVValues.push_back( ceil(velMaxVal*i/velDiscretization*1000)/1000 );
-	}
-	int orientDiscretization = 4;
-	float orientMaxVal = 2*PI;
-	for (int i = 1; i <= orientDiscretization; i++) { //avoid vel=0, only (0.33;0.66;1)
-		desiredOValues.push_back( ceil(orientMaxVal*i/orientDiscretization*1000)/1000 );
-	}
+
 	//inicializo el vector de estado con algun valor de los posibles valores
-	for (int i = 0; i < nbVar+2; i++) { //plus two to module and orientation of control action
+	for (int i = 0; i < nbVar; i++) { //plus two to module and orientation of control action
 		stateContinuous.push_back(0.0);
 		stateDiscrete.push_back(0.0);
 	}
@@ -156,41 +147,6 @@ void SteeringBehavior::discretizarEstado ()
 		}
 		stateDiscrete[i] = ceil(valoresEstado[indexMin]*1000)/1000;
 	}
-	int indexMinVel = 0;
-	float minVel = stateContinuous[nbVar] - desiredVValues[indexMinVel];
-	for (int j = 1; j < desiredVValues.size(); ++j)
-	{
-		if ((stateContinuous[nbVar] - desiredVValues[j]) > 0)
-		{
-			if ((stateContinuous[nbVar] - desiredVValues[j])<minVel)
-			{
-				minVel = stateContinuous[nbVar] - desiredVValues[j];
-				indexMinVel=j;
-			}
-		}
-		else{
-			break;
-		}
-	}
-	stateDiscrete[nbVar] = ceil(desiredVValues[indexMinVel]*1000)/1000;
-
-	int indexMinO = 0;
-	float minO = stateContinuous[nbVar+1] - desiredOValues[indexMinO];
-	for (int j = 1; j < desiredOValues.size(); ++j)
-	{
-		if ((stateContinuous[nbVar+1] - desiredOValues[j]) > 0)
-		{
-			if ((stateContinuous[nbVar+1] - desiredOValues[j])<minO)
-			{
-				minO = stateContinuous[nbVar+1] - desiredOValues[j];
-				indexMinO=j;
-			}
-		}
-		else{
-			break;
-		}
-	}
-	stateDiscrete[nbVar+1] = ceil(desiredOValues[indexMinO]*1000)/1000;
 }
 
 std::vector< std::vector<float> > SteeringBehavior::getPosibleValues()
@@ -199,17 +155,5 @@ std::vector< std::vector<float> > SteeringBehavior::getPosibleValues()
 	for (int i = 0; i < nbVar; i++) {
 		aux.push_back(valoresEstado);
 	}
-	aux.push_back(desiredVValues);
-	aux.push_back(desiredOValues);
 	return aux;
-}
-
-std::vector<float> SteeringBehavior::getPosibleVelCtrlActValues()
-{
-	return desiredVValues;
-}
-
-std::vector<float> SteeringBehavior::getPosibleOCtrlActValues()
-{
-	return desiredOValues;
 }

@@ -31,8 +31,6 @@ public:
 	~SteeringBehavior();
 
 	std::vector< std::vector<float> > getPosibleValues();
-	std::vector<float> getPosibleVelCtrlActValues();
-	std::vector<float> getPosibleOCtrlActValues();
 
 	virtual int update() ; // función virtual pura
 	virtual std::vector<float> getState() ;
@@ -55,8 +53,6 @@ protected:
 	std::vector<float> stateDiscrete;
 	std::vector<float> stateContinuous;
 	std::vector<float> valoresEstado;
-	std::vector<float> desiredVValues;
-	std::vector<float> desiredOValues;
 
 
 	//para estadisticas

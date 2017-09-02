@@ -21,8 +21,16 @@
 #include <iostream>
 #include <fstream>
 
+struct tuple
+{
+	int a;
+	int b;
+	int c;
+};
+
+
 //Recibe la posicion inicial del robot y las posiciones de objetivos posibles para elegir uno aleatorio y calcular la posicion objetivo en el sistema de cordenadas referido al vehiculo
-std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<float, float> > initPosition)
+std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<float, float> > initPosition, int option)
 {
 	std::stringstream pos(strPos);
 	float data[4];
@@ -38,17 +46,18 @@ std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<floa
 		float dx= auxP.first - itp->first;
 		float dy= auxP.second - itp->second;
 		float dist = sqrt(pow(dx,2.0)+pow(dy,2.0));
-		if (dist>13.0) {
+		if (dist>11.5) {
 			auxObj.push_back(*itp);
 		}
 	}
-	//elegir uno aleatorio
-	int randnro = rand()% auxObj.size();
-	cout << "OBJETIVO:(" << auxObj[randnro].first << "," << auxObj[randnro].second << ")" << endl;
+	cout << "OBJETIVO:(" << auxObj[option].first << "," << auxObj[option].second << ")" << endl;
+	if(option > auxObj.size()){
+		cout << "WARN " << option << " on " << auxObj.size();
+	}
 	//Convertir a coordenadas odometricas la posicion final
 	float angCoordOdom = data[3]*PI/180; //en el que esta orientado el robot
 	//Traslacion de centro del sist de coordenadas
-	std::pair<float, float> auxIntermedio = std::make_pair(auxObj[randnro].first-data[0], auxObj[randnro].second-data[1]);
+	std::pair<float, float> auxIntermedio = std::make_pair(auxObj[option].first-data[0], auxObj[option].second-data[1]);
 	//Rotación del sist de coordenadas
 	auxP.first = cos(angCoordOdom) * auxIntermedio.first + sin(angCoordOdom) * auxIntermedio.second;
 	auxP.second = cos(angCoordOdom) * auxIntermedio.second - sin(angCoordOdom) * auxIntermedio.first;
@@ -171,44 +180,50 @@ void statsToFile(std::vector<qlearningStats> stats, int rondas,std::vector< std:
 	cout << endl;
 }
 
-std::vector< std::pair<int, int> >  populateSet(int firstSize, int secondSize, int setSize, std::vector< std::pair<int, int> > forbidden)
+std::vector< tuple >  populateSet(int firstSize, int secondSize, int thirdSize, int setSize, std::vector< tuple > forbidden)
 {
-	std::vector< std::pair<int, int> > response;
-	std::vector<std::pair<int, int> >::iterator it;
-	std::pair<int, int> prospect;
+	std::vector< tuple > response;
+	std::vector< tuple >::iterator it;
+	tuple prospect;
 	while (response.size() < setSize) {
 		if (!forbidden.empty()) {
+			int flag;
 			do {
-				int auxfirst = rand()% firstSize;
-				int auxsecond = rand()% secondSize;
-				prospect = std::make_pair(auxfirst, auxsecond);
+				prospect.a = rand()% firstSize;
+				prospect.b = rand()% secondSize;
+				prospect.c = rand()% thirdSize;
 				//testear que el prospecto no esta en los forbidden ni en los anteriores
-				it = std::find(forbidden.begin(), forbidden.end(), prospect);
-				/*if (*it == prospect) {
-					cout << "forbidden: " << prospect.first << " ; " << prospect.second << endl;
-				}*/
-			} while(*it == prospect);
+				flag = 0;
+				for (std::vector< tuple >::iterator itp = forbidden.begin(); itp != forbidden.end(); ++itp)
+				{
+					if((itp->a == prospect.a) && (itp->b == prospect.b) && (itp->c == prospect.c)){
+						flag = 1;
+						//cout << "forbidden: " << prospect.a << " ; " << prospect.b << " ; " << prospect.c << endl;
+						break;
+					}
+				}
+			} while(flag == 1);
 		} else {
-			int auxfirst = rand()% firstSize;
-			int auxsecond = rand()% secondSize;
-			prospect = std::make_pair(auxfirst, auxsecond);
+			prospect.a = rand()% firstSize;
+			prospect.b = rand()% secondSize;
+			prospect.c = rand()% thirdSize;
 		}
 		response.push_back(prospect);
 	}
 	return response;
 }
 
-/*void printSets(std::vector< std::pair<int, int> > setValidation, std::vector< std::pair<int, int> > setTrain){
+void printSets(std::vector< tuple > setValidation, std::vector< tuple > setTrain){
 	cout << "Validation Set: " << endl;
 	for (size_t i = 0; i < setValidation.size(); i++) {
-		cout << i << ": " << setValidation[i].first << " ; " << setValidation[i].second << endl;
+		cout << i << ": " << setValidation[i].a << " ; " << setValidation[i].b << " ; " << setValidation[i].c << endl;
 	}
 	cout << endl << "Train Set: " << endl;
 	for (size_t i = 0; i < setTrain.size(); i++) {
-		cout << i << ": " << setTrain[i].first << " ; " << setTrain[i].second << endl;
+		cout << i << ": " << setTrain[i].a << " ; " << setTrain[i].b << " ; " << setTrain[i].c << endl;
 	}
 
-}*/
+}
 
 int main(int argc, char **argv)
 {
@@ -224,35 +239,35 @@ int main(int argc, char **argv)
 	std::pair<float, float> auxPair;
 	std::vector< std::pair< std::string , int > > refuerzos;
 
-	std::vector< std::pair<int, int> > setTrain;
-	std::vector< std::pair<int, int> > setValidation;
+	std::vector< tuple > setTrain;
+	std::vector< tuple > setValidation;
 
 	//Simulation parameters
 	//Paths de los mapas para las simulaciones
-	sets.push_back("bitmap \"setD.png\"");
-	sets.push_back("bitmap \"setE.png\"");
+	//sets.push_back("bitmap \"setD.png\"");
+	//sets.push_back("bitmap \"setE.png\"");
 	sets.push_back("bitmap \"setF.png\"");
 
 	// posiciones iniciales xyz del robot en el mapa
 	std::vector<string> robotPoseAux;
-	robotPoseAux.push_back("-6.25 -6.25 0 ");
-	robotPoseAux.push_back("-1.25 -6.25 0 ");
-	robotPoseAux.push_back("6.25 -6.25 0 ");
-	robotPoseAux.push_back("6.25 -1.25 0 ");
-	robotPoseAux.push_back("6.25 6.25 0 ");
-	robotPoseAux.push_back("1.25 6.25 0 ");
-	robotPoseAux.push_back("-6.25 6.25 0 ");
-	robotPoseAux.push_back("-6.25 1.25 0 ");
+	robotPoseAux.push_back("-5.5 -5.5 0 ");
+	robotPoseAux.push_back("-0 -6 0 ");
+	robotPoseAux.push_back("5.5 -5.5 0 ");
+	robotPoseAux.push_back("6 -0 0 ");
+	robotPoseAux.push_back("5.5 5.5 0 ");
+	robotPoseAux.push_back("0 6 0 ");
+	robotPoseAux.push_back("-5.5 5.5 0 ");
+	robotPoseAux.push_back("-6 0 0 ");
 
 	//el vector de posiciones se almacena en el mismo orden!
-	initPosition.push_back(std::make_pair(-6.25, -6.25));
-	initPosition.push_back(std::make_pair(-1.25, -6.25));
-	initPosition.push_back(std::make_pair(6.25 , -6.25));
-	initPosition.push_back(std::make_pair(6.25 , -1.25));
-	initPosition.push_back(std::make_pair(6.25 , 6.25));
-	initPosition.push_back(std::make_pair(1.25 , 6.25));
-	initPosition.push_back(std::make_pair(-6.25, 6.25));
-	initPosition.push_back(std::make_pair(-6.25, 1.25));
+	initPosition.push_back(std::make_pair(-5.5, -5.5));
+	initPosition.push_back(std::make_pair(-0, -6));
+	initPosition.push_back(std::make_pair(5.5 , -5.5));
+	initPosition.push_back(std::make_pair(6 , -0));
+	initPosition.push_back(std::make_pair(5.5 , 5.5));
+	initPosition.push_back(std::make_pair(0 , 6));
+	initPosition.push_back(std::make_pair(-5.5, 5.5));
+	initPosition.push_back(std::make_pair(-6, 0));
 
 	// orientaciones iniciales en grados del robot en el mapa
 	std::vector<string> robotOrientationAux;
@@ -287,8 +302,11 @@ int main(int argc, char **argv)
 	Setting* configurationPtr = factoryPtr->getExperimentSetting();
 	std::string qlState = "train";
 	int roundCounter = 0;
+	int roundCounterIE = 0;
+
 	int ciclos=0;
 	std::vector<qlearningStats> stats;
+	std::vector<qlearningStats> statsintraepoc;
 	int nbExp = (*configurationPtr)["nbExp"];
 	Agent* agent;
 
@@ -298,7 +316,7 @@ int main(int argc, char **argv)
 		//eleccion aleatoria de posicion
 		int randnroP = rand()% robotPose.size();
 		newSession(sets[randnroS], robotPose[randnroP], stageCommand);
-		auxPair = calcObjective(robotPose[randnroP], initPosition);
+		auxPair = calcObjective(robotPose[randnroP], initPosition,rand()% 3);
 
 		sleep(1);
 
@@ -306,13 +324,15 @@ int main(int argc, char **argv)
 	}else if (nbExp == 1) {
 		int sizeValidation = (*configurationPtr)["validSize"];
 		int sizeTrain = (*configurationPtr)["epocSize"];
-		setValidation = populateSet(sets.size(), robotPose.size(),sizeValidation,setValidation);
-		setTrain = populateSet(sets.size(), robotPose.size(),sizeTrain,setValidation);
+
+		cout << endl;
+		setValidation = populateSet(sets.size(), robotPose.size(),3,sizeValidation,setValidation);
+		setTrain = populateSet(sets.size(), robotPose.size(),3,sizeTrain,setValidation);
 
 		//printSets(setValidation, setTrain);
 
-		newSession(sets[setTrain[roundCounter].first], robotPose[setTrain[roundCounter].second], stageCommand);
-		auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
+		newSession(sets[setTrain[roundCounter].a], robotPose[setTrain[roundCounter].b], stageCommand);
+		auxPair = calcObjective(robotPose[setTrain[roundCounter].b], initPosition,setTrain[roundCounter].c);
 
 		int freshStart = (*configurationPtr)["fresh"];
 		if (freshStart==0) {
@@ -335,7 +355,7 @@ int main(int argc, char **argv)
 				int randnroP = rand()% robotPose.size();
 				newSession(sets[randnroS], robotPose[randnroP], stageCommand);
 				//set objetivo aleatorio
-				auxPair = calcObjective(robotPose[randnroP], initPosition);
+				auxPair = calcObjective(robotPose[randnroP], initPosition,rand()% 3);
 				agent->setNewObjective(auxPair);
 			}
 			ros::spinOnce();
@@ -344,6 +364,7 @@ int main(int argc, char **argv)
 	} else if (nbExp == 1) {
 		while(ros::ok())
 		{
+			int sizeIntraEpoc = (*configurationPtr)["intraEpoc"];
 			int flag = agent->update();
 
 			if (flag == 0) {
@@ -380,12 +401,24 @@ int main(int argc, char **argv)
 						roundCounter = 0;
 						qlState = "validate";
 						//inicio la primer sesion de validacion
-						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], viewCommand);
-						auxPair = calcObjective(robotPose[setValidation[roundCounter].second], initPosition);
+						newSession(sets[setValidation[roundCounter].a], robotPose[setValidation[roundCounter].b], stageCommand);
+						auxPair = calcObjective(robotPose[setValidation[roundCounter].b], initPosition,setValidation[roundCounter].c);
+					} else if( (roundCounter%(setTrain.size()/(sizeIntraEpoc+1)) == 0) && roundCounter<=((setTrain.size()*sizeIntraEpoc)/(sizeIntraEpoc+1)) ){
+						//para validar durante la epoc
+						cout << "validando " << roundCounter << endl;
+						Agent* auxagent = agent;
+						delete auxagent;
+						agent = new AgentQLTraining(0,"qlTest",factoryPtr); //agente que prueba la qtable
+						statsintraepoc.clear();
+						roundCounterIE = 0;
+						qlState = "validateIntraEpoc";
+						//inicio la primer sesion de validacion
+						newSession(sets[setValidation[roundCounterIE].a], robotPose[setValidation[roundCounterIE].b], stageCommand);
+						auxPair = calcObjective(robotPose[setValidation[roundCounterIE].b], initPosition,setValidation[roundCounterIE].c);
 					} else {
 						//paso al siguiente entrenamiento
-						newSession(sets[setTrain[roundCounter].first], robotPose[setTrain[roundCounter].second], stageCommand);
-						auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
+						newSession(sets[setTrain[roundCounter].a], robotPose[setTrain[roundCounter].b], stageCommand);
+						auxPair = calcObjective(robotPose[setTrain[roundCounter].b], initPosition,setTrain[roundCounter].c);
 					}
 					agent->setNewObjective(auxPair);
 
@@ -407,12 +440,36 @@ int main(int argc, char **argv)
 						ciclos++;
 						qlState = "train";
 						//inicio la primer sesion de entrenamiento
-						newSession(sets[setTrain[roundCounter].first], robotPose[setTrain[roundCounter].second], stageCommand);
-						auxPair = calcObjective(robotPose[setTrain[roundCounter].second], initPosition);
+						newSession(sets[setTrain[roundCounter].a], robotPose[setTrain[roundCounter].b], stageCommand);
+						auxPair = calcObjective(robotPose[setTrain[roundCounter].b], initPosition,setTrain[roundCounter].c);
 					} else {
 						//paso a la siguiente validacion
-						newSession(sets[setValidation[roundCounter].first], robotPose[setValidation[roundCounter].second], viewCommand);
-						auxPair = calcObjective(robotPose[setValidation[roundCounter].second], initPosition);
+						newSession(sets[setValidation[roundCounter].a], robotPose[setValidation[roundCounter].b], stageCommand);
+						auxPair = calcObjective(robotPose[setValidation[roundCounter].b], initPosition,setValidation[roundCounter].c);
+					}
+					agent->setNewObjective(auxPair);
+				} else if (qlState == "validateIntraEpoc") {
+					//print stats del ciclo terminado
+					cout << endl << "Validate round IE: " << roundCounterIE << " Ciclo: " << ciclos << endl;
+					//si fue sesion de validacion recupero los stats solamente
+					finalStats = agent->getStats();
+					printEndStats(finalStats);
+					statsintraepoc.push_back(finalStats);
+					roundCounterIE++;
+					if (roundCounterIE == setValidation.size()) {
+						//si el set de validacion se termina, instancio el agente de entrenamiento
+						statsToFile(statsintraepoc,(setTrain.size()*ciclos)+roundCounter,refuerzos); //promedia los resultados y los imprime en un csv
+						Agent* auxagent=agent;
+						delete auxagent;
+						agent = new AgentQLTraining(0,"qlLoad",factoryPtr);
+						qlState = "train";
+						//inicio la primer sesion de entrenamiento
+						newSession(sets[setTrain[roundCounter].a], robotPose[setTrain[roundCounter].b], stageCommand);
+						auxPair = calcObjective(robotPose[setTrain[roundCounter].b], initPosition,setTrain[roundCounter].c);
+					} else {
+						//paso a la siguiente validacion
+						newSession(sets[setValidation[roundCounterIE].a], robotPose[setValidation[roundCounterIE].b], stageCommand);
+						auxPair = calcObjective(robotPose[setValidation[roundCounterIE].b], initPosition,setValidation[roundCounterIE].c);
 					}
 					agent->setNewObjective(auxPair);
 				}

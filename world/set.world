@@ -40,7 +40,7 @@ floorplan
   name "FGH"
   size [20 20 1]
   #seleccion del mapa
-bitmap "setE.png"
+bitmap "setF.png"
 )
 
 pioneer3dx
@@ -48,7 +48,7 @@ pioneer3dx
   # can refer to the robot by this name
   name "pioneer"
   #seleccion de posicion y orientacion del agente
-pose [-6.25 1.25 0 135]
+pose [-0 -6 0 315]
 
   fancysicklaser(color "blue")
 )
