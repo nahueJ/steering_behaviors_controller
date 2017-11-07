@@ -244,9 +244,9 @@ int main(int argc, char **argv)
 
 	//Simulation parameters
 	//Paths de los mapas para las simulaciones
-	//sets.push_back("bitmap \"setD.png\"");
+	sets.push_back("bitmap \"setD.png\"");
 	//sets.push_back("bitmap \"setE.png\"");
-	sets.push_back("bitmap \"setF.png\"");
+	//sets.push_back("bitmap \"setF.png\"");
 
 	// posiciones iniciales xyz del robot en el mapa
 	std::vector<string> robotPoseAux;
@@ -401,7 +401,7 @@ int main(int argc, char **argv)
 						roundCounter = 0;
 						qlState = "validate";
 						//inicio la primer sesion de validacion
-						newSession(sets[setValidation[roundCounter].a], robotPose[setValidation[roundCounter].b], stageCommand);
+						newSession(sets[setValidation[roundCounter].a], robotPose[setValidation[roundCounter].b], viewCommand);
 						auxPair = calcObjective(robotPose[setValidation[roundCounter].b], initPosition,setValidation[roundCounter].c);
 					} else if( (roundCounter%(setTrain.size()/(sizeIntraEpoc+1)) == 0) && roundCounter<=((setTrain.size()*sizeIntraEpoc)/(sizeIntraEpoc+1)) ){
 						//para validar durante la epoc
@@ -413,7 +413,7 @@ int main(int argc, char **argv)
 						roundCounterIE = 0;
 						qlState = "validateIntraEpoc";
 						//inicio la primer sesion de validacion
-						newSession(sets[setValidation[roundCounterIE].a], robotPose[setValidation[roundCounterIE].b], stageCommand);
+						newSession(sets[setValidation[roundCounterIE].a], robotPose[setValidation[roundCounterIE].b], viewCommand);
 						auxPair = calcObjective(robotPose[setValidation[roundCounterIE].b], initPosition,setValidation[roundCounterIE].c);
 					} else {
 						//paso al siguiente entrenamiento
@@ -444,7 +444,7 @@ int main(int argc, char **argv)
 						auxPair = calcObjective(robotPose[setTrain[roundCounter].b], initPosition,setTrain[roundCounter].c);
 					} else {
 						//paso a la siguiente validacion
-						newSession(sets[setValidation[roundCounter].a], robotPose[setValidation[roundCounter].b], stageCommand);
+						newSession(sets[setValidation[roundCounter].a], robotPose[setValidation[roundCounter].b], viewCommand);
 						auxPair = calcObjective(robotPose[setValidation[roundCounter].b], initPosition,setValidation[roundCounter].c);
 					}
 					agent->setNewObjective(auxPair);
@@ -468,7 +468,7 @@ int main(int argc, char **argv)
 						auxPair = calcObjective(robotPose[setTrain[roundCounter].b], initPosition,setTrain[roundCounter].c);
 					} else {
 						//paso a la siguiente validacion
-						newSession(sets[setValidation[roundCounterIE].a], robotPose[setValidation[roundCounterIE].b], stageCommand);
+						newSession(sets[setValidation[roundCounterIE].a], robotPose[setValidation[roundCounterIE].b], viewCommand);
 						auxPair = calcObjective(robotPose[setValidation[roundCounterIE].b], initPosition,setValidation[roundCounterIE].c);
 					}
 					agent->setNewObjective(auxPair);
