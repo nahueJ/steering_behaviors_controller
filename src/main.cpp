@@ -46,7 +46,7 @@ std::pair<float, float> calcObjective(string strPos, std::vector< std::pair<floa
 		float dx= auxP.first - itp->first;
 		float dy= auxP.second - itp->second;
 		float dist = sqrt(pow(dx,2.0)+pow(dy,2.0));
-		if (dist>11.5) {
+		if (dist>14) {
 			auxObj.push_back(*itp);
 		}
 	}
@@ -244,6 +244,8 @@ int main(int argc, char **argv)
 
 	//Simulation parameters
 	//Paths de los mapas para las simulaciones
+	//sets.push_back("bitmap \"setA.png\"");
+	//sets.push_back("bitmap \"setB.png\"");
 	sets.push_back("bitmap \"setD.png\"");
 	//sets.push_back("bitmap \"setE.png\"");
 	//sets.push_back("bitmap \"setF.png\"");
@@ -315,7 +317,7 @@ int main(int argc, char **argv)
 		int randnroS = rand()% sets.size();
 		//eleccion aleatoria de posicion
 		int randnroP = rand()% robotPose.size();
-		newSession(sets[randnroS], robotPose[randnroP], stageCommand);
+		newSession(sets[randnroS], robotPose[randnroP], viewCommand);
 		auxPair = calcObjective(robotPose[randnroP], initPosition,rand()% 3);
 
 		sleep(1);
@@ -353,7 +355,7 @@ int main(int argc, char **argv)
 				//eleccion aleatoria del mapa y posicion
 				int randnroS = rand()% sets.size();
 				int randnroP = rand()% robotPose.size();
-				newSession(sets[randnroS], robotPose[randnroP], stageCommand);
+				newSession(sets[randnroS], robotPose[randnroP], viewCommand);
 				//set objetivo aleatorio
 				auxPair = calcObjective(robotPose[randnroP], initPosition,rand()% 3);
 				agent->setNewObjective(auxPair);
