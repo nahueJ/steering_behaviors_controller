@@ -139,7 +139,6 @@ add_executable(steering_behaviors_controller src/main.cpp src/Agent.cpp src/Stee
 target_link_libraries(steering_behaviors_controller
 	${catkin_LIBRARIES}
 	-lconfig++
-	-lfann
 )
 
 #############
