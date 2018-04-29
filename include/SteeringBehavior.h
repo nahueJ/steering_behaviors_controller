@@ -52,7 +52,7 @@ protected:
 
 	std::vector<float> stateDiscrete;
 	std::vector<float> stateContinuous;
-	std::vector<float> valoresEstado;
+	std::vector<float> statePossibleValues;
 
 
 	//para estadisticas

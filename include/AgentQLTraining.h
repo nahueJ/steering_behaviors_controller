@@ -14,6 +14,7 @@
 
 #include "Agent.h"
 
+#include <random>
 #include <math.h>
 #include <sstream>
 #include <iostream>
@@ -53,8 +54,6 @@ public:
 	std::vector<reinforcement> critic;
 	std::map<std::vector<float> , qTableOutput, std::less< std::vector<float> >, std::allocator< std::pair<std::vector<float> , qTableOutput> > > qTable;
 
-//private:
-
 	virtual void updateWeights(std::vector<float>);
 
 	//Fcs auxiliares al constructor
@@ -83,10 +82,10 @@ public:
 	int wCantDiscretizacion;
 	int weightSize;
 
-	//Fcs auxiliares a getWeights
+	//Fcs auxiliares a updateWeights
 	std::vector<float> getBestWfromQTable(std::vector<float>);
-
 	std::vector<float> getRandomWfromQTable(std::vector<float>);
+	int getFullVisits(std::vector<float>);
 	float chooseTime;
 
 	int checkVisits(std::vector<float>);
@@ -96,7 +95,7 @@ public:
 
 
 	std::vector< std::map<std::vector<float> , qTableOutput>::iterator > memoria;
-	std::vector<float> ultimaColision;
+	std::vector<float> lastCollision;
 
 	void printPerm(std::vector< std::vector<float> > perm );
 

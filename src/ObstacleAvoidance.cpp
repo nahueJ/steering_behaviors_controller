@@ -143,7 +143,7 @@ int ObstacleAvoidance::vIdeal()
 		setDesiredV(0.0);
 		return 0;
 	}
-	else if (laser[minLaserIndex]<distMin) {
+	else if (laser[minLaserIndex]<distMin) {	//safety controller to avoid inminent collisions
 		setDesiredV(vmax);
 		return (-1);
 	}

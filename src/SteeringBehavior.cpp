@@ -38,8 +38,9 @@ SteeringBehavior::SteeringBehavior(
 		Setting& sVal =(*configurationPtr)["vectorEstados"];
 		for (int i = 0; i < nbVarPosibles; ++i)
 		{
-			valoresEstado.push_back(sVal[i]);
+			statePossibleValues.push_back(sVal[i]);
 		}
+		std::sort(statePossibleValues.begin(),statePossibleValues.end());
 	}
 	else
 	{
@@ -50,7 +51,7 @@ SteeringBehavior::SteeringBehavior(
 
 		for (int i = 0; i < nbVarPosibles; ++i)
 		{
-			valoresEstado.push_back(ceil(minValState+i*stepValState*1000)/1000);
+			statePossibleValues.push_back(ceil(minValState+i*stepValState*1000)/1000);
 		}
 	}
 
@@ -129,23 +130,27 @@ void SteeringBehavior::discretizarEstado ()
 {
 	for (int i = 0; i < nbVar; i++) {
 		//buscar dentro de los posibles valores aquel mas proximo al valor continuo
-		int indexMin = 0;
-		float min = stateContinuous[i] - valoresEstado[indexMin];
-		for (int j = 1; j < valoresEstado.size(); ++j)
+		int indexMin = statePossibleValues.size() - 1;
+		//float min = stateContinuous[i] - statePossibleValues[indexMin];
+		for (int j = 0; j < statePossibleValues.size(); ++j)
 		{
-			if ((stateContinuous[i] - valoresEstado[j]) > 0)
-			{
-				if ((stateContinuous[i] - valoresEstado[j])<min)
-				{
-					min = stateContinuous[i] - valoresEstado[j];
-					indexMin=j;
-				}
-			}
-			else{
+			// if ((stateContinuous[i] - statePossibleValues[j]) > 0)
+			// {
+			// 	if ((stateContinuous[i] - statePossibleValues[j])<min)
+			// 	{
+			// 		min = stateContinuous[i] - statePossibleValues[j];
+			// 		indexMin=j;
+			// 	}
+			// }
+			// else{
+			// 	break;
+			// }
+			if(statePossibleValues[j]>=stateContinuous[i]){
+				indexMin=j;
 				break;
 			}
 		}
-		stateDiscrete[i] = ceil(valoresEstado[indexMin]*1000)/1000;
+		stateDiscrete[i] = ceil(statePossibleValues[indexMin]*1000)/1000;
 	}
 }
 
@@ -153,7 +158,7 @@ std::vector< std::vector<float> > SteeringBehavior::getPosibleValues()
 {
 	std::vector< std::vector<float> > aux;
 	for (int i = 0; i < nbVar; i++) {
-		aux.push_back(valoresEstado);
+		aux.push_back(statePossibleValues);
 	}
 	return aux;
 }

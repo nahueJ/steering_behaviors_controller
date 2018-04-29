@@ -30,3 +30,4 @@
 *.txt
 *.csv
 uml/*.*
+.ftpconfig

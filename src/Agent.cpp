@@ -170,7 +170,7 @@ void Agent::blend()
 		}
 
 		if (ansState != actualState) {
-			updateWeights(actualState);
+			updateWeights(actualState);	//update the weights and apply the reinforcements
 		}
 
 		float rx = (pesos[0] * twists[0].linear.x * cos(twists[0].angular.z)) + (pesos[1] * twists[1].linear.x * cos(twists[1].angular.z));
@@ -179,8 +179,8 @@ void Agent::blend()
 		geometry_msgs::Twist twist;
 		twist.angular.z = atan2(ry,rx);
 		twist.linear.x = sqrt(pow(rx,2)+pow(ry,2));
-		if (twist.linear.x < 0.5) {
-			twist.linear.x = 0.5;
+		if (twist.linear.x < 0.25) {
+			twist.linear.x = 0.25;
 		}
 		ctrlPublisher->publish(twist);
 	}
